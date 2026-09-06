@@ -18,15 +18,79 @@
     font-family: "Acidic";
     src: url("projects/personal_site/fonts/acidic/Acidic.TTF");
   }
-  html, body {
-    margin: 0; padding: 0;
+  html {
     background-color: var(--color-background);
+  }
+  body {
+    margin: 0; padding: 0;
     color: var(--color-text);
     line-height: 1.6;
     font-family: -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
   }
   a { color: var(--color-accent); }
   a:visited { color: var(--color-accent); }
+
+  /* Live background: three drifting/rotated copies of the navbar gif, at
+     different scales, speeds and blend modes, so the animation already
+     baked into the gif reads as one continuously shifting texture behind
+     the whole page rather than a static tile. Pure CSS - the gif frames
+     do the actual animating, these layers just pan/rotate/breathe it. */
+  .bg-fx {
+    position: fixed; inset: 0; z-index: -2; overflow: hidden;
+    background: var(--color-background);
+  }
+  .bg-fx .layer {
+    position: absolute; inset: -20%;
+    background-image: url("projects/personal_site/pushGifBW.gif");
+    background-repeat: repeat;
+  }
+  .bg-fx .layer-1 {
+    background-size: 240px 296px;
+    opacity: 0.22;
+    filter: grayscale(1) contrast(1.2);
+    animation: driftA 90s linear infinite;
+  }
+  .bg-fx .layer-2 {
+    background-size: 420px 518px;
+    opacity: 0.16;
+    mix-blend-mode: overlay;
+    filter: grayscale(1) invert(1);
+    transform: rotate(180deg);
+    animation: driftB 130s linear infinite;
+  }
+  .bg-fx .layer-3 {
+    background-size: 96px 118px;
+    opacity: 0.12;
+    mix-blend-mode: color-dodge;
+    filter: sepia(1) saturate(6) hue-rotate(0deg);
+    animation: driftC 55s linear infinite, hueCycle 24s linear infinite;
+  }
+  .bg-fx .vignette {
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 50% 35%, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0.35) 55%, rgba(0,0,0,0.7) 100%);
+  }
+  @keyframes driftA {
+    0%   { transform: translate(0, 0); }
+    50%  { transform: translate(-6%, 4%); }
+    100% { transform: translate(0, 0); }
+  }
+  @keyframes driftB {
+    0%   { transform: rotate(180deg) translate(0, 0); }
+    50%  { transform: rotate(182deg) translate(5%, -5%); }
+    100% { transform: rotate(180deg) translate(0, 0); }
+  }
+  @keyframes driftC {
+    0%   { transform: translate(0, 0) scale(1); }
+    50%  { transform: translate(3%, 3%) scale(1.08); }
+    100% { transform: translate(0, 0) scale(1); }
+  }
+  @keyframes hueCycle {
+    0% { filter: sepia(1) saturate(6) hue-rotate(0deg); }
+    100% { filter: sepia(1) saturate(6) hue-rotate(360deg); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .bg-fx .layer { animation: none !important; }
+  }
 
   .navbar {
     height: 96px;
@@ -156,6 +220,13 @@
 </style>
 </head>
 <body>
+  <div class="bg-fx" aria-hidden="true">
+    <div class="layer layer-1"></div>
+    <div class="layer layer-2"></div>
+    <div class="layer layer-3"></div>
+    <div class="vignette"></div>
+  </div>
+
   <nav class="navbar">
     <div class="nav-content">Project Directory</div>
   </nav>
