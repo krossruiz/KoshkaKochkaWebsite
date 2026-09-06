@@ -1,7 +1,12 @@
 {
   "_comment": "Set 'true' to show a project on the site, 'false' to hide it. Keys must match the 'id' field (folder name) in projects.json. Any folder not listed here defaults to visible=true. Reload the site after editing.",
   "visibility": {
-    "Chrome Extensions": true,
+    "Chrome Extensions": false,
+    "YouTubeNegativeFilterExtension": true,
+    "ai-link-copy-paste": true,
+    "ph-negative-filter": true,
+    "yt-negative-filter-es6": true,
+    "yt-negative-filter-es6-9-10-25": true,
     "HelloWorldChromeExtension": true,
     "MindExplorer2D": true,
     "MindMapExplorer": false,

@@ -5,7 +5,7 @@
     "extensionKind": "chrome",
     "title": "Chrome Extensions",
     "category": "browser-extension",
-    "description": "A collection of separate Chrome extension projects (YouTube negative-filter variants, an AI link copy/paste tool, a downloaded chrome-extensions-samples reference repo, and a PH negative filter).",
+    "description": "A collection of separate Chrome extension projects (YouTube negative-filter variants, an AI link copy/paste tool, a downloaded chrome-extensions-samples reference repo, and a PH negative filter). (Split into individual repos - see the 5 separate entries below; this combined entry is kept for reference but hidden by default.)",
     "howToUse": "Open each subfolder individually; most build with 'npm install && npm run build' then load the resulting 'build' folder unpacked via chrome://extensions.",
     "tech": [
       "Chrome Extension",
@@ -13,6 +13,90 @@
     ],
     "lastModified": "2025-11-30",
     "repo": "https://github.com/krossruiz/Chrome-Extensions"
+  },
+  {
+    "id": "YouTubeNegativeFilterExtension",
+    "runtime": "extension",
+    "extensionKind": "chrome",
+    "title": "YouTube Negative Filter Extension",
+    "category": "browser-extension",
+    "description": "A Chrome extension that filters/hides content on YouTube (an early, simpler variant of the yt-negative-filter-es6 extensions).",
+    "howToUse": "npm install && npm run build (if applicable), then load unpacked via chrome://extensions, selecting this folder.",
+    "tech": [
+      "Chrome Extension",
+      "JavaScript"
+    ],
+    "lastModified": "2025-11-30",
+    "repo": "https://github.com/krossruiz/YouTubeNegativeFilterExtension"
+  },
+  {
+    "id": "ai-link-copy-paste",
+    "runtime": "extension",
+    "extensionKind": "chrome",
+    "title": "AI Link Copy Paste",
+    "category": "browser-extension",
+    "description": "A Chrome extension (Manifest V3, webpack-built) for quickly copying/pasting links, with a background service worker and popup UI.",
+    "howToUse": "npm install && npm run build, then load unpacked via chrome://extensions, selecting the 'build' folder.",
+    "tech": [
+      "Chrome Extension",
+      "JavaScript",
+      "Webpack",
+      "Manifest V3"
+    ],
+    "lastModified": "2025-11-30",
+    "repo": "https://github.com/krossruiz/ai-link-copy-paste"
+  },
+  {
+    "id": "ph-negative-filter",
+    "runtime": "extension",
+    "extensionKind": "chrome",
+    "title": "PH Negative Filter",
+    "category": "browser-extension",
+    "description": "A Chrome extension (Manifest V3, webpack-built) that filters content on a site, using a Gemini API key (local .env, not committed) for an AI-assisted feature.",
+    "howToUse": "npm install, add a .env with GEMINI_API_KEY, npm run build, then load unpacked via chrome://extensions, selecting the 'build' folder.",
+    "tech": [
+      "Chrome Extension",
+      "JavaScript",
+      "Webpack",
+      "Manifest V3",
+      "Google Gemini API"
+    ],
+    "lastModified": "2025-11-30",
+    "repo": "https://github.com/krossruiz/ph-negative-filter"
+  },
+  {
+    "id": "yt-negative-filter-es6",
+    "runtime": "extension",
+    "extensionKind": "chrome",
+    "title": "YT Negative Filter (ES6)",
+    "category": "browser-extension",
+    "description": "A Chrome extension (Manifest V3, webpack-built, ES6) that filters unwanted content on YouTube.",
+    "howToUse": "npm install && npm run build, then load unpacked via chrome://extensions, selecting the 'build' folder.",
+    "tech": [
+      "Chrome Extension",
+      "JavaScript",
+      "Webpack",
+      "Manifest V3"
+    ],
+    "lastModified": "2025-11-30",
+    "repo": "https://github.com/krossruiz/yt-negative-filter-es6"
+  },
+  {
+    "id": "yt-negative-filter-es6-9-10-25",
+    "runtime": "extension",
+    "extensionKind": "chrome",
+    "title": "YT Negative Filter (ES6, 9-10-25 revision)",
+    "category": "browser-extension",
+    "description": "A later revision of the YT Negative Filter ES6 extension (dated 9-10-25).",
+    "howToUse": "npm install && npm run build, then load unpacked via chrome://extensions, selecting the 'build' folder.",
+    "tech": [
+      "Chrome Extension",
+      "JavaScript",
+      "Webpack",
+      "Manifest V3"
+    ],
+    "lastModified": "2025-11-30",
+    "repo": "https://github.com/krossruiz/yt-negative-filter-es6-9-10-25"
   },
   {
     "id": "HelloWorldChromeExtension",
