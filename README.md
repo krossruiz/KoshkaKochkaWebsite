@@ -1,6 +1,9 @@
 # Project Directory
 
-A website that catalogs the project folders in `programming projects/`, with a description, usage instructions, and (where possible) a way to actually run or download each one.
+**What this is:** a website that catalogs every project folder in `programming projects/` — one card per project, each with a description, usage instructions, tech tags, and (where possible) a way to actually run or download it: a **Launch** button for static web apps, **Run in Browser (Python)** for simple Python scripts (via Pyodide/WebAssembly, no install needed), or a **Download .zip** / **View on GitHub** link for everything else. `admin.json` controls which projects are visible, and `projects.json` holds all the catalog data.
+
+- **Live site:** https://project-directory-eight.vercel.app
+- **GitHub repo (private):** https://github.com/krossruiz/project-directory
 
 This repo is deployed on Vercel and also meant to be run locally. The two modes behave differently — see below.
 
@@ -45,15 +48,29 @@ Every card shows a description, usage notes, and one of:
 - `downloads/` — generated zip files (gitignored — not part of the repo or the Vercel deployment; regenerate anytime with `build-downloads.ps1`)
 - `.gitignore` — excludes `downloads/` and local build logs from the repo/deployment
 
-## Deploying changes
+## Uploading changes to Vercel
 
-Push to `main` and Vercel redeploys automatically:
+The repo is already linked to Vercel with GitHub auto-deploy turned on, so in the normal case you never need to touch the `vercel` CLI — just push to `main`:
 
 ```
 git add -A
 git commit -m "Update catalog"
 git push
 ```
+
+Vercel picks up the push within a few seconds, builds (this is a static site, so there's nothing to actually compile — it just publishes the files), and updates the live URL above. Check progress at https://vercel.com (or run `vercel ls` / `vercel inspect <deployment-url>` from this folder) if you want to watch it happen.
+
+**If you ever need to deploy manually instead** (e.g. testing something before committing):
+```
+vercel --prod
+```
+This requires the Vercel CLI (`npm i -g vercel`) and being logged in (`vercel login`, one-time). It deploys whatever is currently on disk in this folder, independent of git.
+
+**One-time setup**, for reference (already done, only needed again if the project/repo is ever recreated):
+1. `git init`, then `gh repo create --private --source=. --push` (or push to an existing empty GitHub repo)
+2. `vercel login`
+3. From this folder: `vercel link` — this creates the Vercel project and auto-detects+connects the GitHub repo for you
+4. `vercel --prod` for the first deploy
 
 ## Updating
 
