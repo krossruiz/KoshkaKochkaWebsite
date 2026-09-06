@@ -2,8 +2,10 @@ downloads/
 build-log.txt
 build-err.txt
 serve-log.txt
-node_modules/
 .DS_Store
 Thumbs.db
 
 .vercel
+
+# Note: projects/*/node_modules is intentionally NOT ignored - the embedded
+# VR/Three.js demos load three.js from their own node_modules at runtime.

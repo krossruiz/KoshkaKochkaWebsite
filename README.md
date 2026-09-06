@@ -9,10 +9,14 @@ This repo is deployed on Vercel and also meant to be run locally. The two modes 
 
 ## Hosted (Vercel) vs. local
 
-This site is pushed to its own private GitHub repo and deployed to Vercel from that repo (auto-deploys on every push to `main`). The **hosted copy only contains this directory's own files** — `index.html`, `projects.json`, etc — not the ~40 sibling project folders it catalogs, since those are large, mostly-unrelated codebases better kept as their own repos.
+This site is pushed to its own private GitHub repo and deployed to Vercel from that repo (auto-deploys on every push to `main`). Most launchable projects' files are **embedded directly in this repo** under `projects/<id>/`, so their Launch / Run-in-Browser buttons work identically on the hosted site and locally. A couple are excluded for size (see below) and only run when this catalog is served locally.
 
-- **Hosted**: every card shows its description and, if published, a **View on GitHub** link to that project's own repo (private — you'll need to be logged into GitHub with access). "Launch", "Run in Browser (Python)", and local zip downloads are hidden, since the actual project files aren't part of this deployment.
-- **Local** (running `serve.bat` from `programming projects/`): full functionality — Launch buttons open sibling folders directly, Python scripts actually execute in-browser via Pyodide, and zip downloads work.
+- **Every card**, hosted or local: description, tech tags, and a **View on GitHub** link if the project's been published (private repo — you'll need GitHub access).
+- **Embedded projects** (~13 of them — static HTML/JS apps and the two small Pyodide scripts): **Launch** / **Run in Browser (Python)** work on both the hosted site and locally, since their files ship inside this repo.
+- **Two non-embedded exceptions** — `sitoaqui` (1.4GB of media in its `resources/` folder) and `gemma3ninferencetest` (multi-gigabyte `.task` model files) — are too large to bundle into this deployment. Their Launch button only appears/works when this catalog is run **locally** (via the sibling folder one level up); hosted, they just show a note + GitHub link.
+- **Zip downloads** and Chrome/VS Code extensions remain **local-only** either way (not worth bundling every project's full source twice — clone from GitHub instead when hosted).
+
+If you add a new launchable project and want it to work hosted too, copy its files into `projects/<id>/` in this repo (see "Updating" below) and set `"embedded": true` on it in `projects.json`.
 
 ## Running it locally
 
@@ -41,7 +45,8 @@ Every card shows a description, usage notes, and one of:
 
 - `index.html` — the site (search + category filter + per-project action buttons)
 - `python-runner.html` — generic Pyodide-based console/plot runner, opened as `python-runner.html?src=<path-to-.py>&mode=plain|matplotlib&title=<name>`
-- `projects.json` — the data: one entry per project folder (title, description, how to use, tech, category, and runtime info: `runtime` is `"launch"`, `"pyodide"`, `"extension"`, or omitted/`"download"`)
+- `projects/` — embedded copies of the ~13 launchable projects' files (`projects/<id>/...`), committed to this repo so Launch/Run-in-Browser work on the hosted site too. These are copies, not symlinks — re-copy manually if the source folder changes.
+- `projects.json` — the data: one entry per project folder (title, description, how to use, tech, category, runtime info — `runtime` is `"launch"`, `"pyodide"`, `"extension"`, or omitted/`"download"` — and `embedded: true/false` for launch/pyodide projects)
 - `admin.json` — **visibility control**. Under `"visibility"`, set a folder's id to `true` to show it or `false` to hide it from the site. Any id not listed defaults to visible. Reload the page after editing.
 - `build-downloads.ps1` — run this (PowerShell) whenever project folders change, to (re)build `downloads/<id>.zip` for every visible project. Excludes `node_modules`, `.git`, `venv`, build output dirs, etc, and skips anything still over ~150MB after that (writes nothing for it, and marks `skipDownload` projects as too-large in the description above). Writes `downloads-manifest.json` listing what got built, which the site reads to decide whether to show a Download button.
 - `serve.bat` — starts a local server (from the parent folder) so `fetch()`, Launch, and Run-in-Browser all work
@@ -81,3 +86,4 @@ This requires the Vercel CLI (`npm i -g vercel`) and being logged in (`vercel lo
 3. If it's a simple pure-Python script (stdlib, or numpy/matplotlib), add `"runtime": "pyodide", "pyFile": "script.py", "pyMode": "plain"` (or `"matplotlib"` if it calls `plt.show()`).
 4. If it's a Chrome or VS Code extension, add `"runtime": "extension", "extensionKind": "chrome"` (or `"vscode"`).
 5. Otherwise leave `runtime` out — it'll just get a Download button once you rerun `build-downloads.ps1`.
+6. For `"launch"`/`"pyodide"` projects, decide whether to embed it (make Launch/Run-in-Browser work on the hosted site, not just locally): if it's reasonably small (no single file over ~90MB, ideally under ~50MB total) and has no secrets, copy its folder into `projects/<id>/` (exclude `.git` and heavy `node_modules/.cache`-type junk) and set `"embedded": true`. Otherwise leave `"embedded": false` (or omit it) and it'll only Launch when this catalog runs locally.

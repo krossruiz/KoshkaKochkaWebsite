@@ -171,28 +171,48 @@ const IS_LOCAL = ["localhost", "127.0.0.1", "::1", ""].includes(location.hostnam
 if (!IS_LOCAL) {
   document.addEventListener("DOMContentLoaded", () => {
     const el = document.getElementById("hostedNotice");
-    if (el) el.innerHTML = `<div class="hosted-notice">You're viewing the hosted copy of this catalog. "Launch", "Run in Browser", and local downloads only work when this site runs on your own machine (see the repo's README) - use "View on GitHub" on any card to get the code.</div>`;
+    if (el) el.innerHTML = `<div class="hosted-notice">You're viewing the hosted copy of this catalog. Most projects' Launch/Run-in-Browser buttons work right here (their files are embedded in this deployment); a few large ones are local-only - use "View on GitHub" on any card to get the code.</div>`;
   });
 }
 
+// Embedded projects ship their files inside this site (under projects/<id>/),
+// so Launch and Run-in-Browser work identically whether this catalog is local or hosted.
+// Non-embedded launch/pyodide projects (too large to bundle, e.g. sitoaqui, gemma3ninferencetest)
+// only run when this catalog itself is served locally, via the sibling folder one level up.
 function buildActions(p, downloadSizes) {
   const buttons = [];
   const notes = [];
-  const folderUrl = `../${encodeURIComponent(p.id)}/`;
+
+  if (p.runtime === "launch" && p.entry) {
+    if (p.embedded) {
+      const url = `projects/${encodeURIComponent(p.id)}/${p.entry}`;
+      buttons.push(`<a class="btn btn-primary" href="${url}" target="_blank" rel="noopener">Launch &#8599;</a>`);
+      if (p.launchNote) notes.push(p.launchNote);
+    } else if (IS_LOCAL) {
+      const url = `../${encodeURIComponent(p.id)}/${p.entry}`;
+      buttons.push(`<a class="btn btn-primary" href="${url}" target="_blank" rel="noopener">Launch &#8599;</a>`);
+      notes.push("Too large to embed in the hosted site - this button only works when running the catalog locally.");
+      if (p.launchNote) notes.push(p.launchNote);
+    } else {
+      notes.push("Too large to embed in the hosted site - clone the repo, or run this catalog locally, to launch it.");
+    }
+  } else if (p.runtime === "pyodide" && p.pyFile) {
+    if (p.embedded) {
+      const runnerUrl = `python-runner.html?src=${encodeURIComponent(`projects/${p.id}/${p.pyFile}`)}&mode=${encodeURIComponent(p.pyMode || "plain")}&title=${encodeURIComponent(p.title || p.id)}`;
+      buttons.push(`<a class="btn btn-primary" href="${runnerUrl}" target="_blank" rel="noopener">Run in Browser (Python)</a>`);
+    } else if (IS_LOCAL) {
+      const runnerUrl = `python-runner.html?src=${encodeURIComponent(`../${p.id}/${p.pyFile}`)}&mode=${encodeURIComponent(p.pyMode || "plain")}&title=${encodeURIComponent(p.title || p.id)}`;
+      buttons.push(`<a class="btn btn-primary" href="${runnerUrl}" target="_blank" rel="noopener">Run in Browser (Python)</a>`);
+    } else {
+      notes.push("Runs in-browser via Pyodide when this catalog is served locally - clone the repo to run it yourself.");
+    }
+  } else if (p.runtime === "extension") {
+    notes.push(p.extensionKind === "vscode"
+      ? "VS Code extension - download or clone, then install the .vsix or run via F5 in a dev host."
+      : "Chrome extension - download or clone, then load unpacked via chrome://extensions.");
+  }
 
   if (IS_LOCAL) {
-    if (p.runtime === "launch" && p.entry) {
-      buttons.push(`<a class="btn btn-primary" href="${folderUrl}${p.entry}" target="_blank" rel="noopener">Launch &#8599;</a>`);
-      if (p.launchNote) notes.push(p.launchNote);
-    } else if (p.runtime === "pyodide" && p.pyFile) {
-      const runnerUrl = `python-runner.html?src=${encodeURIComponent(folderUrl + p.pyFile)}&mode=${encodeURIComponent(p.pyMode || "plain")}&title=${encodeURIComponent(p.title || p.id)}`;
-      buttons.push(`<a class="btn btn-primary" href="${runnerUrl}" target="_blank" rel="noopener">Run in Browser (Python)</a>`);
-    } else if (p.runtime === "extension") {
-      notes.push(p.extensionKind === "vscode"
-        ? "VS Code extension - install the .vsix or run via F5 in a dev host after downloading."
-        : "Chrome extension - download, then load unpacked via chrome://extensions.");
-    }
-
     const hasZip = downloadSizes && Object.prototype.hasOwnProperty.call(downloadSizes, p.id);
     if (hasZip) {
       buttons.push(`<a class="btn" href="downloads/${encodeURIComponent(p.id)}.zip" download>Download .zip (${downloadSizes[p.id]} MB)</a>`);
@@ -200,18 +220,6 @@ function buildActions(p, downloadSizes) {
       notes.push("Too large to package as a download - browse the folder locally instead.");
     } else if (!p.runtime || p.runtime === "download") {
       notes.push("No web download built yet - run build-downloads.ps1.");
-    }
-  } else {
-    // Hosted deployment: sibling project folders aren't part of this deploy,
-    // so Launch/Run-in-Browser/local-zip actions aren't available here.
-    if (p.runtime === "extension") {
-      notes.push(p.extensionKind === "vscode"
-        ? "VS Code extension - clone the repo, then install the .vsix or run via F5 in a dev host."
-        : "Chrome extension - clone the repo, then load unpacked via chrome://extensions.");
-    } else if (p.runtime === "launch") {
-      notes.push("Runs as a static page - clone the repo and open it locally, or run this catalog site locally for a live Launch button.");
-    } else if (p.runtime === "pyodide") {
-      notes.push("Runs in-browser via Pyodide when this catalog is served locally - clone the repo to run it yourself.");
     }
   }
 

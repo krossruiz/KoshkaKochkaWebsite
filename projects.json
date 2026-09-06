@@ -114,7 +114,8 @@
       "JavaScript"
     ],
     "lastModified": "2025-11-22",
-    "repo": "https://github.com/krossruiz/VRThreejsPassthroughBoilerplate"
+    "repo": "https://github.com/krossruiz/VRThreejsPassthroughBoilerplate",
+    "embedded": true
   },
   {
     "id": "VRThreejsPassthroughTextAndVideoTexture",
@@ -131,7 +132,8 @@
       "JavaScript"
     ],
     "lastModified": "2025-09-14",
-    "repo": "https://github.com/krossruiz/VRThreejsPassthroughTextAndVideoTexture"
+    "repo": "https://github.com/krossruiz/VRThreejsPassthroughTextAndVideoTexture",
+    "embedded": true
   },
   {
     "id": "VRThreejsPassthroughYouTubeDisplay",
@@ -163,7 +165,8 @@
       "JavaScript"
     ],
     "lastModified": "2025-11-29",
-    "repo": "https://github.com/krossruiz/VRThreejsPassthroughYouTubePlaylistViewer"
+    "repo": "https://github.com/krossruiz/VRThreejsPassthroughYouTubePlaylistViewer",
+    "embedded": true
   },
   {
     "id": "VRThreejsPassthrough_PIPE_ORGAN",
@@ -180,7 +183,8 @@
       "JavaScript"
     ],
     "lastModified": "2025-11-22",
-    "repo": "https://github.com/krossruiz/VRThreejsPassthrough_PIPE_ORGAN"
+    "repo": "https://github.com/krossruiz/VRThreejsPassthrough_PIPE_ORGAN",
+    "embedded": true
   },
   {
     "id": "VibeHelloWorldBouncingText",
@@ -209,7 +213,8 @@
       "HTML/CSS"
     ],
     "lastModified": "2025-09-04",
-    "repo": "https://github.com/krossruiz/YouTubeBlogPlaylistViewer"
+    "repo": "https://github.com/krossruiz/YouTubeBlogPlaylistViewer",
+    "embedded": true
   },
   {
     "id": "YouTubeTranscriptExtractor",
@@ -265,7 +270,8 @@
       "HTML/JavaScript"
     ],
     "lastModified": "2026-03-27",
-    "repo": "https://github.com/krossruiz/photo-stats-viewer"
+    "repo": "https://github.com/krossruiz/photo-stats-viewer",
+    "embedded": true
   },
   {
     "id": "aslForMichael",
@@ -356,7 +362,8 @@
       "HTML/CSS"
     ],
     "lastModified": "2026-01-23",
-    "repo": "https://github.com/krossruiz/claudeTestRemote"
+    "repo": "https://github.com/krossruiz/claudeTestRemote",
+    "embedded": true
   },
   {
     "id": "discordsmsrcssynchronizer",
@@ -382,7 +389,8 @@
       "NumPy"
     ],
     "lastModified": "2025-11-22",
-    "repo": "https://github.com/krossruiz/drone_graph_vis"
+    "repo": "https://github.com/krossruiz/drone_graph_vis",
+    "embedded": true
   },
   {
     "id": "educare",
@@ -456,7 +464,8 @@
       "On-device LLM"
     ],
     "lastModified": "2025-06-19",
-    "repo": "https://github.com/krossruiz/gemma3ninferencetest"
+    "repo": "https://github.com/krossruiz/gemma3ninferencetest",
+    "embedded": false
   },
   {
     "id": "godot",
@@ -508,7 +517,8 @@
       "HTML/CSS"
     ],
     "lastModified": "2025-12-07",
-    "repo": "https://github.com/krossruiz/numberDifferenceVisualizer"
+    "repo": "https://github.com/krossruiz/numberDifferenceVisualizer",
+    "embedded": true
   },
   {
     "id": "ollamalanguageconverter",
@@ -557,7 +567,8 @@
       "JavaScript"
     ],
     "lastModified": "2025-08-30",
-    "repo": "https://github.com/krossruiz/personal_site"
+    "repo": "https://github.com/krossruiz/personal_site",
+    "embedded": true
   },
   {
     "id": "piInfinite",
@@ -572,7 +583,8 @@
       "JavaScript"
     ],
     "lastModified": "2026-03-15",
-    "repo": "https://github.com/krossruiz/piInfiniteMusicGenerator-Song-from-Studio-Version-posted-by-aSongScout-on-YouTube-"
+    "repo": "https://github.com/krossruiz/piInfiniteMusicGenerator-Song-from-Studio-Version-posted-by-aSongScout-on-YouTube-",
+    "embedded": true
   },
   {
     "id": "randomCharacterOutput",
@@ -587,7 +599,8 @@
       "Python"
     ],
     "lastModified": "2025-08-01",
-    "repo": "https://github.com/krossruiz/randomCharacterOutput"
+    "repo": "https://github.com/krossruiz/randomCharacterOutput",
+    "embedded": true
   },
   {
     "id": "remoteVSCodeAgentCommunicator",
@@ -617,7 +630,8 @@
       "HTML/CSS"
     ],
     "lastModified": "2025-06-05",
-    "repo": "https://github.com/krossruiz/resume-site"
+    "repo": "https://github.com/krossruiz/resume-site",
+    "embedded": true
   },
   {
     "id": "sitoaqui",
@@ -631,7 +645,8 @@
       "HTML/CSS"
     ],
     "lastModified": "2026-03-22",
-    "repo": "https://github.com/krossruiz/sitoaqui"
+    "repo": "https://github.com/krossruiz/sitoaqui",
+    "embedded": false
   },
   {
     "id": "test",
@@ -653,7 +668,8 @@
     "tech": [
       "HTML/CSS"
     ],
-    "lastModified": "2026-01-11"
+    "lastModified": "2026-01-11",
+    "embedded": false
   },
   {
     "id": "testProjectForRemoteVSCodeAgentCommunicator",
@@ -666,7 +682,8 @@
     "tech": [
       "HTML/CSS"
     ],
-    "lastModified": "2026-01-10"
+    "lastModified": "2026-01-10",
+    "embedded": false
   },
   {
     "id": "tests",

@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hello World Blog</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Inter:wght@300;400&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            font-weight: 300;
+            line-height: 1.7;
+            color: #a0a0a0;
+            background-color: #0a0a0a;
+            min-height: 100vh;
+        }
+
+        header {
+            background: transparent;
+            color: #e0e0e0;
+            padding: 3rem 2rem;
+            text-align: left;
+            max-width: 800px;
+            margin: 0 auto;
+            border-bottom: 1px solid #1a1a1a;
+        }
+
+        header h1 {
+            font-family: 'Space Mono', monospace;
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.25rem;
+            color: #ffffff;
+        }
+
+        header p {
+            font-size: 0.85rem;
+            color: #505050;
+            letter-spacing: 0.05em;
+            text-transform: lowercase;
+        }
+
+        main {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 2rem 4rem;
+        }
+
+        .post-list-item {
+            background: transparent;
+            padding: 1.5rem 0;
+            margin-bottom: 0;
+        }
+
+        .post-list-item h2 {
+            font-family: 'Space Mono', monospace;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #e0e0e0;
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+            transition: color 0.2s ease, text-shadow 0.2s ease;
+        }
+
+        .post-list-item h2:hover {
+            color: #ff2a6d;
+            text-shadow: 0 0 20px rgba(255, 42, 109, 0.3);
+        }
+
+        .post-list-item .meta {
+            font-family: 'Space Mono', monospace;
+            color: #404040;
+            font-size: 0.75rem;
+            margin-bottom: 0.75rem;
+            letter-spacing: 0.05em;
+        }
+
+        .post-list-item .excerpt {
+            color: #606060;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        article {
+            background: transparent;
+            padding: 0;
+            margin-bottom: 2rem;
+            display: none;
+        }
+
+        article.active {
+            display: block;
+        }
+
+        article h2 {
+            font-family: 'Space Mono', monospace;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.02em;
+        }
+
+        .meta {
+            font-family: 'Space Mono', monospace;
+            color: #404040;
+            font-size: 0.75rem;
+            margin-bottom: 2rem;
+            letter-spacing: 0.05em;
+        }
+
+        article p {
+            margin-bottom: 1.5rem;
+            color: #909090;
+        }
+
+        .back-link {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.8rem;
+            color: #505050;
+            text-decoration: none;
+            cursor: pointer;
+            letter-spacing: 0.03em;
+            transition: color 0.2s ease;
+        }
+
+        .back-link:hover {
+            color: #ff2a6d;
+        }
+
+        #post-list {
+            display: block;
+        }
+
+        #post-list.hidden {
+            display: none;
+        }
+
+        footer {
+            text-align: left;
+            padding: 2rem;
+            max-width: 800px;
+            margin: 0 auto;
+            border-top: 1px solid #1a1a1a;
+            color: #303030;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.7rem;
+            letter-spacing: 0.05em;
+        }
+
+        ::selection {
+            background: #ff2a6d;
+            color: #0a0a0a;
+        }
+
+        .tts-btn {
+            display: inline-block;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.75rem;
+            color: #505050;
+            background: transparent;
+            border: 1px solid #252525;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            letter-spacing: 0.05em;
+            transition: color 0.2s ease, border-color 0.2s ease;
+            margin-bottom: 2rem;
+        }
+
+        .tts-btn:hover {
+            color: #ff2a6d;
+            border-color: #ff2a6d;
+        }
+
+        .tts-btn.playing {
+            color: #ff2a6d;
+            border-color: #ff2a6d;
+        }
+
+        .tts-controls {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .voice-toggle {
+            display: flex;
+            border: 1px solid #252525;
+        }
+
+        .voice-toggle button {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.65rem;
+            color: #404040;
+            background: transparent;
+            border: none;
+            padding: 0.4rem 0.75rem;
+            cursor: pointer;
+            letter-spacing: 0.03em;
+            transition: color 0.2s ease, background 0.2s ease;
+        }
+
+        .voice-toggle button:first-child {
+            border-right: 1px solid #252525;
+        }
+
+        .voice-toggle button:hover {
+            color: #707070;
+        }
+
+        .voice-toggle button.active {
+            color: #ff2a6d;
+            background: rgba(255, 42, 109, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Hello World Blog</h1>
+        <p>A simple blog to share my thoughts</p>
+    </header>
+
+    <main>
+        <div id="post-list">
+            <div class="post-list-item" onclick="showPost('on-tension')">
+                <h2>On Tension</h2>
+                <p class="meta">Posted on January 23, 2026</p>
+                <p class="excerpt">I was talking to someone today who told me that when they crochet, the control of the tension of the yarn is key to creating smoothness. She said think of when you tie a knot...</p>
+            </div>
+        </div>
+
+        <article id="on-tension">
+            <div class="tts-controls">
+                <span class="back-link" onclick="showList()">&larr; Back to posts</span>
+                <button class="tts-btn" onclick="toggleTTS('on-tension')">Listen</button>
+                <div class="voice-toggle">
+                    <button class="active" onclick="setVoiceMode('synthetic')">Synthetic</button>
+                    <button onclick="setVoiceMode('natural')">Natural</button>
+                </div>
+            </div>
+            <h2>On Tension</h2>
+            <p class="meta">Posted on January 23, 2026</p>
+            <p>
+                I was talking to someone today who told me that when they crochet, the control of the tension of the yarn is key to creating smoothness. She said think of when you tie a knot. If you pull softly, the knot will be big and loose. If you pull tightly, they'll be small and hard. If you're consistent with the tension in your piece, it makes for a smooth result.
+            </p>
+            <p>
+                I began to pattern match and was thinking about how I express myself like the tension in knots. Sometimes I'm too soft, not saying what I want to say, avoidant to explore an idea because I don't want to handle the consequences of disagreement or offense, and sometimes I'm too tight, I'll come with intensity and directness and I'll drill.
+            </p>
+            <p>
+                I think of this account as a collection of zines, mixtapes, and as a private network journal. There's many aspects to what I've cultivated. I think about curation, composition, coherence, my tensions, because I think about communicating effectively. It's like what my Speech 101 teacher would tell my class, it's not just what you say that's vital for effective communication, but who your audience is and if they're listening.
+            </p>
+            <p>
+                I think of people here that I can only remember a few moments together with, but that I think of frequently. Some of it is alongside a parasocial persistence, with varying degrees of new information coming in. There's some messages dripping… slowly… over… years… based on scarce information that I believe is connected to something that was, I imagine who is watching. How far my imagination wandered away from the descendants of these people? I have no Earthly idea. I tell myself there's reason involved when I'm trying to match reality, but there are echoes, distortions, filters of memory and found transmissions all over.
+            </p>
+            <p>
+                I had an Art History teacher who shared a perspective of artists that's stuck with me. My notes have this next to some information on Rousseau and The Enlightenment (don't ask me, I don't know about these things), but I'm not sure where it comes from exactly. It's that the further back you recall, the simpler the representations become, and the more profound they are.
+            </p>
+            <p>
+                I heard recently, "you grieve so long".
+            </p>
+        </article>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Hello World Blog. Made with simplicity in mind.</p>
+    </footer>
+
+    <script>
+        let currentUtterance = null;
+        let isSpeaking = false;
+        let isPaused = false;
+        let voiceMode = 'synthetic';
+
+        const maleIndicators = ['male', 'david', 'james', 'daniel', 'george', 'guy', 'aaron', 'fred', 'mark', 'paul', 'tom', 'alex'];
+        const femaleIndicators = ['female', 'woman', 'girl', 'samantha', 'victoria', 'karen', 'moira', 'fiona', 'zira', 'susan', 'linda', 'emma'];
+        const naturalIndicators = ['natural', 'neural', 'premium', 'enhanced', 'wavenet', 'online'];
+        const syntheticIndicators = ['desktop', 'compact', 'microsoft david', 'microsoft mark'];
+
+        function getSyntheticMaleVoice() {
+            const voices = speechSynthesis.getVoices();
+
+            // Prefer explicitly synthetic/older voices
+            let voice = voices.find(v => {
+                const name = v.name.toLowerCase();
+                return syntheticIndicators.some(s => name.includes(s)) &&
+                       !femaleIndicators.some(f => name.includes(f));
+            });
+
+            // Fall back to any male voice that's NOT natural/neural
+            if (!voice) {
+                voice = voices.find(v => {
+                    const name = v.name.toLowerCase();
+                    return maleIndicators.some(m => name.includes(m)) &&
+                           !naturalIndicators.some(n => name.includes(n));
+                });
+            }
+
+            // Fall back to any English non-female, non-natural voice
+            if (!voice) {
+                voice = voices.find(v => {
+                    const name = v.name.toLowerCase();
+                    return v.lang.startsWith('en') &&
+                           !femaleIndicators.some(f => name.includes(f)) &&
+                           !naturalIndicators.some(n => name.includes(n));
+                });
+            }
+
+            return voice || voices[0];
+        }
+
+        function getNaturalMaleVoice() {
+            const voices = speechSynthesis.getVoices();
+
+            // Prefer explicitly natural/neural male voices
+            let voice = voices.find(v => {
+                const name = v.name.toLowerCase();
+                return naturalIndicators.some(n => name.includes(n)) &&
+                       maleIndicators.some(m => name.includes(m));
+            });
+
+            // Fall back to any natural/neural English voice that's not female
+            if (!voice) {
+                voice = voices.find(v => {
+                    const name = v.name.toLowerCase();
+                    return naturalIndicators.some(n => name.includes(n)) &&
+                           v.lang.startsWith('en') &&
+                           !femaleIndicators.some(f => name.includes(f));
+                });
+            }
+
+            // Fall back to any male voice (prefer natural-sounding ones)
+            if (!voice) {
+                voice = voices.find(v => {
+                    const name = v.name.toLowerCase();
+                    return maleIndicators.some(m => name.includes(m));
+                });
+            }
+
+            // Fall back to any English non-female voice
+            if (!voice) {
+                voice = voices.find(v => {
+                    const name = v.name.toLowerCase();
+                    return v.lang.startsWith('en') &&
+                           !femaleIndicators.some(f => name.includes(f));
+                });
+            }
+
+            return voice || voices[0];
+        }
+
+        function setVoiceMode(mode) {
+            voiceMode = mode;
+            document.querySelectorAll('.voice-toggle button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            // If currently speaking, restart with new voice
+            if (isSpeaking || isPaused) {
+                const activeArticle = document.querySelector('article.active');
+                if (activeArticle) {
+                    stopTTS();
+                    toggleTTS(activeArticle.id);
+                }
+            }
+        }
+
+        function showPost(postId) {
+            stopTTS();
+            document.getElementById('post-list').classList.add('hidden');
+            document.querySelectorAll('article').forEach(a => a.classList.remove('active'));
+            const post = document.getElementById(postId);
+            if (post) {
+                post.classList.add('active');
+                history.pushState(null, '', '#' + postId);
+            }
+        }
+
+        function showList() {
+            stopTTS();
+            document.getElementById('post-list').classList.remove('hidden');
+            document.querySelectorAll('article').forEach(a => a.classList.remove('active'));
+            history.pushState(null, '', window.location.pathname);
+        }
+
+        function handleHash() {
+            stopTTS();
+            const hash = window.location.hash.slice(1);
+            if (hash && document.getElementById(hash)) {
+                document.getElementById('post-list').classList.add('hidden');
+                document.querySelectorAll('article').forEach(a => a.classList.remove('active'));
+                document.getElementById(hash).classList.add('active');
+            } else {
+                document.getElementById('post-list').classList.remove('hidden');
+                document.querySelectorAll('article').forEach(a => a.classList.remove('active'));
+            }
+        }
+
+        function getPostText(postId) {
+            const article = document.getElementById(postId);
+            if (!article) return '';
+            const paragraphs = article.querySelectorAll('p:not(.meta)');
+            return Array.from(paragraphs).map(p => p.textContent.trim()).join(' ');
+        }
+
+        function toggleTTS(postId) {
+            const btn = document.querySelector(`#${postId} .tts-btn`);
+
+            if (isSpeaking && !isPaused) {
+                speechSynthesis.pause();
+                isPaused = true;
+                btn.textContent = 'Resume';
+                btn.classList.remove('playing');
+                return;
+            }
+
+            if (isPaused) {
+                speechSynthesis.resume();
+                isPaused = false;
+                btn.textContent = 'Pause';
+                btn.classList.add('playing');
+                return;
+            }
+
+            const text = getPostText(postId);
+            if (!text) return;
+
+            currentUtterance = new SpeechSynthesisUtterance(text);
+
+            if (voiceMode === 'synthetic') {
+                currentUtterance.voice = getSyntheticMaleVoice();
+                currentUtterance.rate = 0.85;
+                currentUtterance.pitch = 0.8;
+            } else {
+                currentUtterance.voice = getNaturalMaleVoice();
+                currentUtterance.rate = 0.95;
+                currentUtterance.pitch = 1;
+            }
+
+            currentUtterance.onstart = () => {
+                isSpeaking = true;
+                isPaused = false;
+                btn.textContent = 'Pause';
+                btn.classList.add('playing');
+            };
+
+            currentUtterance.onend = () => {
+                resetTTSState(btn);
+            };
+
+            currentUtterance.onerror = () => {
+                resetTTSState(btn);
+            };
+
+            speechSynthesis.speak(currentUtterance);
+        }
+
+        function stopTTS() {
+            if (speechSynthesis.speaking || speechSynthesis.pending) {
+                speechSynthesis.cancel();
+            }
+            document.querySelectorAll('.tts-btn').forEach(btn => {
+                resetTTSState(btn);
+            });
+        }
+
+        function resetTTSState(btn) {
+            isSpeaking = false;
+            isPaused = false;
+            currentUtterance = null;
+            if (btn) {
+                btn.textContent = 'Listen';
+                btn.classList.remove('playing');
+            }
+        }
+
+        window.addEventListener('hashchange', handleHash);
+        window.addEventListener('load', handleHash);
+
+        // Preload voices (some browsers load them asynchronously)
+        speechSynthesis.getVoices();
+        speechSynthesis.onvoiceschanged = () => speechSynthesis.getVoices();
+    </script>
+</body>
+</html>

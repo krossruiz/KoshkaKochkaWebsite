@@ -1,0 +1,21 @@
+
+
+    I'm a self-taught programmer, and I've been programming since high school, so it's been about 10 years. I first taught myself Android app programming with Java from a book at the local library, and I learned computer science basics through a UNSW Sydney Course by Richard Buckland as well as learning Java through YouTube channel called thenewboston.
+
+    I attended College of the Canyons in Santa Clarita and was a part of their computer club. We tried working on building video games together with the Unity game engine. I did 3D modelling and integrated assets from artists into the game. We never had a finished product. I did complete one small game though, a simple fighting game called Punch Bois that I did the programming for and my friend Bradley Wood did the art assets and physics tuning for. 
+
+    I've worked as a math tutor, which is my main source of income, for about as long as I've been a programmer. I started at Whiz Tutor, an app for tutors, like Uber, and I even programmed for them. Unfortunately I couldn't seriously commit to the job and that didn't last long, but I did learn about progressive web apps, the 3 web languages, TypeScript, Angular, React, RESTful APIs, sockets, and it laid out many foundations for what I know today.
+    
+    I've been working as a math tutor at Verdugo Hills High School for the past year for a company called EduCare. I also worked with them 2019-2020 before and during COVID.  
+
+    I hadn't programmed in a few years, but I picked it up again about a year ago when I bought myself a new laptop and DeepSeek R1 had just come out. I started experimenting with AI tools and since then have used Cursor, Google Antigravity, and Claude Code, along with models from different providers as they've come out.
+
+    Some things I've worked on include a Chrome extension that filters YouTube recommended videos, small tools to try and speed up renaming scanned documents at work, and experiments with WebXR for my Quest 3.
+
+    I go out to Meetups and talk with other programmers and learn about their projects and workflows, and I share what I've learned too.
+
+    Aside from a few pushes to the master branch of the Whiz Tutor app I've never released code publicly, but I did recently have this site hosted on my Github. It was made for Pi Day.
+
+    https://krossruiz.github.io/piInfiniteMusicGenerator-Song-from-Studio-Version-posted-by-aSongScout-on-YouTube-/
+
+    I want to start utilizing what I've learned and release my cdoe for other people to use. 

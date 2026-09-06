@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Number Difference Visualizer</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/12.2.1/math.min.js"></script>
+</head>
+
+<body>
+    <div id="ui-container">
+        <header>
+            <h1>Number Difference Visualizer</h1>
+            <p>Enter up to 7 numbers to visualize their difference in size.</p>
+        </header>
+
+        <div id="controls">
+            <div id="inputs-list">
+                <!-- Input items will be generated here -->
+            </div>
+            <button id="add-input-btn" class="secondary-btn">+ Add Number</button>
+            <div class="actions">
+                <button id="visualize-btn" class="primary-btn">Visualize</button>
+                <button id="clear-btn" class="danger-btn">Clear</button>
+            </div>
+
+            <div class="setting-group" style="margin-top: 16px;">
+                <label for="zoom-speed"
+                    style="display: block; font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 4px;">Zoom
+                    Speed: <span id="zoom-val">0.002</span></label>
+                <input type="range" id="zoom-speed" min="0.0005" max="0.01" step="0.0005" value="0.002"
+                    style="width: 100%;">
+            </div>
+
+            <div class="setting-group" style="margin-top: 12px; display: flex; align-items: center; gap: 8px;">
+                <input type="color" id="bg-color" value="#0f0f13"
+                    style="width: 32px; height: 32px; border: none; background: none; cursor: pointer; padding: 0;">
+                <label for="bg-color" style="font-size: 0.8rem; color: var(--text-secondary);">Background Color</label>
+            </div>
+        </div>
+    </div>
+
+    <canvas id="webgl-canvas"></canvas>
+
+    <script type="module" src="script.js"></script>
+</body>
+
+</html>

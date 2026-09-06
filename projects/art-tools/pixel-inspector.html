@@ -1,0 +1,1859 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pixel Inspector</title>
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #1a1a1a;
+    color: #eee;
+    font-family: system-ui, sans-serif;
+    overflow: hidden;
+    height: 100vh;
+  }
+  #toolbar {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 44px;
+    background: #2a2a2a;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 12px;
+    z-index: 10;
+    border-bottom: 1px solid #444;
+  }
+  #toolbar button, #toolbar > label {
+    cursor: pointer;
+    background: #4a7aff;
+    padding: 6px 14px;
+    border-radius: 4px;
+    font-size: 13px;
+    font-weight: 500;
+    border: none;
+    color: #eee;
+    white-space: nowrap;
+  }
+  #toolbar button:hover, #toolbar > label:hover { background: #5a8aff; }
+  #toolbar button.active { background: #ff6a4a; }
+  #toolbar button.active:hover { background: #ff7a5a; }
+  .tool-sep {
+    width: 1px;
+    height: 24px;
+    background: #555;
+    flex-shrink: 0;
+  }
+  #fileInput { display: none; }
+  #channel-toggles {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    margin-left: 4px;
+  }
+  #channel-toggles label {
+    background: none;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    user-select: none;
+  }
+  #channel-toggles label:hover { background: none; }
+  #channel-toggles input[type="checkbox"] {
+    cursor: pointer;
+    accent-color: var(--ch-color);
+  }
+  #zoomInfo {
+    font-size: 12px;
+    color: #aaa;
+    margin-left: auto;
+    white-space: nowrap;
+  }
+  #canvas-container {
+    position: absolute;
+    top: 44px; left: 0; right: 0; bottom: 0;
+    overflow: hidden;
+    cursor: grab;
+  }
+  #canvas-container.dragging { cursor: grabbing; }
+  #canvas-container.tool-move { cursor: move; }
+  #canvas-container.tool-rotate { cursor: crosshair; }
+  #canvas-container.tool-line { cursor: crosshair; }
+  #canvas-container.tool-orbit { cursor: grab; }
+  canvas {
+    position: absolute;
+    top: 0; left: 0;
+    image-rendering: pixelated;
+  }
+  #shortcuts {
+    position: fixed;
+    bottom: 12px;
+    right: 12px;
+    background: rgba(0,0,0,0.75);
+    border: 1px solid #444;
+    border-radius: 6px;
+    padding: 10px 14px;
+    font-size: 12px;
+    font-family: monospace;
+    color: #bbb;
+    z-index: 10;
+    line-height: 1.8;
+    pointer-events: none;
+    user-select: none;
+  }
+  #shortcuts .key {
+    display: inline-block;
+    background: #444;
+    color: #eee;
+    padding: 1px 6px;
+    border-radius: 3px;
+    font-weight: bold;
+    min-width: 20px;
+    text-align: center;
+    margin-right: 4px;
+  }
+  #shortcuts .active-tool {
+    color: #ff6a4a;
+  }
+  #strobe-panel {
+    position: fixed;
+    bottom: 12px;
+    left: 12px;
+    background: rgba(0,0,0,0.8);
+    border: 1px solid #444;
+    border-radius: 6px;
+    padding: 10px 14px;
+    font-size: 12px;
+    font-family: monospace;
+    color: #bbb;
+    z-index: 10;
+    min-width: 220px;
+  }
+  #strobe-panel .strobe-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  #strobe-panel .strobe-title button {
+    background: #4a7aff;
+    border: none;
+    color: #eee;
+    padding: 4px 10px;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  #strobe-panel .strobe-title button:hover { background: #5a8aff; }
+  #strobe-panel .strobe-title button.active { background: #ff6a4a; }
+  #strobe-panel .strobe-title button.active:hover { background: #ff7a5a; }
+  #strobe-panel .strobe-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 8px;
+  }
+  #strobe-panel input[type="range"] {
+    flex: 1;
+    height: 14px;
+    cursor: pointer;
+    accent-color: #ff6a4a;
+    min-width: 60px;
+  }
+  #strobe-panel input[type="number"] {
+    width: 68px;
+    background: #333;
+    border: 1px solid #555;
+    border-radius: 3px;
+    color: #eee;
+    padding: 2px 4px;
+    font-family: monospace;
+    font-size: 12px;
+    text-align: right;
+    flex-shrink: 0;
+    -moz-appearance: textfield;
+  }
+  #strobe-panel input[type="number"]::-webkit-inner-spin-button,
+  #strobe-panel input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  #strobe-panel .unit {
+    color: #777;
+    flex-shrink: 0;
+  }
+  #strobe-indicator {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #555;
+    margin-left: auto;
+  }
+  #strobe-indicator.on { background: #ff6a4a; }
+  #three-canvas {
+    position: absolute;
+    top: 0; left: 0;
+    z-index: 0;
+  }
+  #canvas {
+    z-index: 1;
+  }
+  #scene-panel {
+    position: fixed;
+    bottom: 12px;
+    left: 250px;
+    background: rgba(0,0,0,0.8);
+    border: 1px solid #444;
+    border-radius: 6px;
+    padding: 10px 14px;
+    font-size: 12px;
+    font-family: monospace;
+    color: #bbb;
+    z-index: 10;
+    min-width: 230px;
+  }
+  #scene-panel .sp-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  #scene-panel .sp-title button {
+    background: #4a7aff;
+    border: none;
+    color: #eee;
+    padding: 4px 10px;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  #scene-panel .sp-title button:hover { background: #5a8aff; }
+  #scene-panel .sp-title button.active { background: #ff6a4a; }
+  #scene-panel .sp-title button.active:hover { background: #ff7a5a; }
+  #scene-panel .sp-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 6px;
+  }
+  #scene-panel .sp-row label {
+    color: #999;
+    flex-shrink: 0;
+    min-width: 55px;
+  }
+  #scene-panel input[type="range"] {
+    flex: 1;
+    height: 14px;
+    cursor: pointer;
+    accent-color: #4a7aff;
+  }
+  #scene-panel .sp-val {
+    color: #ccc;
+    min-width: 32px;
+    text-align: right;
+  }
+</style>
+</head>
+<body>
+
+<div id="toolbar">
+  <label><input type="file" id="fileInput" accept="image/*">Open Image</label>
+  <div class="tool-sep"></div>
+  <button id="panBtn" class="active">Pan</button>
+  <button id="moveBtn">Move</button>
+  <button id="rotateBtn">Rotate</button>
+  <button id="orbitBtn">Orbit</button>
+  <button id="lineBtn">Line</button>
+  <button id="clearLineBtn">Clear Line</button>
+  <div class="tool-sep"></div>
+  <div id="channel-toggles">
+    <label style="--ch-color:#ff4444; color:#ff6666"><input type="checkbox" id="chR" checked>R</label>
+    <label style="--ch-color:#44ff44; color:#66ff66"><input type="checkbox" id="chG" checked>G</label>
+    <label style="--ch-color:#4488ff; color:#6688ff"><input type="checkbox" id="chB" checked>B</label>
+    <label style="--ch-color:#ffaa00; color:#ffcc44"><input type="checkbox" id="chH">H</label>
+    <label style="--ch-color:#ff66ff; color:#ff88ff"><input type="checkbox" id="chS">S</label>
+    <label style="--ch-color:#ffffff; color:#cccccc"><input type="checkbox" id="chV">V</label>
+  </div>
+  <span id="zoomInfo">No image loaded</span>
+</div>
+
+<div id="canvas-container">
+  <canvas id="three-canvas"></canvas>
+  <canvas id="canvas"></canvas>
+</div>
+
+<div id="strobe-panel">
+  <div class="strobe-title">
+    <button id="strobeToggle">Strobe</button>
+    <button id="stripAnimToggle">Animate</button>
+    <span id="strobe-indicator"></span>
+  </div>
+  <div class="strobe-row">
+    <input type="number" id="strobeMinInput" min="0" max="99999" step="any" value="0.100">
+    <span class="unit">s</span>
+    <input type="range" id="strobeSlider" min="0" max="10" step="0.001" value="0.3">
+    <input type="number" id="strobeMaxInput" min="0" max="99999" step="any" value="0.500">
+    <span class="unit">s</span>
+  </div>
+  <div class="strobe-row" id="animSpeedRow" style="display:none">
+    <label style="color:#999; min-width:40px">Rate</label>
+    <input type="range" id="animSpeedSlider" min="1" max="60" step="1" value="30">
+    <span class="unit" id="animSpeedVal" style="min-width:40px; text-align:right">30 fps</span>
+  </div>
+</div>
+
+<div id="scene-panel">
+  <div class="sp-title">
+    <button id="scene3dToggle">3D Scene</button>
+  </div>
+  <div class="sp-row">
+    <label>Opacity</label>
+    <input type="range" id="photoOpacity" min="0" max="1" step="0.01" value="1">
+    <span class="sp-val" id="opacityVal">100%</span>
+  </div>
+</div>
+
+<div id="shortcuts">
+  <div id="sc-pan"><span class="key">H</span> Pan</div>
+  <div id="sc-move"><span class="key">V</span> Move</div>
+  <div id="sc-rotate"><span class="key">R</span> Rotate</div>
+  <div id="sc-orbit"><span class="key">O</span> Orbit 3D</div>
+  <div id="sc-line"><span class="key">L</span> Line Tool</div>
+  <div><span class="key">Esc</span> Cancel / Pan</div>
+  <div><span class="key">Scroll</span> Zoom</div>
+</div>
+
+<script>
+const container = document.getElementById('canvas-container');
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+const fileInput = document.getElementById('fileInput');
+const zoomInfo = document.getElementById('zoomInfo');
+const panBtn = document.getElementById('panBtn');
+const moveBtn = document.getElementById('moveBtn');
+const rotateBtn = document.getElementById('rotateBtn');
+const orbitBtn = document.getElementById('orbitBtn');
+const lineBtn = document.getElementById('lineBtn');
+const clearLineBtn = document.getElementById('clearLineBtn');
+const chR = document.getElementById('chR');
+const chG = document.getElementById('chG');
+const chB = document.getElementById('chB');
+const chH = document.getElementById('chH');
+const chS = document.getElementById('chS');
+const chV = document.getElementById('chV');
+
+for (const cb of [chR, chG, chB, chH, chS, chV]) {
+  cb.addEventListener('change', () => render());
+}
+
+let img = null;
+let imageData = null;
+let imgW = 0, imgH = 0;
+
+// View state
+let zoom = 1;
+let panX = 0, panY = 0;
+let imgRotation = 0; // radians
+
+// Tool state: 'pan', 'move', 'rotate', 'line'
+let tool = 'pan';
+
+// Drag state
+let dragging = false;
+let dragStartX = 0, dragStartY = 0;
+let panStartX = 0, panStartY = 0;
+let rotStartAngle = 0;   // angle of mouse at drag start
+let rotStartImg = 0;     // imgRotation at drag start
+let gizmoDragAxis = null; // 'x', 'y', or null (free move)
+
+// Line tool state
+let lineP0 = null;
+let lineP1 = null;
+let linePreview = null;
+let lineDragNode = null; // 'p0' or 'p1' when dragging an endpoint
+const LINE_NODE_HIT_R = 8; // screen-px hit radius for line endpoints
+
+const GRAPH_HEIGHT = 120;
+const GIZMO_DEFAULT_LEN = 60;
+const GIZMO_HANDLE_R = 7;    // draggable handle circle radius
+const GIZMO_SHAFT_HIT = 10;  // hit distance from shaft line
+const ROTATE_RING_R = 50;
+
+// Gizmo arrow endpoints as offsets from image center (screen px)
+let gizmoXEnd = { x: GIZMO_DEFAULT_LEN, y: 0 };
+let gizmoYEnd = { x: 0, y: GIZMO_DEFAULT_LEN };
+let gizmoDragHandle = null; // 'x' or 'y' when dragging an arrowhead to reposition
+
+// Strobe state
+let strobeActive = false;
+let strobeVisible = true;
+let strobeLastFlip = 0;
+let strobeCurrentInterval = 0;
+let strobeMinTime = 0.1;
+let strobeMaxTime = 0.5;
+
+const strobeToggleBtn = document.getElementById('strobeToggle');
+const strobeIndicator = document.getElementById('strobe-indicator');
+const strobeSlider = document.getElementById('strobeSlider');
+const strobeMinInput = document.getElementById('strobeMinInput');
+const strobeMaxInput = document.getElementById('strobeMaxInput');
+
+function pickStrobeInterval() {
+  const lo = Math.min(strobeMinTime, strobeMaxTime);
+  const hi = Math.max(strobeMinTime, strobeMaxTime);
+  return (lo + Math.random() * (hi - lo)) * 1000;
+}
+
+function updateSliderRange() {
+  const lo = Math.min(strobeMinTime, strobeMaxTime);
+  const hi = Math.max(strobeMinTime, strobeMaxTime);
+  strobeSlider.min = lo;
+  strobeSlider.max = hi;
+  const v = parseFloat(strobeSlider.value);
+  if (v < lo) strobeSlider.value = lo;
+  if (v > hi) strobeSlider.value = hi;
+}
+
+function startStrobe() {
+  strobeActive = true;
+  strobeVisible = true;
+  strobeLastFlip = performance.now();
+  strobeCurrentInterval = pickStrobeInterval();
+  strobeToggleBtn.classList.add('active');
+  strobeIndicator.classList.add('on');
+  ensureAnimLoop();
+}
+
+function stopStrobe() {
+  strobeActive = false;
+  strobeVisible = true;
+  strobeToggleBtn.classList.remove('active');
+  strobeIndicator.classList.remove('on');
+  render();
+}
+
+strobeToggleBtn.addEventListener('click', () => {
+  if (strobeActive) stopStrobe();
+  else startStrobe();
+});
+
+// The slider scrubs between min and max. Dragging it sets the fixed strobe interval.
+strobeSlider.addEventListener('input', () => {
+  const v = parseFloat(strobeSlider.value);
+  // When slider is used, set both min and max to slider value for a fixed rate
+  // (user can widen the range again via the number inputs)
+  strobeMinTime = v;
+  strobeMaxTime = v;
+  strobeMinInput.value = v.toFixed(3);
+  strobeMaxInput.value = v.toFixed(3);
+});
+
+strobeMinInput.addEventListener('input', () => {
+  const v = parseFloat(strobeMinInput.value);
+  if (!isNaN(v) && v >= 0) {
+    strobeMinTime = v;
+    updateSliderRange();
+  }
+});
+
+strobeMaxInput.addEventListener('input', () => {
+  const v = parseFloat(strobeMaxInput.value);
+  if (!isNaN(v) && v >= 0) {
+    strobeMaxTime = v;
+    updateSliderRange();
+  }
+});
+
+updateSliderRange();
+
+// Strip animation state — kymograph / waterfall mode
+let stripAnimActive = false;
+let stripAnimLastTs = 0;
+let stripAnimInterval = 1 / 30;
+let stripAnimAccum = 0;
+const stripAnimHistory = [];
+const STRIP_HISTORY_LEN = 120;
+const STRIP_SAMPLE_COUNT = 120;
+
+const stripAnimToggleBtn = document.getElementById('stripAnimToggle');
+const animSpeedRow = document.getElementById('animSpeedRow');
+const animSpeedSlider = document.getElementById('animSpeedSlider');
+const animSpeedVal = document.getElementById('animSpeedVal');
+
+function sampleLineRow(p0, p1) {
+  const g = getLineScreenGeometry(p0, p1);
+  if (g.dist < 1) return null;
+  const count = STRIP_SAMPLE_COUNT;
+  const row = new Array(count);
+
+  if (scene3dEnabled && frameCompositeData) {
+    const cw = frameCompositeW;
+    const ch = frameCompositeH;
+    for (let i = 0; i < count; i++) {
+      const t = i / (count - 1);
+      const sx = Math.floor(g.s0.x + g.dx * t);
+      const sy = Math.floor(g.s0.y + g.dy * t);
+      const cx = Math.max(0, Math.min(cw - 1, sx));
+      const cy = Math.max(0, Math.min(ch - 1, sy));
+      const idx = (cy * cw + cx) * 4;
+      row[i] = { r: frameCompositeData[idx], g: frameCompositeData[idx + 1], b: frameCompositeData[idx + 2] };
+    }
+  } else {
+    const dx = p1.x - p0.x;
+    const dy = p1.y - p0.y;
+    for (let i = 0; i < count; i++) {
+      const t = i / (count - 1);
+      const ix = p0.x + dx * t;
+      const iy = p0.y + dy * t;
+      let r, gb, b;
+      if (ix >= 0 && ix < imgW && iy >= 0 && iy < imgH) {
+        const px = Math.floor(ix);
+        const py = Math.floor(iy);
+        const idx = (py * imgW + px) * 4;
+        r = imageData[idx]; gb = imageData[idx + 1]; b = imageData[idx + 2];
+      } else {
+        r = 26; gb = 26; b = 26;
+      }
+      row[i] = { r, g: gb, b };
+    }
+  }
+  return row;
+}
+
+function startStripAnim() {
+  stripAnimActive = true;
+  stripAnimLastTs = performance.now();
+  stripAnimAccum = 0;
+  stripAnimHistory.length = 0;
+  stripAnimToggleBtn.classList.add('active');
+  animSpeedRow.style.display = 'flex';
+  ensureAnimLoop();
+}
+
+function stopStripAnim() {
+  stripAnimActive = false;
+  stripAnimToggleBtn.classList.remove('active');
+  animSpeedRow.style.display = 'none';
+  render();
+}
+
+stripAnimToggleBtn.addEventListener('click', () => {
+  if (stripAnimActive) stopStripAnim();
+  else startStripAnim();
+});
+
+animSpeedSlider.addEventListener('input', () => {
+  const fps = parseFloat(animSpeedSlider.value);
+  stripAnimInterval = 1 / fps;
+  animSpeedVal.textContent = fps.toFixed(0) + ' fps';
+});
+
+// ========== UNIFIED ANIMATION LOOP ==========
+// One single rAF loop handles: Three.js, strobe, strip animation, and 2D render.
+let masterAnimId = null;
+let needsRender = false;
+// Per-frame composite cache
+let frameCompositeData = null;
+let frameCompositeW = 0;
+let frameCompositeH = 0;
+
+function scheduleRender() { needsRender = true; ensureAnimLoop(); }
+
+function ensureAnimLoop() {
+  if (masterAnimId) return;
+  masterAnimId = requestAnimationFrame(masterLoop);
+}
+
+function masterLoop(ts) {
+  masterAnimId = null;
+  const anyAnimating = scene3dEnabled || strobeActive || stripAnimActive;
+
+  // --- Three.js ---
+  if (scene3dEnabled && threeRenderer) {
+    if (orbitControls && orbitControls.enabled) orbitControls.update();
+    threeScene.traverse(obj => { if (obj.isMesh) obj.rotation.y += 0.003; });
+    threeRenderer.render(threeScene, threeCamera);
+    needsRender = true;
+  }
+
+  // --- Strobe ---
+  if (strobeActive) {
+    if (ts - strobeLastFlip >= strobeCurrentInterval) {
+      strobeVisible = !strobeVisible;
+      strobeLastFlip = ts;
+      strobeCurrentInterval = pickStrobeInterval();
+      strobeIndicator.classList.toggle('on', strobeVisible);
+      needsRender = true;
+    }
+  }
+
+  // --- Build per-frame composite cache (once) ---
+  frameCompositeData = null;
+  const hasLine = lineP0 && (lineP1 || linePreview);
+  if (scene3dEnabled && hasLine && img) {
+    const cd = getCompositeData();
+    frameCompositeData = cd;
+    frameCompositeW = compositeCanvas.width;
+    frameCompositeH = compositeCanvas.height;
+  }
+
+  // --- Strip animation row capture ---
+  if (stripAnimActive && hasLine && img) {
+    const dt = (ts - stripAnimLastTs) / 1000;
+    stripAnimLastTs = ts;
+    stripAnimAccum += dt;
+    const endPt = lineP1 || linePreview;
+    if (stripAnimAccum >= stripAnimInterval) {
+      stripAnimAccum -= stripAnimInterval;
+      if (stripAnimAccum > stripAnimInterval) stripAnimAccum = 0; // prevent spiral
+      const row = sampleLineRow(lineP0, endPt);
+      if (row) {
+        stripAnimHistory.unshift(row);
+        if (stripAnimHistory.length > STRIP_HISTORY_LEN) stripAnimHistory.length = STRIP_HISTORY_LEN;
+      }
+    }
+    needsRender = true;
+  }
+
+  // --- 2D render ---
+  if (needsRender && img) {
+    render();
+    needsRender = false;
+  }
+
+  // Keep loop alive if anything is animating
+  if (anyAnimating) {
+    masterAnimId = requestAnimationFrame(masterLoop);
+  }
+}
+
+// --- Tool switching ---
+const toolButtons = { pan: panBtn, move: moveBtn, rotate: rotateBtn, orbit: orbitBtn, line: lineBtn };
+const toolCursors = { pan: 'grab', move: 'move', rotate: 'crosshair', orbit: 'grab', line: 'crosshair' };
+const shortcutRows = {
+  pan: document.getElementById('sc-pan'),
+  move: document.getElementById('sc-move'),
+  rotate: document.getElementById('sc-rotate'),
+  orbit: document.getElementById('sc-orbit'),
+  line: document.getElementById('sc-line'),
+};
+
+function setTool(t) {
+  // Leaving line mode
+  if (tool === 'line' && t !== 'line') {
+    linePreview = null;
+  }
+  // Leaving orbit mode — restore pointer events
+  if (tool === 'orbit' && t !== 'orbit') {
+    canvas.style.pointerEvents = 'auto';
+    threeCanvas.style.pointerEvents = 'none';
+    if (orbitControls) orbitControls.enabled = false;
+  }
+  tool = t;
+  for (const [k, btn] of Object.entries(toolButtons)) {
+    btn.classList.toggle('active', k === t);
+  }
+  container.className = '';
+  container.classList.add('tool-' + t);
+  container.style.cursor = toolCursors[t];
+  for (const [k, row] of Object.entries(shortcutRows)) {
+    row.classList.toggle('active-tool', k === t);
+  }
+  if (t === 'line') {
+    lineP0 = null;
+    lineP1 = null;
+    linePreview = null;
+  }
+  // Entering orbit mode — pass pointer events to Three.js canvas
+  if (t === 'orbit') {
+    if (scene3dEnabled && orbitControls) {
+      orbitControls.enabled = true;
+      canvas.style.pointerEvents = 'none';
+      threeCanvas.style.pointerEvents = 'auto';
+    }
+    ensureAnimLoop();
+  }
+  render();
+}
+
+panBtn.addEventListener('click', () => setTool('pan'));
+moveBtn.addEventListener('click', () => setTool('move'));
+rotateBtn.addEventListener('click', () => setTool('rotate'));
+orbitBtn.addEventListener('click', () => setTool('orbit'));
+lineBtn.addEventListener('click', () => setTool('line'));
+clearLineBtn.addEventListener('click', () => {
+  lineP0 = null;
+  lineP1 = null;
+  linePreview = null;
+  render();
+});
+
+// --- Zoom ---
+function maxZoom() {
+  const shortest = Math.min(container.clientWidth, container.clientHeight);
+  return shortest / 10;
+}
+function minZoom() {
+  if (!img) return 0.1;
+  const fw = container.clientWidth / imgW;
+  const fh = container.clientHeight / imgH;
+  return Math.min(fw, fh) * 0.5;
+}
+
+// --- Coordinate transforms (account for rotation around image center) ---
+function imgCenter() {
+  return {
+    sx: panX + imgW * zoom / 2,
+    sy: panY + imgH * zoom / 2
+  };
+}
+
+function imageToScreen(ix, iy) {
+  const c = imgCenter();
+  const sx = panX + ix * zoom;
+  const sy = panY + iy * zoom;
+  const dx = sx - c.sx;
+  const dy = sy - c.sy;
+  const cos_r = Math.cos(imgRotation);
+  const sin_r = Math.sin(imgRotation);
+  return {
+    x: c.sx + dx * cos_r - dy * sin_r,
+    y: c.sy + dx * sin_r + dy * cos_r
+  };
+}
+
+function screenToImage(sx, sy) {
+  const c = imgCenter();
+  const dx = sx - c.sx;
+  const dy = sy - c.sy;
+  const cos_r = Math.cos(-imgRotation);
+  const sin_r = Math.sin(-imgRotation);
+  const ux = dx * cos_r - dy * sin_r;
+  const uy = dx * sin_r + dy * cos_r;
+  return {
+    x: (c.sx + ux - panX) / zoom,
+    y: (c.sy + uy - panY) / zoom
+  };
+}
+
+// --- File loading ---
+fileInput.addEventListener('change', e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    const image = new Image();
+    image.onload = () => {
+      img = image;
+      imgW = image.width;
+      imgH = image.height;
+
+      const tmp = document.createElement('canvas');
+      tmp.width = imgW;
+      tmp.height = imgH;
+      const tctx = tmp.getContext('2d');
+      tctx.drawImage(img, 0, 0);
+      imageData = tctx.getImageData(0, 0, imgW, imgH).data;
+
+      lineP0 = null;
+      lineP1 = null;
+      linePreview = null;
+      imgRotation = 0;
+
+      const fw = container.clientWidth / imgW;
+      const fh = container.clientHeight / imgH;
+      zoom = Math.min(fw, fh) * 0.9;
+      panX = (container.clientWidth - imgW * zoom) / 2;
+      panY = (container.clientHeight - imgH * zoom) / 2;
+
+      render();
+    };
+    image.src = ev.target.result;
+  };
+  reader.readAsDataURL(file);
+});
+
+// --- Rendering ---
+let lastCanvasW = 0, lastCanvasH = 0;
+
+function render() {
+  if (!img) return;
+
+  const cw = container.clientWidth;
+  const ch = container.clientHeight;
+  // Only reallocate canvas when size actually changes
+  if (cw !== lastCanvasW || ch !== lastCanvasH) {
+    canvas.width = cw;
+    canvas.height = ch;
+    lastCanvasW = cw;
+    lastCanvasH = ch;
+  }
+
+  ctx.clearRect(0, 0, cw, ch);
+
+  // Background: transparent when 3D scene is behind, otherwise solid
+  if (!scene3dEnabled) {
+    ctx.fillStyle = '#1a1a1a';
+    ctx.fillRect(0, 0, cw, ch);
+  }
+
+  // Apply rotation transform for image-space drawing
+  const c = imgCenter();
+  ctx.save();
+  ctx.translate(c.sx, c.sy);
+  ctx.rotate(imgRotation);
+  ctx.translate(-c.sx, -c.sy);
+
+  // Apply photo opacity
+  ctx.globalAlpha = photoOpacity;
+
+  drawCheckerboard(cw, ch);
+
+  ctx.imageSmoothingEnabled = false;
+  ctx.drawImage(img, panX, panY, imgW * zoom, imgH * zoom);
+
+  ctx.globalAlpha = 1.0;
+
+  if (zoom >= 24) {
+    drawGrid(cw, ch);
+    drawRGBLabels(cw, ch);
+  } else if (zoom >= 12) {
+    drawGrid(cw, ch);
+  }
+
+  ctx.restore();
+  // Everything below draws in screen space using imageToScreen
+
+  // Draw line + graph overlay
+  const endPt = lineP1 || linePreview;
+  if (lineP0 && endPt) {
+    drawLineOverlay(lineP0, endPt);
+    drawChannelGraph(lineP0, endPt);
+  } else if (lineP0 && !endPt) {
+    const s = imageToScreen(lineP0.x, lineP0.y);
+    ctx.beginPath();
+    ctx.arc(s.x, s.y, 5, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(255,255,0,0.8)';
+    ctx.fill();
+    ctx.strokeStyle = '#000';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+  }
+
+  // Draw gizmos
+  if (tool === 'move') drawMoveGizmo();
+  if (tool === 'rotate') drawRotateGizmo();
+
+  // Status bar
+  const deg = (imgRotation * 180 / Math.PI) % 360;
+  zoomInfo.textContent = `${imgW}\u00d7${imgH} | Zoom: ${zoom.toFixed(1)}x | Rot: ${deg.toFixed(1)}\u00b0`;
+}
+
+// --- Move gizmo: two adjustable arrows from image center ---
+function drawGizmoArrow(cx, cy, end, color, highlightColor, active, label) {
+  const ex = cx + end.x;
+  const ey = cy + end.y;
+  const len = Math.sqrt(end.x * end.x + end.y * end.y);
+  if (len < 1) return;
+  const dx = end.x / len;
+  const dy = end.y / len;
+  const headLen = 12;
+  const headW = 6;
+
+  // Shaft
+  ctx.beginPath();
+  ctx.moveTo(cx, cy);
+  ctx.lineTo(ex, ey);
+  ctx.strokeStyle = active ? highlightColor : color;
+  ctx.lineWidth = active ? 3.5 : 2.5;
+  ctx.stroke();
+
+  // Arrowhead
+  const perpX = -dy;
+  const perpY = dx;
+  ctx.beginPath();
+  ctx.moveTo(ex, ey);
+  ctx.lineTo(ex - dx * headLen + perpX * headW, ey - dy * headLen + perpY * headW);
+  ctx.lineTo(ex - dx * headLen - perpX * headW, ey - dy * headLen - perpY * headW);
+  ctx.closePath();
+  ctx.fillStyle = active ? highlightColor : color;
+  ctx.fill();
+
+  // Draggable handle circle at endpoint
+  ctx.beginPath();
+  ctx.arc(ex, ey, GIZMO_HANDLE_R, 0, Math.PI * 2);
+  ctx.fillStyle = active ? highlightColor : color;
+  ctx.fill();
+  ctx.strokeStyle = '#000';
+  ctx.lineWidth = 1.5;
+  ctx.stroke();
+
+  // Label
+  ctx.font = 'bold 11px monospace';
+  ctx.fillStyle = color;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(label, ex + dx * 14, ey + dy * 14);
+}
+
+function drawMoveGizmo() {
+  const c = imgCenter();
+  const cx = c.sx;
+  const cy = c.sy;
+
+  drawGizmoArrow(cx, cy, gizmoXEnd, '#ff4444', '#ff8888',
+    gizmoDragAxis === 'x' || gizmoDragHandle === 'x', 'X');
+  drawGizmoArrow(cx, cy, gizmoYEnd, '#44ff44', '#88ff88',
+    gizmoDragAxis === 'y' || gizmoDragHandle === 'y', 'Y');
+
+  // Center dot
+  ctx.beginPath();
+  ctx.arc(cx, cy, 5, 0, Math.PI * 2);
+  ctx.fillStyle = '#ffffff';
+  ctx.fill();
+  ctx.strokeStyle = '#000';
+  ctx.lineWidth = 1.5;
+  ctx.stroke();
+}
+
+// --- Rotate gizmo: ring around image center ---
+function drawRotateGizmo() {
+  const c = imgCenter();
+  const cx = c.sx;
+  const cy = c.sy;
+  const r = ROTATE_RING_R;
+
+  // Ring
+  ctx.beginPath();
+  ctx.arc(cx, cy, r, 0, Math.PI * 2);
+  ctx.strokeStyle = 'rgba(255,180,0,0.6)';
+  ctx.lineWidth = 3;
+  ctx.stroke();
+
+  // Handle at current rotation angle
+  const hx = cx + Math.cos(imgRotation) * r;
+  const hy = cy + Math.sin(imgRotation) * r;
+  ctx.beginPath();
+  ctx.arc(hx, hy, 7, 0, Math.PI * 2);
+  ctx.fillStyle = '#ffaa00';
+  ctx.fill();
+  ctx.strokeStyle = '#000';
+  ctx.lineWidth = 1.5;
+  ctx.stroke();
+
+  // Angle readout
+  const deg = ((imgRotation * 180 / Math.PI) % 360 + 360) % 360;
+  ctx.font = 'bold 12px monospace';
+  ctx.fillStyle = '#ffaa00';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(deg.toFixed(1) + '\u00b0', cx, cy);
+
+  // Center dot
+  ctx.beginPath();
+  ctx.arc(cx, cy, 3, 0, Math.PI * 2);
+  ctx.fillStyle = '#fff';
+  ctx.fill();
+}
+
+// --- Checkerboard, grid, labels (drawn in rotated canvas space) ---
+function drawCheckerboard(cw, ch) {
+  const checkSize = 8;
+  const x0 = Math.max(0, Math.floor(panX));
+  const y0 = Math.max(0, Math.floor(panY));
+  const x1 = Math.min(cw * 2, Math.ceil(panX + imgW * zoom));
+  const y1 = Math.min(ch * 2, Math.ceil(panY + imgH * zoom));
+
+  for (let y = y0; y < y1; y += checkSize) {
+    for (let x = x0; x < x1; x += checkSize) {
+      const cx = Math.floor(x / checkSize);
+      const cy = Math.floor(y / checkSize);
+      ctx.fillStyle = (cx + cy) % 2 === 0 ? '#333' : '#2a2a2a';
+      ctx.fillRect(x, y, checkSize, checkSize);
+    }
+  }
+}
+
+function drawGrid(cw, ch) {
+  const startCol = Math.max(0, Math.floor(-panX / zoom));
+  const endCol = Math.min(imgW, Math.ceil((cw - panX) / zoom));
+  const startRow = Math.max(0, Math.floor(-panY / zoom));
+  const endRow = Math.min(imgH, Math.ceil((ch - panY) / zoom));
+
+  ctx.strokeStyle = 'rgba(255,255,255,0.2)';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  for (let c = startCol; c <= endCol; c++) {
+    const x = Math.round(panX + c * zoom) + 0.5;
+    ctx.moveTo(x, panY + startRow * zoom);
+    ctx.lineTo(x, panY + endRow * zoom);
+  }
+  for (let r = startRow; r <= endRow; r++) {
+    const y = Math.round(panY + r * zoom) + 0.5;
+    ctx.moveTo(panX + startCol * zoom, y);
+    ctx.lineTo(panX + endCol * zoom, y);
+  }
+  ctx.stroke();
+}
+
+function drawRGBLabels(cw, ch) {
+  const startCol = Math.max(0, Math.floor(-panX / zoom));
+  const endCol = Math.min(imgW, Math.ceil((cw - panX) / zoom));
+  const startRow = Math.max(0, Math.floor(-panY / zoom));
+  const endRow = Math.min(imgH, Math.ceil((ch - panY) / zoom));
+
+  const cellW = zoom;
+  const cellH = zoom;
+  const fontSize = Math.max(6, Math.min(cellH / 4, cellW / 4));
+  ctx.font = `bold ${fontSize}px monospace`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  const lineH = cellH / 4;
+
+  for (let r = startRow; r < endRow; r++) {
+    for (let c = startCol; c < endCol; c++) {
+      const idx = (r * imgW + c) * 4;
+      const red = imageData[idx];
+      const green = imageData[idx + 1];
+      const blue = imageData[idx + 2];
+      const cx = panX + c * zoom + cellW / 2;
+      const cy = panY + r * zoom;
+      const lum = 0.299 * red + 0.587 * green + 0.114 * blue;
+      const shadow = lum > 128 ? 'rgba(0,0,0,0.7)' : 'rgba(255,255,255,0.7)';
+      drawChannelText(cx, cy + lineH * 1, red, '#ff6666', shadow);
+      drawChannelText(cx, cy + lineH * 2, green, '#66ff66', shadow);
+      drawChannelText(cx, cy + lineH * 3, blue, '#6688ff', shadow);
+    }
+  }
+}
+
+function drawChannelText(x, y, value, color, shadowColor) {
+  ctx.fillStyle = shadowColor;
+  ctx.fillText(value, x + 1, y + 1);
+  ctx.fillStyle = color;
+  ctx.fillText(value, x, y);
+}
+
+// --- Line overlay ---
+function drawLineOverlay(p0, p1) {
+  const s0 = imageToScreen(p0.x, p0.y);
+  const s1 = imageToScreen(p1.x, p1.y);
+  ctx.beginPath();
+  ctx.moveTo(s0.x, s0.y);
+  ctx.lineTo(s1.x, s1.y);
+  ctx.strokeStyle = 'rgba(255,255,0,0.7)';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  const nodes = [
+    { s: s0, id: 'p0' },
+    { s: s1, id: 'p1' }
+  ];
+  for (const n of nodes) {
+    const active = lineDragNode === n.id || lineHoverNode === n.id;
+    const r = active ? 7 : 5;
+    ctx.beginPath();
+    ctx.arc(n.s.x, n.s.y, r, 0, Math.PI * 2);
+    ctx.fillStyle = active ? 'rgba(255,255,100,1)' : 'rgba(255,255,0,0.8)';
+    ctx.fill();
+    ctx.strokeStyle = active ? '#fff' : '#000';
+    ctx.lineWidth = active ? 2 : 1.5;
+    ctx.stroke();
+  }
+}
+
+// Hit test line endpoints. Returns 'p0', 'p1', or null.
+function hitTestLineNodes(mx, my) {
+  if (!lineP0 || !lineP1) return null;
+  const s0 = imageToScreen(lineP0.x, lineP0.y);
+  const s1 = imageToScreen(lineP1.x, lineP1.y);
+  // Test p1 first so it wins if they overlap
+  if (Math.hypot(mx - s1.x, my - s1.y) <= LINE_NODE_HIT_R) return 'p1';
+  if (Math.hypot(mx - s0.x, my - s0.y) <= LINE_NODE_HIT_R) return 'p0';
+  return null;
+}
+
+let lineHoverNode = null; // 'p0' or 'p1' for hover highlight
+
+// --- HSV ---
+function rgbToHsv(r, g, b) {
+  r /= 255; g /= 255; b /= 255;
+  const max = Math.max(r, g, b);
+  const min = Math.min(r, g, b);
+  const d = max - min;
+  let h = 0;
+  if (d !== 0) {
+    if (max === r) h = ((g - b) / d) % 6;
+    else if (max === g) h = (b - r) / d + 2;
+    else h = (r - g) / d + 4;
+    h *= 60;
+    if (h < 0) h += 360;
+  }
+  const s = max === 0 ? 0 : (d / max) * 100;
+  const v = max * 100;
+  return { h, s, v };
+}
+
+// Offscreen canvas for compositing both layers
+let compositeCanvas = null;
+let compositeCtx = null;
+
+// Build a composite image of Three.js + 2D photo layers, return its pixel data
+function getCompositeData() {
+  const cw = container.clientWidth;
+  const ch = container.clientHeight;
+  if (!compositeCanvas) {
+    compositeCanvas = document.createElement('canvas');
+    compositeCtx = compositeCanvas.getContext('2d', { willReadFrequently: true });
+  }
+  if (compositeCanvas.width !== cw || compositeCanvas.height !== ch) {
+    compositeCanvas.width = cw;
+    compositeCanvas.height = ch;
+  }
+
+  compositeCtx.clearRect(0, 0, cw, ch);
+
+  // Draw Three.js layer first (background)
+  if (scene3dEnabled && threeCanvas.width > 0) {
+    compositeCtx.drawImage(threeCanvas, 0, 0, cw, ch);
+  } else {
+    compositeCtx.fillStyle = '#1a1a1a';
+    compositeCtx.fillRect(0, 0, cw, ch);
+  }
+
+  // Draw the photo on top with rotation and opacity
+  compositeCtx.save();
+  const c = imgCenter();
+  compositeCtx.translate(c.sx, c.sy);
+  compositeCtx.rotate(imgRotation);
+  compositeCtx.translate(-c.sx, -c.sy);
+  compositeCtx.globalAlpha = photoOpacity;
+  compositeCtx.imageSmoothingEnabled = false;
+  compositeCtx.drawImage(img, panX, panY, imgW * zoom, imgH * zoom);
+  compositeCtx.restore();
+
+  return compositeCtx.getImageData(0, 0, cw, ch).data;
+}
+
+function sampleLine(p0, p1) {
+  const g = getLineScreenGeometry(p0, p1);
+  const steps = Math.max(1, Math.round(g.dist));
+  const samples = [];
+
+  // When 3D is enabled, sample the composited output in screen space
+  if (scene3dEnabled) {
+    // Use per-frame cached composite if available, else build one
+    const compositeData = frameCompositeData || getCompositeData();
+    const cw = frameCompositeData ? frameCompositeW : container.clientWidth;
+    const ch = frameCompositeData ? frameCompositeH : container.clientHeight;
+
+    for (let i = 0; i <= steps; i++) {
+      const t = steps === 0 ? 0 : i / steps;
+      const sx = Math.floor(g.s0.x + g.dx * t);
+      const sy = Math.floor(g.s0.y + g.dy * t);
+      // Clamp to canvas bounds
+      const cx = Math.max(0, Math.min(cw - 1, sx));
+      const cy = Math.max(0, Math.min(ch - 1, sy));
+      const idx = (cy * cw + cx) * 4;
+      const r = compositeData[idx];
+      const gb = compositeData[idx + 1];
+      const b = compositeData[idx + 2];
+      const hsv = rgbToHsv(r, gb, b);
+      samples.push({ t, ix: cx, iy: cy, r, g: gb, b, h: hsv.h, s: hsv.s, v: hsv.v });
+    }
+    return samples;
+  }
+
+  // No 3D: sample directly from photo pixel data, or background if outside image
+  const dx = p1.x - p0.x;
+  const dy = p1.y - p0.y;
+  for (let i = 0; i <= steps; i++) {
+    const t = steps === 0 ? 0 : i / steps;
+    const ix = p0.x + dx * t;
+    const iy = p0.y + dy * t;
+    let r, gb, b;
+    if (ix >= 0 && ix < imgW && iy >= 0 && iy < imgH) {
+      const px = Math.floor(ix);
+      const py = Math.floor(iy);
+      const idx = (py * imgW + px) * 4;
+      r = imageData[idx];
+      gb = imageData[idx + 1];
+      b = imageData[idx + 2];
+    } else {
+      // Background color (#1a1a1a)
+      r = 26; gb = 26; b = 26;
+    }
+    const hsv = rgbToHsv(r, gb, b);
+    samples.push({ t, ix, iy, r, g: gb, b, h: hsv.h, s: hsv.s, v: hsv.v });
+  }
+  return samples;
+}
+
+function getActiveChannels() {
+  const all = [
+    { key: 'r', max: 255, color: '#ff4444', label: 'R', cb: chR },
+    { key: 'g', max: 255, color: '#44ff44', label: 'G', cb: chG },
+    { key: 'b', max: 255, color: '#4488ff', label: 'B', cb: chB },
+    { key: 'h', max: 360, color: '#ffaa00', label: 'H', cb: chH },
+    { key: 's', max: 100, color: '#ff66ff', label: 'S', cb: chS },
+    { key: 'v', max: 100, color: '#cccccc', label: 'V', cb: chV },
+  ];
+  return all.filter(c => c.cb.checked);
+}
+
+// Line geometry uses screen-space positions via imageToScreen
+function getLineScreenGeometry(p0, p1) {
+  const s0 = imageToScreen(p0.x, p0.y);
+  const s1 = imageToScreen(p1.x, p1.y);
+  const dx = s1.x - s0.x;
+  const dy = s1.y - s0.y;
+  const dist = Math.sqrt(dx * dx + dy * dy);
+  const dirX = dx / dist;
+  const dirY = dy / dist;
+  let normX = -dirY;
+  let normY = dirX;
+  if (normY > 0) { normX = -normX; normY = -normY; }
+  return { s0, s1, dx, dy, dist, dirX, dirY, normX, normY };
+}
+
+function drawColorStrip(p0, p1, cachedSamples) {
+  // Skip drawing during strobe off-phase
+  if (strobeActive && !strobeVisible) return;
+
+  const g = getLineScreenGeometry(p0, p1);
+  if (g.dist < 1) return;
+
+  const stripNX = -g.normX;
+  const stripNY = -g.normY;
+
+  if (stripAnimActive && stripAnimHistory.length > 0) {
+    // --- Kymograph / waterfall mode ---
+    // Each row is a full line sample from one moment in time.
+    // Row 0 (newest) is drawn nearest the line; older rows scroll outward.
+    // A moving object crossing the line traces a diagonal trail.
+    //
+    // Render via an offscreen canvas: X = position along line, Y = time (row index).
+    // Then transform it into the strip's screen-space parallelogram.
+    const numRows = stripAnimHistory.length;
+    const count = stripAnimHistory[0].length;
+
+    // Build the kymograph image
+    if (!drawColorStrip._kymoCanvas) {
+      drawColorStrip._kymoCanvas = document.createElement('canvas');
+      drawColorStrip._kymoCtx = drawColorStrip._kymoCanvas.getContext('2d');
+    }
+    const kc = drawColorStrip._kymoCanvas;
+    const kctx = drawColorStrip._kymoCtx;
+    kc.width = count;
+    kc.height = numRows;
+    const kImg = kctx.createImageData(count, numRows);
+    const kd = kImg.data;
+
+    for (let ri = 0; ri < numRows; ri++) {
+      const row = stripAnimHistory[ri];
+      const rowOff = ri * count * 4;
+      for (let ci = 0; ci < count; ci++) {
+        const c = row[ci];
+        const off = rowOff + ci * 4;
+        kd[off]     = c.r;
+        kd[off + 1] = c.g;
+        kd[off + 2] = c.b;
+        kd[off + 3] = 255;
+      }
+    }
+    kctx.putImageData(kImg, 0, 0);
+
+    // Map the kymograph image into the strip parallelogram using setTransform.
+    // The strip goes from (s0) to (s1) along the line (X axis of image),
+    // and from the line edge outward by GRAPH_HEIGHT in the strip normal direction (Y axis).
+    ctx.save();
+    // Transform: image (0,0)->(count,0) maps to s0->s1 along line,
+    //            image (0,0)->(0,numRows) maps to s0 -> s0 + stripN * GRAPH_HEIGHT
+    const ax = g.dx / count;           // x-basis per image pixel (along line)
+    const ay = g.dy / count;
+    const bx = (stripNX * GRAPH_HEIGHT) / numRows;  // y-basis per image pixel (perpendicular)
+    const by = (stripNY * GRAPH_HEIGHT) / numRows;
+    ctx.setTransform(ax, ay, bx, by, g.s0.x, g.s0.y);
+    ctx.imageSmoothingEnabled = false;
+    ctx.drawImage(kc, 0, 0);
+    ctx.restore();
+  } else {
+    // --- Normal mode: spatial gradient ---
+    const samples = cachedSamples || sampleLine(p0, p1);
+    if (samples.length < 2) return;
+
+    for (let i = 0; i < samples.length - 1; i++) {
+      const sa = samples[i];
+      const sb = samples[i + 1];
+      const ax = g.s0.x + g.dx * sa.t;
+      const ay = g.s0.y + g.dy * sa.t;
+      const bx = g.s0.x + g.dx * sb.t;
+      const by = g.s0.y + g.dy * sb.t;
+
+      const grad = ctx.createLinearGradient(ax, ay, bx, by);
+      grad.addColorStop(0, `rgb(${sa.r},${sa.g},${sa.b})`);
+      grad.addColorStop(1, `rgb(${sb.r},${sb.g},${sb.b})`);
+
+      ctx.beginPath();
+      ctx.moveTo(ax, ay);
+      ctx.lineTo(bx, by);
+      ctx.lineTo(bx + stripNX * GRAPH_HEIGHT, by + stripNY * GRAPH_HEIGHT);
+      ctx.lineTo(ax + stripNX * GRAPH_HEIGHT, ay + stripNY * GRAPH_HEIGHT);
+      ctx.closePath();
+      ctx.fillStyle = grad;
+      ctx.fill();
+    }
+  }
+
+  // Border
+  ctx.beginPath();
+  ctx.moveTo(g.s0.x, g.s0.y);
+  ctx.lineTo(g.s1.x, g.s1.y);
+  ctx.lineTo(g.s1.x + stripNX * GRAPH_HEIGHT, g.s1.y + stripNY * GRAPH_HEIGHT);
+  ctx.lineTo(g.s0.x + stripNX * GRAPH_HEIGHT, g.s0.y + stripNY * GRAPH_HEIGHT);
+  ctx.closePath();
+  ctx.strokeStyle = 'rgba(255,255,255,0.3)';
+  ctx.lineWidth = 1;
+  ctx.stroke();
+}
+
+function drawChannelGraph(p0, p1) {
+  const active = getActiveChannels();
+  const samples = sampleLine(p0, p1);
+  if (samples.length < 2) return;
+  const g = getLineScreenGeometry(p0, p1);
+  if (g.dist < 1) return;
+
+  drawColorStrip(p0, p1, samples);
+  if (active.length === 0) return;
+
+  // Semi-transparent background
+  ctx.save();
+  ctx.globalAlpha = 0.35;
+  ctx.fillStyle = '#000';
+  ctx.beginPath();
+  ctx.moveTo(g.s0.x, g.s0.y);
+  ctx.lineTo(g.s1.x, g.s1.y);
+  ctx.lineTo(g.s1.x + g.normX * GRAPH_HEIGHT, g.s1.y + g.normY * GRAPH_HEIGHT);
+  ctx.lineTo(g.s0.x + g.normX * GRAPH_HEIGHT, g.s0.y + g.normY * GRAPH_HEIGHT);
+  ctx.closePath();
+  ctx.fill();
+  ctx.restore();
+
+  // Baseline
+  ctx.beginPath();
+  ctx.moveTo(g.s0.x, g.s0.y);
+  ctx.lineTo(g.s1.x, g.s1.y);
+  ctx.strokeStyle = 'rgba(255,255,255,0.4)';
+  ctx.lineWidth = 1;
+  ctx.stroke();
+
+  // Tick marks
+  for (const frac of [0, 0.5, 1.0]) {
+    const ox = g.normX * GRAPH_HEIGHT * frac;
+    const oy = g.normY * GRAPH_HEIGHT * frac;
+    ctx.beginPath();
+    ctx.moveTo(g.s0.x + ox, g.s0.y + oy);
+    ctx.lineTo(g.s1.x + ox, g.s1.y + oy);
+    ctx.strokeStyle = 'rgba(255,255,255,0.15)';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([4, 4]);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    ctx.font = '10px monospace';
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'middle';
+    const lbx = g.s0.x + ox - g.dirX * 4 - 4;
+    const lby = g.s0.y + oy - g.dirY * 4;
+    for (let ci = 0; ci < active.length; ci++) {
+      const ch = active[ci];
+      ctx.fillStyle = ch.color;
+      const offy = (ci - (active.length - 1) / 2) * 11;
+      ctx.fillText(Math.round(frac * ch.max).toString(), lbx, lby + offy);
+    }
+  }
+
+  // Channel curves
+  for (const ch of active) {
+    ctx.beginPath();
+    for (let i = 0; i < samples.length; i++) {
+      const s = samples[i];
+      const norm = s[ch.key] / ch.max;
+      const px = g.s0.x + g.dx * s.t + g.normX * GRAPH_HEIGHT * norm;
+      const py = g.s0.y + g.dy * s.t + g.normY * GRAPH_HEIGHT * norm;
+      if (i === 0) ctx.moveTo(px, py);
+      else ctx.lineTo(px, py);
+    }
+    ctx.strokeStyle = ch.color;
+    ctx.lineWidth = 2.5;
+    ctx.lineJoin = 'round';
+    ctx.stroke();
+  }
+
+  // Legend
+  const legendX = g.s0.x + g.normX * (GRAPH_HEIGHT + 16);
+  const legendY = g.s0.y + g.normY * (GRAPH_HEIGHT + 16);
+  ctx.font = 'bold 12px monospace';
+  ctx.textAlign = 'left';
+  ctx.textBaseline = 'middle';
+  for (let i = 0; i < active.length; i++) {
+    const lx = legendX + i * 24;
+    ctx.fillStyle = 'rgba(0,0,0,0.6)';
+    ctx.fillRect(lx - 2, legendY - 8, 18, 16);
+    ctx.fillStyle = active[i].color;
+    ctx.fillText(active[i].label, lx, legendY);
+  }
+}
+
+// --- Gizmo hit testing ---
+// Returns { type: 'handle'|'shaft', axis: 'x'|'y' } or null
+function hitTestMoveGizmo(mx, my) {
+  const c = imgCenter();
+  const cx = c.sx, cy = c.sy;
+
+  // Check handle circles first (arrowhead endpoints) - highest priority
+  const xHandleDist = Math.hypot(mx - (cx + gizmoXEnd.x), my - (cy + gizmoXEnd.y));
+  if (xHandleDist <= GIZMO_HANDLE_R + 4) return { type: 'handle', axis: 'x' };
+
+  const yHandleDist = Math.hypot(mx - (cx + gizmoYEnd.x), my - (cy + gizmoYEnd.y));
+  if (yHandleDist <= GIZMO_HANDLE_R + 4) return { type: 'handle', axis: 'y' };
+
+  // Check shaft proximity (distance from point to line segment)
+  if (pointToSegmentDist(mx, my, cx, cy, cx + gizmoXEnd.x, cy + gizmoXEnd.y) <= GIZMO_SHAFT_HIT) {
+    return { type: 'shaft', axis: 'x' };
+  }
+  if (pointToSegmentDist(mx, my, cx, cy, cx + gizmoYEnd.x, cy + gizmoYEnd.y) <= GIZMO_SHAFT_HIT) {
+    return { type: 'shaft', axis: 'y' };
+  }
+  return null;
+}
+
+function pointToSegmentDist(px, py, ax, ay, bx, by) {
+  const dx = bx - ax, dy = by - ay;
+  const lenSq = dx * dx + dy * dy;
+  if (lenSq === 0) return Math.hypot(px - ax, py - ay);
+  let t = ((px - ax) * dx + (py - ay) * dy) / lenSq;
+  t = Math.max(0, Math.min(1, t));
+  return Math.hypot(px - (ax + t * dx), py - (ay + t * dy));
+}
+
+// --- Zoom (scroll wheel) ---
+container.addEventListener('wheel', e => {
+  if (!img) return;
+  e.preventDefault();
+  const rect = container.getBoundingClientRect();
+  const mx = e.clientX - rect.left;
+  const my = e.clientY - rect.top;
+  const factor = e.deltaY < 0 ? 1.15 : 1 / 1.15;
+  const newZoom = Math.max(minZoom(), Math.min(maxZoom(), zoom * factor));
+  // Zoom toward cursor: adjust panX/panY so the image-space point under cursor stays put
+  // We need to account for rotation: find image point under cursor, then after zoom change,
+  // adjust pan so that point maps back to same screen position.
+  const imgPt = screenToImage(mx, my);
+  // After changing zoom, we want imageToScreen(imgPt) == (mx, my)
+  // imageToScreen depends on panX, panY, zoom, imgRotation
+  // The center changes with zoom: c.sx = panX + imgW*zoom/2
+  // Let's solve: we set new zoom, then adjust panX/panY
+  const oldCx = panX + imgW * zoom / 2;
+  const oldCy = panY + imgH * zoom / 2;
+  // Point in unrotated screen space relative to old center:
+  const cos_r = Math.cos(-imgRotation);
+  const sin_r = Math.sin(-imgRotation);
+  const dxr = mx - oldCx;
+  const dyr = my - oldCy;
+  const ux = dxr * cos_r - dyr * sin_r;
+  const uy = dxr * sin_r + dyr * cos_r;
+  // In unrotated space: ux = panX + imgPt.x * zoom - (panX + imgW*zoom/2)
+  //                        = imgPt.x * zoom - imgW*zoom/2
+  // With new zoom:  ux_new = imgPt.x * newZoom - imgW*newZoom/2
+  // We want the rotated result to equal (mx, my):
+  // newCx + (ux_new * cos + ...) = mx  => need to adjust panX so newCx is right
+  // Actually simplest: just do the standard zoom-toward-cursor on panX/panY
+  // and it works because rotation is around the center which moves with pan.
+  panX = mx - (mx - panX) * (newZoom / zoom);
+  panY = my - (my - panY) * (newZoom / zoom);
+  zoom = newZoom;
+  render();
+}, { passive: false });
+
+// --- Mouse interaction ---
+container.addEventListener('mousedown', e => {
+  if (!img) return;
+  const rect = container.getBoundingClientRect();
+  const mx = e.clientX - rect.left;
+  const my = e.clientY - rect.top;
+
+  // Check for line node dragging (works in any tool mode)
+  const hitNode = hitTestLineNodes(mx, my);
+  if (hitNode) {
+    lineDragNode = hitNode;
+    dragging = true;
+    render();
+    return;
+  }
+
+  if (tool === 'line') {
+    const imgPt = screenToImage(mx, my);
+    if (!lineP0) {
+      lineP0 = imgPt;
+      lineP1 = null;
+      linePreview = null;
+      render();
+    } else if (!lineP1) {
+      lineP1 = imgPt;
+      linePreview = null;
+      setTool('pan');
+    }
+    return;
+  }
+
+  if (tool === 'move') {
+    const hit = hitTestMoveGizmo(mx, my);
+    dragging = true;
+    dragStartX = e.clientX;
+    dragStartY = e.clientY;
+    panStartX = panX;
+    panStartY = panY;
+
+    if (hit && hit.type === 'handle') {
+      // Dragging an arrowhead to reposition it
+      gizmoDragHandle = hit.axis;
+      gizmoDragAxis = null;
+    } else if (hit && hit.type === 'shaft') {
+      // Dragging along the arrow's custom axis
+      gizmoDragAxis = hit.axis;
+      gizmoDragHandle = null;
+    } else {
+      // Free move (no constraint)
+      gizmoDragAxis = null;
+      gizmoDragHandle = null;
+    }
+    container.classList.add('dragging');
+    render();
+    return;
+  }
+
+  if (tool === 'rotate') {
+    dragging = true;
+    const c = imgCenter();
+    rotStartAngle = Math.atan2(my - c.sy, mx - c.sx);
+    rotStartImg = imgRotation;
+    return;
+  }
+
+  // Pan mode (default)
+  dragging = true;
+  dragStartX = e.clientX;
+  dragStartY = e.clientY;
+  panStartX = panX;
+  panStartY = panY;
+  container.classList.add('dragging');
+});
+
+container.addEventListener('mousemove', e => {
+  if (!img) return;
+  const rect = container.getBoundingClientRect();
+  const mx = e.clientX - rect.left;
+  const my = e.clientY - rect.top;
+
+  // Line node dragging (active in any tool mode)
+  if (lineDragNode && dragging) {
+    const imgPt = screenToImage(mx, my);
+    if (lineDragNode === 'p0') lineP0 = imgPt;
+    else lineP1 = imgPt;
+    render();
+    return;
+  }
+
+  // Line node hover detection (any tool mode, when not dragging)
+  if (!dragging && lineP0 && lineP1) {
+    const hover = hitTestLineNodes(mx, my);
+    if (hover !== lineHoverNode) {
+      lineHoverNode = hover;
+      container.style.cursor = hover ? 'pointer' : toolCursors[tool];
+      render();
+    }
+  }
+
+  if (tool === 'line' && lineP0 && !lineP1) {
+    const imgPt = screenToImage(mx, my);
+    linePreview = imgPt;
+    render();
+    return;
+  }
+
+  if (tool === 'move' && dragging) {
+    const dmx = e.clientX - dragStartX;
+    const dmy = e.clientY - dragStartY;
+
+    if (gizmoDragHandle) {
+      // Repositioning arrowhead: update endpoint relative to image center
+      const c = imgCenter();
+      const newEnd = { x: mx - c.sx, y: my - c.sy };
+      if (gizmoDragHandle === 'x') gizmoXEnd = newEnd;
+      else gizmoYEnd = newEnd;
+      render();
+      return;
+    }
+
+    if (gizmoDragAxis) {
+      // Constrained translation along custom arrow direction
+      const dir = gizmoDragAxis === 'x' ? gizmoXEnd : gizmoYEnd;
+      const len = Math.sqrt(dir.x * dir.x + dir.y * dir.y);
+      if (len < 1) return;
+      const ux = dir.x / len;
+      const uy = dir.y / len;
+      // Project mouse delta onto arrow direction
+      const proj = dmx * ux + dmy * uy;
+      panX = panStartX + ux * proj;
+      panY = panStartY + uy * proj;
+      render();
+      return;
+    }
+
+    // Free move
+    panX = panStartX + dmx;
+    panY = panStartY + dmy;
+    render();
+    return;
+  }
+
+  if (tool === 'rotate' && dragging) {
+    const c = imgCenter();
+    const angle = Math.atan2(my - c.sy, mx - c.sx);
+    imgRotation = rotStartImg + (angle - rotStartAngle);
+    render();
+    return;
+  }
+
+  if (tool === 'move' && !dragging) {
+    // Update gizmo hover highlight
+    const hit = hitTestMoveGizmo(mx, my);
+    const newAxis = hit ? hit.axis : null;
+    const newHandle = (hit && hit.type === 'handle') ? hit.axis : null;
+    if (newAxis !== gizmoDragAxis || newHandle !== gizmoDragHandle) {
+      gizmoDragAxis = (hit && hit.type === 'shaft') ? hit.axis : null;
+      gizmoDragHandle = newHandle;
+      render();
+    }
+    return;
+  }
+
+  if (dragging && (tool === 'pan')) {
+    panX = panStartX + (e.clientX - dragStartX);
+    panY = panStartY + (e.clientY - dragStartY);
+    render();
+  }
+});
+
+window.addEventListener('mouseup', () => {
+  dragging = false;
+  gizmoDragHandle = null;
+  lineDragNode = null;
+  container.classList.remove('dragging');
+});
+
+// --- Resize ---
+window.addEventListener('resize', () => {
+  lastCanvasW = 0; lastCanvasH = 0; // force canvas realloc
+  if (scene3dEnabled) resizeThree();
+  if (img) render();
+});
+
+// --- Keyboard shortcuts ---
+window.addEventListener('keydown', e => {
+  // Don't trigger shortcuts when typing in inputs
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+
+  switch (e.key.toLowerCase()) {
+    case 'h':
+      setTool('pan');
+      break;
+    case 'v':
+      setTool('move');
+      break;
+    case 'r':
+      setTool('rotate');
+      break;
+    case 'o':
+      setTool('orbit');
+      break;
+    case 'l':
+      setTool('line');
+      break;
+    case 'escape':
+      if (tool === 'line') {
+        lineP0 = null;
+        lineP1 = null;
+        linePreview = null;
+      }
+      setTool('pan');
+      break;
+  }
+});
+
+// --- Three.js background scene ---
+const threeCanvas = document.getElementById('three-canvas');
+const scene3dToggle = document.getElementById('scene3dToggle');
+const photoOpacitySlider = document.getElementById('photoOpacity');
+const opacityValLabel = document.getElementById('opacityVal');
+
+let scene3dEnabled = false;
+let photoOpacity = 1.0;
+
+let threeRenderer, threeScene, threeCamera, orbitControls;
+let THREE_LIB = null; // will hold the THREE namespace after dynamic import
+
+async function initThree() {
+  // Dynamic import - works with importmap, no CORS issues
+  const [THREE, { OrbitControls }] = await Promise.all([
+    import('three'),
+    import('three/addons/controls/OrbitControls.js')
+  ]);
+  THREE_LIB = THREE;
+
+  threeRenderer = new THREE.WebGLRenderer({ canvas: threeCanvas, antialias: true, preserveDrawingBuffer: true });
+  threeRenderer.setPixelRatio(window.devicePixelRatio);
+  threeRenderer.setClearColor(0x111111);
+
+  threeScene = new THREE.Scene();
+
+  threeCamera = new THREE.PerspectiveCamera(60, 1, 0.1, 1000);
+  threeCamera.position.set(5, 4, 6);
+  threeCamera.lookAt(0, 0, 0);
+
+  orbitControls = new OrbitControls(threeCamera, threeCanvas);
+  orbitControls.enableDamping = true;
+  orbitControls.dampingFactor = 0.08;
+  orbitControls.enabled = false;
+
+  // Grid
+  const grid = new THREE.GridHelper(20, 20, 0x444444, 0x333333);
+  threeScene.add(grid);
+
+  // Axes
+  const axes = new THREE.AxesHelper(3);
+  threeScene.add(axes);
+
+  // Lights
+  const ambient = new THREE.AmbientLight(0x404040, 1.5);
+  threeScene.add(ambient);
+  const dirLight = new THREE.DirectionalLight(0xffffff, 1);
+  dirLight.position.set(5, 8, 4);
+  threeScene.add(dirLight);
+  const pointLight = new THREE.PointLight(0x4488ff, 1, 20);
+  pointLight.position.set(-3, 3, -3);
+  threeScene.add(pointLight);
+
+  // Objects
+  const boxGeo = new THREE.BoxGeometry(1, 1, 1);
+  const boxMat = new THREE.MeshStandardMaterial({ color: 0xff4444, roughness: 0.5, metalness: 0.3 });
+  const box = new THREE.Mesh(boxGeo, boxMat);
+  box.position.set(0, 0.5, 0);
+  threeScene.add(box);
+
+  const sphereGeo = new THREE.SphereGeometry(0.6, 32, 32);
+  const sphereMat = new THREE.MeshStandardMaterial({ color: 0x44ff44, roughness: 0.3, metalness: 0.5 });
+  const sphere = new THREE.Mesh(sphereGeo, sphereMat);
+  sphere.position.set(2, 0.6, -1);
+  threeScene.add(sphere);
+
+  const torusGeo = new THREE.TorusKnotGeometry(0.5, 0.15, 100, 16);
+  const torusMat = new THREE.MeshStandardMaterial({ color: 0x4488ff, roughness: 0.2, metalness: 0.6 });
+  const torus = new THREE.Mesh(torusGeo, torusMat);
+  torus.position.set(-2, 1, 1);
+  threeScene.add(torus);
+
+  const coneGeo = new THREE.ConeGeometry(0.5, 1.2, 6);
+  const coneMat = new THREE.MeshStandardMaterial({ color: 0xffaa00, roughness: 0.4, metalness: 0.2 });
+  const cone = new THREE.Mesh(coneGeo, coneMat);
+  cone.position.set(1, 0.6, 2);
+  threeScene.add(cone);
+
+  resizeThree();
+}
+
+function resizeThree() {
+  if (!threeRenderer) return;
+  const cw = container.clientWidth;
+  const ch = container.clientHeight;
+  threeRenderer.setSize(cw, ch);
+  threeCamera.aspect = cw / ch;
+  threeCamera.updateProjectionMatrix();
+}
+
+// Three.js rendering is handled by the master animation loop
+
+async function enableScene3d() {
+  scene3dEnabled = true;
+  scene3dToggle.classList.add('active');
+  scene3dToggle.textContent = 'Loading...';
+  threeCanvas.style.display = 'block';
+  if (!threeRenderer) await initThree();
+  scene3dToggle.textContent = '3D Scene';
+  resizeThree();
+  // If already in orbit tool, enable controls
+  if (tool === 'orbit' && orbitControls) {
+    orbitControls.enabled = true;
+    canvas.style.pointerEvents = 'none';
+    threeCanvas.style.pointerEvents = 'auto';
+  }
+  ensureAnimLoop();
+  render();
+}
+
+function disableScene3d() {
+  scene3dEnabled = false;
+  scene3dToggle.classList.remove('active');
+  threeCanvas.style.display = 'none';
+  if (orbitControls) orbitControls.enabled = false;
+  canvas.style.pointerEvents = 'auto';
+  threeCanvas.style.pointerEvents = 'none';
+  render();
+}
+
+scene3dToggle.addEventListener('click', () => {
+  if (scene3dEnabled) disableScene3d();
+  else enableScene3d();
+});
+
+photoOpacitySlider.addEventListener('input', () => {
+  photoOpacity = parseFloat(photoOpacitySlider.value);
+  opacityValLabel.textContent = Math.round(photoOpacity * 100) + '%';
+  render();
+});
+
+// Hide three canvas initially
+threeCanvas.style.display = 'none';
+threeCanvas.style.pointerEvents = 'none';
+
+// --- Initial state ---
+setTool('pan');
+canvas.width = container.clientWidth;
+canvas.height = container.clientHeight;
+ctx.fillStyle = '#1a1a1a';
+ctx.fillRect(0, 0, canvas.width, canvas.height);
+ctx.fillStyle = '#555';
+ctx.font = '16px system-ui';
+ctx.textAlign = 'center';
+ctx.fillText('Open an image to inspect pixels', canvas.width / 2, canvas.height / 2);
+</script>
+</body>
+</html>

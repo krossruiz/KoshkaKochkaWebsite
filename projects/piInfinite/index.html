@@ -1,0 +1,1520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>π ∞ — The Infinite Piano of Pi</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Source+Code+Pro:wght@300;400;600&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #0a0a12;
+    color: #e8e0d4;
+    font-family: 'Playfair Display', serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Starfield background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(1px 1px at 10% 20%, rgba(255,255,255,0.4), transparent),
+      radial-gradient(1px 1px at 30% 60%, rgba(255,255,255,0.3), transparent),
+      radial-gradient(1px 1px at 50% 10%, rgba(255,255,255,0.5), transparent),
+      radial-gradient(1px 1px at 70% 80%, rgba(255,255,255,0.2), transparent),
+      radial-gradient(1px 1px at 90% 40%, rgba(255,255,255,0.4), transparent),
+      radial-gradient(1px 1px at 15% 85%, rgba(255,255,255,0.3), transparent),
+      radial-gradient(1px 1px at 85% 15%, rgba(255,255,255,0.4), transparent),
+      radial-gradient(1.5px 1.5px at 25% 45%, rgba(200,180,255,0.5), transparent),
+      radial-gradient(1.5px 1.5px at 65% 35%, rgba(200,220,255,0.4), transparent);
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 40px 20px;
+    text-align: center;
+  }
+
+  h1 {
+    font-size: 3.5rem;
+    font-weight: 700;
+    margin-bottom: 0.2em;
+    background: linear-gradient(135deg, #c9b458, #f0e6c0, #c9b458);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: 0.05em;
+  }
+
+  .subtitle {
+    font-style: italic;
+    color: #8a8078;
+    font-size: 1.5rem;
+    margin-bottom: 2em;
+  }
+
+  /* Piano visual */
+  .piano-container {
+    position: relative;
+    background: linear-gradient(180deg, #1a1a2e 0%, #0f0f1a 100%);
+    border-radius: 16px;
+    padding: 30px 20px 20px;
+    margin-bottom: 30px;
+    border: 1px solid #2a2a3e;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    overflow: hidden;
+  }
+
+  .piano-container::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #c9b458, #f0e6c0, #c9b458);
+  }
+
+  /* Pi digit display */
+  .pi-display {
+    font-family: 'Source Code Pro', monospace;
+    font-size: 1.6rem;
+    letter-spacing: 0.15em;
+    margin-bottom: 20px;
+    min-height: 2.5em;
+    line-height: 1.8;
+    word-break: break-all;
+    padding: 0 10px;
+  }
+
+  .pi-display .digit {
+    display: inline-block;
+    transition: all 0.3s ease;
+    color: #5a5a6e;
+    position: relative;
+  }
+
+  .pi-display .digit.played {
+    color: #9a9080;
+  }
+
+  .pi-display .digit.current {
+    color: #f0e6c0;
+    text-shadow: 0 0 20px rgba(201, 180, 88, 0.8);
+    transform: scale(1.3);
+    font-weight: 600;
+  }
+
+  .pi-display .digit.upcoming {
+    color: #5a5a6e;
+  }
+
+  .pi-display .decimal {
+    color: #c9b458;
+    font-weight: 600;
+  }
+
+  /* Note name display */
+  .note-display {
+    font-weight: 700;
+    color: #c9b458;
+    margin-bottom: 15px;
+    min-height: 4.5em;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+  }
+
+  .note-display .pos-number {
+    font-size: 2.2rem;
+    font-family: 'Source Code Pro', monospace;
+    color: #c9b458;
+    font-weight: 600;
+    text-shadow: 0 0 20px rgba(201, 180, 88, 0.4);
+  }
+
+  .note-display .pos-description {
+    font-size: 0.95rem;
+    color: #8a8078;
+    font-family: 'Source Code Pro', monospace;
+    font-weight: 400;
+  }
+
+  .note-display .note-chord-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 2px;
+  }
+
+  .note-display .melody-note {
+    font-size: 1.8rem;
+    text-shadow: 0 0 30px rgba(201, 180, 88, 0.6);
+  }
+
+  .note-display .chord-label {
+    font-size: 1.2rem;
+    color: #9890d8;
+    font-style: italic;
+    font-weight: 600;
+  }
+
+  /* Piano keys */
+  .piano-keys {
+    display: flex;
+    justify-content: center;
+    position: relative;
+    height: 180px;
+    margin: 10px auto;
+    max-width: 860px;
+  }
+
+  .key {
+    position: relative;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .key.white {
+    width: 36px;
+    height: 180px;
+    background: linear-gradient(180deg, #f5f5f0 0%, #e8e8e0 85%, #d0d0c8 100%);
+    border: 1px solid #bbb;
+    border-radius: 0 0 5px 5px;
+    z-index: 1;
+    margin: 0 1px;
+  }
+
+  .key.white.active {
+    background: linear-gradient(180deg, #ffe8a0 0%, #f0d870 85%, #d4b840 100%);
+    box-shadow: 0 0 20px rgba(201, 180, 88, 0.6);
+    transform: translateY(2px);
+  }
+
+  .key.white.chord-active {
+    background: linear-gradient(180deg, #c8bef0 0%, #9890d8 85%, #7870b8 100%);
+    box-shadow: 0 0 20px rgba(140, 120, 210, 0.5);
+    transform: translateY(2px);
+  }
+
+  .key.black {
+    width: 24px;
+    height: 115px;
+    background: linear-gradient(180deg, #2a2a2a 0%, #1a1a1a 100%);
+    border-radius: 0 0 4px 4px;
+    z-index: 2;
+    margin: 0 -12px;
+  }
+
+  .key.black.active {
+    background: linear-gradient(180deg, #5a4a20 0%, #3a3010 100%);
+    box-shadow: 0 0 15px rgba(201, 180, 88, 0.4);
+    transform: translateY(2px);
+  }
+
+  .key.black.chord-active {
+    background: linear-gradient(180deg, #4a3a70 0%, #352860 100%);
+    box-shadow: 0 0 15px rgba(140, 120, 210, 0.4);
+    transform: translateY(2px);
+  }
+
+  .key .label {
+    position: absolute;
+    bottom: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'Source Code Pro', monospace;
+    font-size: 0.65rem;
+    color: #888;
+    pointer-events: none;
+  }
+
+  .key.black .label {
+    color: #666;
+    bottom: 5px;
+    font-size: 0.55rem;
+  }
+
+  /* Controls */
+  .controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+  }
+
+  .btn-icon {
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 6px;
+  }
+
+  .btn-icon.play {
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 6px 0 6px 10px;
+    border-color: transparent transparent transparent currentColor;
+  }
+
+  .btn-icon.pause {
+    width: 10px;
+    height: 12px;
+    border-left: 3px solid currentColor;
+    border-right: 3px solid currentColor;
+  }
+
+  button {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    padding: 12px 32px;
+    border: 1px solid #c9b458;
+    background: transparent;
+    color: #c9b458;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    letter-spacing: 0.1em;
+  }
+
+  button:hover {
+    background: rgba(201, 180, 88, 0.15);
+    box-shadow: 0 0 20px rgba(201, 180, 88, 0.2);
+  }
+
+  button.active {
+    background: #c9b458;
+    color: #0a0a12;
+  }
+
+  button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  .tempo-control {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #8a8078;
+    font-size: 0.9rem;
+  }
+
+  .tempo-control input[type="range"] {
+    -webkit-appearance: none;
+    width: 240px;
+    height: 4px;
+    background: #2a2a3e;
+    border-radius: 2px;
+    outline: none;
+  }
+
+  .tempo-control input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #c9b458;
+    cursor: pointer;
+  }
+
+  /* Stats */
+  .stats {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+  }
+
+  .stat {
+    text-align: center;
+  }
+
+  .stat .value {
+    font-family: 'Source Code Pro', monospace;
+    font-size: 1.8rem;
+    color: #c9b458;
+    font-weight: 600;
+  }
+
+  .stat .label {
+    font-size: 0.8rem;
+    color: #6a6a7e;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    margin-top: 4px;
+  }
+
+  /* Info section */
+  .info {
+    background: rgba(255,255,255,0.03);
+    border-radius: 12px;
+    padding: 25px;
+    border: 1px solid #1a1a2e;
+    text-align: left;
+    line-height: 1.8;
+    color: #8a8078;
+    font-size: 1.15rem;
+  }
+
+  .info h3 {
+    color: #c9b458;
+    margin-bottom: 10px;
+    font-size: 1.4rem;
+  }
+
+  .info .scale-map {
+    font-family: 'Source Code Pro', monospace;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 5px;
+    margin: 15px 0;
+    font-size: 1.05rem;
+  }
+
+  .info .scale-map span {
+    background: rgba(201, 180, 88, 0.08);
+    padding: 4px 8px;
+    border-radius: 4px;
+    text-align: center;
+  }
+
+  .info .scale-map span em {
+    color: #c9b458;
+    font-style: normal;
+  }
+
+  .arrow {
+    display: inline-block;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 4px 0 4px 7px;
+    border-color: transparent transparent transparent #c9b458;
+    margin: 0 4px;
+    vertical-align: middle;
+  }
+
+  .credit {
+    margin-top: 30px;
+    color: #4a4a5e;
+    font-size: 1.05rem;
+    font-style: italic;
+  }
+
+  .credit a {
+    color: #8a7a58;
+    text-decoration: none;
+  }
+
+  .credit a:hover { text-decoration: underline; }
+
+  /* Visualizer */
+  .visualizer {
+    height: 60px;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 2px;
+  }
+
+  .visualizer .bar {
+    width: 3px;
+    background: linear-gradient(0deg, #c9b458, #f0e6c0);
+    border-radius: 2px 2px 0 0;
+    transition: height 0.1s ease;
+    opacity: 0.6;
+  }
+
+  /* Volume control */
+  .volume-control {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #8a8078;
+    font-size: 0.85rem;
+  }
+
+  .volume-control input[type="range"] {
+    -webkit-appearance: none;
+    width: 80px;
+    height: 4px;
+    background: #2a2a3e;
+    border-radius: 2px;
+    outline: none;
+  }
+
+  .volume-control input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #c9b458;
+    cursor: pointer;
+  }
+
+  @media (max-width: 600px) {
+    h1 { font-size: 2.2rem; }
+    .pi-display { font-size: 1.1rem; }
+    .key.white { width: 22px; height: 120px; }
+    .key.black { width: 15px; height: 78px; margin: 0 -7.5px; }
+    .stats { gap: 20px; }
+  }
+  .top-message{
+    font-size: 1.4rem;
+    margin-bottom: 20px;
+  }
+  .special-thanks{
+    font-size: 1.4rem;
+    margin-bottom: 20px;
+  }
+  .heart{
+    font-size: 1.6rem;
+    margin: 20px;
+  }
+
+  /* Collapsible sections */
+  .collapsible-section {
+    background: rgba(255,255,255,0.03);
+    border-radius: 12px;
+    border: 1px solid #1a1a2e;
+    margin-top: 20px;
+    text-align: left;
+    overflow: hidden;
+  }
+
+  .collapsible-section summary {
+    padding: 18px 25px;
+    cursor: pointer;
+    color: #c9b458;
+    font-size: 1.3rem;
+    font-weight: 700;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    user-select: none;
+  }
+
+  .collapsible-section summary::-webkit-details-marker { display: none; }
+
+  .collapsible-section summary::before {
+    content: '\25B6';
+    font-size: 0.75rem;
+    transition: transform 0.2s ease;
+    display: inline-block;
+  }
+
+  .collapsible-section[open] summary::before {
+    transform: rotate(90deg);
+  }
+
+  .collapsible-section .section-body {
+    padding: 0 25px 20px;
+    color: #8a8078;
+    font-size: 1.1rem;
+    line-height: 1.8;
+  }
+
+  /* Comment thread */
+  .comment {
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+
+  .comment:last-child { border-bottom: none; }
+
+  .comment .author {
+    color: #c9b458;
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+
+  .comment .meta {
+    color: #5a5a6e;
+    font-size: 0.8rem;
+    margin-left: 8px;
+  }
+
+  .comment .text {
+    margin-top: 4px;
+    color: #9a9a9a;
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+
+  /* Chat log */
+  .chat-session {
+    margin-bottom: 10px;
+  }
+
+  .chat-session summary {
+    padding: 10px 15px;
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: #a09080;
+    cursor: pointer;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .chat-session summary::-webkit-details-marker { display: none; }
+
+  .chat-session summary::before {
+    content: '\25B6';
+    font-size: 0.65rem;
+    transition: transform 0.2s ease;
+    display: inline-block;
+  }
+
+  .chat-session[open] summary::before {
+    transform: rotate(90deg);
+  }
+
+  .chat-prompt {
+    background: rgba(201, 180, 88, 0.06);
+    border-left: 3px solid #c9b458;
+    padding: 10px 15px;
+    margin: 8px 0 8px 20px;
+    border-radius: 0 8px 8px 0;
+    color: #b0a89a;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    font-family: 'Source Code Pro', monospace;
+  }
+
+  .chat-response {
+    background: rgba(138, 128, 120, 0.08);
+    border-left: 3px solid #6a6a7e;
+    padding: 10px 15px;
+    margin: 8px 0 8px 20px;
+    border-radius: 0 8px 8px 0;
+    color: #8a8a9a;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    font-family: 'Source Code Pro', monospace;
+  }
+
+  .chat-label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin: 12px 0 2px 20px;
+    font-weight: 600;
+  }
+
+  .chat-label.user-label { color: #c9b458; }
+  .chat-label.claude-label { color: #6a6a7e; }
+
+  .intro-story {
+    font-size: 1.15rem;
+    color: #a09a90;
+    line-height: 1.8;
+    margin-bottom: 25px;
+    text-align: left;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .intro-story a {
+    color: #c9b458;
+    text-decoration: none;
+  }
+
+  .intro-story a:hover { text-decoration: underline; }
+
+  .initial-prompt {
+    font-family: 'Source Code Pro', monospace;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: #9a9a9a;
+    white-space: pre-wrap;
+    padding: 0 25px 20px;
+  }
+
+  .happy-pi-day{
+    font-size: 1.6rem;
+    color: #c9b458;
+    font-weight: 600;
+    margin-bottom: 30px;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>π ∞</h1>
+  <p class="subtitle">The Infinite Piano of Pi &mdash; A Harmonic Minor</p>
+  <p class="happy-pi-day">Happy Pi Day!</p>
+  <p class="top-message"></p>
+  <p class="special-thanks">Special thanks to my mother, Maggie, father, Eddie, Kalvin, Zooey and Salma, Андрей, Andrina, Kaleb, Scarlett, Yuri, Hailey, Laura, Jared, Abdiel, Amanda, Gia, Raider, my many students like Manuel, Aram, Serly, Christelle, Sona, Cynthia, Alexa, Mario, and Learn Teach Code Burbank (too many to list!)! Thanks for reminding me about Pi Day, June! Hi Krista and Tiffany!</p>
+  <p class="heart">"Take it easy, dude. But, take it!"" -Terrence McKenna </p>
+  <p class="special-thanks">Андрей, Андрей</p>
+  <p class="special-thanks">Thanks for getting me moving, Jaszmine 💜</p>
+
+  <p class="intro-story">
+    Today I found a beautiful performance of a song created using Pi:
+    <a href="https://youtu.be/wM-x3pUcdeo?si=7v_UV8i8YHLmE25a" target="_blank">https://youtu.be/wM-x3pUcdeo?si=7v_UV8i8YHLmE25a</a>.
+    I was reading the comments and found a thread (below) about how to supplement a mapping of the digits of Pi to notes with other notes to add to it.
+    They were asking for someone to implement what they were talking about, so I thought, why not Claude? And me to guide them, of course. This is what Claude came up with. This only took me a like 3 hours to gather the context, prompt Claude Code to generate the site, and serve to the web, but it's the cultivation of the energy to produce it that makes this so exciting! I seem to find moving music when I'm vibrating high.
+  </p>
+
+  <div class="piano-container">
+    <div class="visualizer" id="visualizer"></div>
+    <div class="pi-display" id="piDisplay"></div>
+    <div class="note-display" id="noteDisplay">
+      <span class="chord-label">Press play to begin</span>
+    </div>
+    <div class="piano-keys" id="pianoKeys"></div>
+  </div>
+
+  <div class="controls">
+    <button id="playBtn" onclick="togglePlay()"><span class="btn-icon play"></span> Play</button>
+    <div class="tempo-control">
+      <span>Tempo</span>
+      <input type="range" id="tempoSlider" min="1" max="1000" value="100" oninput="updateTempo(this.value)">
+      <span id="tempoValue">100 BPM</span>
+    </div>
+    <div class="volume-control">
+      <span>Vol</span>
+      <input type="range" id="volumeSlider" min="0" max="100" value="60" oninput="updateVolume(this.value)">
+    </div>
+  </div>
+
+  <div class="stats">
+    <div class="stat">
+      <div class="value" id="digitCount">0</div>
+      <div class="label">Digits Played</div>
+    </div>
+    <div class="stat">
+      <div class="value" id="measureCount">0</div>
+      <div class="label">Measures</div>
+    </div>
+    <div class="stat">
+      <div class="value" id="elapsed">0:00</div>
+      <div class="label">Elapsed</div>
+    </div>
+  </div>
+
+  <div class="info">
+    <h3>How It Works</h3>
+    <p>
+      Each digit of &pi; is mapped to a note on the <strong>A Harmonic Minor</strong> scale,
+      creating an endless, never-repeating melody. The left hand plays arpeggiated
+      accompaniment derived from the harmony of each measure. Since &pi; is irrational,
+      the music never loops and never ends.
+    </p>
+    <p style="margin-top: 8px; color: #6a6a7e; font-size: 0.85rem;">
+      Digits are computed live using an unbounded spigot algorithm &mdash; no lookup table, no limit.
+      This page will generate new digits of &pi; forever.
+    </p>
+    <div class="scale-map">
+      <span><em>0</em> <span class="arrow"></span>A3</span>
+      <span><em>1</em> <span class="arrow"></span>B3</span>
+      <span><em>2</em> <span class="arrow"></span>C4</span>
+      <span><em>3</em> <span class="arrow"></span>D4</span>
+      <span><em>4</em> <span class="arrow"></span>E4</span>
+      <span><em>5</em> <span class="arrow"></span>F4</span>
+      <span><em>6</em> <span class="arrow"></span>G#4</span>
+      <span><em>7</em> <span class="arrow"></span>A4</span>
+      <span><em>8</em> <span class="arrow"></span>B4</span>
+      <span><em>9</em> <span class="arrow"></span>C5</span>
+    </div>
+  </div>
+
+  <!-- Initial Prompt -->
+  <details class="collapsible-section">
+    <summary>The Original Prompt (Piinfinity.txt)</summary>
+    <div class="section-body">
+      <p style="margin-bottom: 12px; color: #6a6a7e; font-size: 0.95rem;">
+        This is the original text document that was fed to Claude Code to kick off the project. It came from a message I sent out online. I was away from my computer, so I wanted someone to feed my prompt into an AI for me because I didn't want to miss Pi Day. No one did, but I got to a computer in time!
+      </p>
+      <div class="initial-prompt">I wrote a prompt for Pi Day, but I don't have access to my computer. Would someone generate a website with an AI for it? Maybe serve it to the web?
+
+I found the YouTube video "Song from π! (Studio Version)" by "aSongScout" with a song performed on the piano that maps the numbers of pi to the notes played, plus some spice to go with it.
+https://youtu.be/wM-x3pUcdeo?si=7v_UV8i8YHLmE25a
+
+In the comments, I found a thread talking about making a website that procedurally generates a piano piece also based on the numbers of pi and all the extra notes to make it sound nice (Harmonies? Accompaniment? Sorry I don't really know the language). So I made a prompt to try and utilize it to generate the program they're talking about alongside two screenshots from the video.
+
+I just want someone to give it to an AI before the end of Pi Day.
+
+Here are some comments from YouTube of a video of a performance of the number pi assigned to musical notes. Can you take the comments from this comment thread, as well as some of the examples of the sheet music at the top, to create a website that generates an infinitely extending piece? Not a recorded audio, live generated.</div>
+    </div>
+  </details>
+
+  <!-- YouTube Comment Thread -->
+  <details class="collapsible-section">
+    <summary>The Comment Thread That Inspired This</summary>
+    <div class="section-body">
+      <p style="margin-bottom: 12px; color: #6a6a7e; font-size: 0.95rem;">
+        From the comments on <a href="https://youtu.be/wM-x3pUcdeo?si=7v_UV8i8YHLmE25a" target="_blank" style="color: #8a7a58;">"Song from &pi;"</a> on YouTube:
+      </p>
+      <div class="comment">
+        <span class="author">@Arbitraritorian</span><span class="meta">9 years ago</span>
+        <div class="text">How about a web site that continues the song infinitely?</div>
+      </div>
+      <div class="comment">
+        <span class="author">@george.rivers</span><span class="meta">9 years ago</span>
+        <div class="text">Probably could by setting an algorithm for reading the numbers as notes. Then set it in 4 4 time, and every measure depending on the ratio of the notes, the arpeggio would play correctly.</div>
+      </div>
+      <div class="comment">
+        <span class="author">@george.rivers</span><span class="meta">9 years ago</span>
+        <div class="text">And then just record the piano notes and set there names to 1 2 3&hellip; and so on, and make the code call the notes depending on the number displayed.</div>
+      </div>
+      <div class="comment">
+        <span class="author">@levibaker8162</span><span class="meta">9 years ago</span>
+        <div class="text">I will try, wish me luck!</div>
+      </div>
+      <div class="comment">
+        <span class="author">@ADHDegree</span><span class="meta">8 years ago</span>
+        <div class="text">Plz say that this will happen. I will never close the webpage. I will keep it on until the day I die.</div>
+      </div>
+      <div class="comment">
+        <span class="author">@LazElectronicMusic</span><span class="meta">8 years ago</span>
+        <div class="text">That would make more sense lol :)</div>
+      </div>
+      <div class="comment">
+        <span class="author">@Jotakumon</span><span class="meta">8 years ago</span>
+        <div class="text">That would be interesting, but the problem is the harmony. How do you generate it, by what pattern? And how do you decide on the rhythm? If those two problems were fixed, I'd love to program it.</div>
+      </div>
+      <div class="comment">
+        <span class="author">@shanok3</span><span class="meta">8 years ago</span>
+        <div class="text">You can make an arpeggio using a 1-5-8 (or 1-3-5 OR ALTERNATING) form and since all of them are quarter measures on a 4/4 you're good to go.</div>
+      </div>
+      <div class="comment">
+        <span class="author">@SkenderPig</span><span class="meta">8 years ago</span>
+        <div class="text">Nothing about that would be a problem, but it's still not possible due to the fact that no computer on earth is strong enough to actually calculate the infinite digits of Pi.</div>
+      </div>
+      <div class="comment">
+        <span class="author">@6iaZkMagW7EFs</span><span class="meta">8 years ago</span>
+        <div class="text">You would have to have an AI that can play the notes in a way that makes them sound nice. There are 10000 possible measures (1 to 9999 and 0). So if you can get an AI to generate a good one for each, just link them together.</div>
+      </div>
+      <div class="comment">
+        <span class="author">@NinfaRoma41</span><span class="meta">8 years ago</span>
+        <div class="text">Levi Baker Forgive me, but I am curious&hellip; What came out of this old thread? Is there somewhere I could check out? I hope you don't mind me asking, and in any case, please have a lovely day. Cheers!</div>
+      </div>
+      <div class="comment">
+        <span class="author">@RizRockJizJock</span><span class="meta">7 years ago</span>
+        <div class="text">YouTube repeat ;)</div>
+      </div>
+      <div class="comment">
+        <span class="author">@williamlehuy</span><span class="meta">7 years ago</span>
+        <div class="text">Joe, that's not the point. It's to continue on the digits of pi, not just to replay the beginning digits.</div>
+      </div>
+      <div class="comment">
+        <span class="author">@drftrkjhguvgggfd</span><span class="meta">7 years ago</span>
+        <div class="text">Levi Baker good luck</div>
+      </div>
+      <div class="comment">
+        <span class="author">@ZeFluffyNuphkin</span><span class="meta">7 years ago</span>
+        <div class="text">@levibaker8162 Did you do it?</div>
+      </div>
+      <div class="comment">
+        <span class="author">@tiagoloprete</span><span class="meta">6 years ago (edited)</span>
+        <div class="text">@John Nobel ok</div>
+      </div>
+      <div class="comment">
+        <span class="author">@barmacidic2257</span><span class="meta">6 years ago</span>
+        <div class="text">Yes, but that has no guarantee it'll sound good, it's almost like music theory is more complicated than that.</div>
+      </div>
+      <div class="comment">
+        <span class="author">@PCmonke</span><span class="meta">6 years ago</span>
+        <div class="text">Yass</div>
+      </div>
+      <div class="comment">
+        <span class="author">@thecha4570</span><span class="meta">6 years ago</span>
+        <div class="text">If you wanted to loop the song, that'd be impossible as A. You can't repeat 3. B. It'd have a pattern, thus negating pi.</div>
+      </div>
+      <div class="comment">
+        <span class="author">@Xetaas</span><span class="meta">6 years ago</span>
+        <div class="text">That would be cool as a 24/7 YouTube livestream.</div>
+      </div>
+      <div class="comment">
+        <span class="author">@taavikala5514</span><span class="meta">6 years ago</span>
+        <div class="text">Levi Baker did you do it?</div>
+      </div>
+      <div class="comment">
+        <span class="author">@namel6532</span><span class="meta">6 years ago</span>
+        <div class="text">It's not really about music theory.</div>
+      </div>
+      <div class="comment">
+        <span class="author">@BlubiDefault</span><span class="meta">6 years ago</span>
+        <div class="text">No, pi just hasn't been calculated furth</div>
+      </div>
+      <div class="comment">
+        <span class="author">@fluorinegas6944</span><span class="meta">6 years ago</span>
+        <div class="text">@BlubiDefault neither has this comment</div>
+      </div>
+      <div class="comment">
+        <span class="author">@1dayofmusic748</span><span class="meta">6 years ago</span>
+        <div class="text">Levi Baker so what happened?</div>
+      </div>
+      <div class="comment">
+        <span class="author">@buchelaruzit</span><span class="meta">6 years ago</span>
+        <div class="text">I don't really understand all of this so I'll just comment to hopefully be notified if someone can do it and gives us a link here.</div>
+      </div>
+      <div class="comment">
+        <span class="author">@f2ville197</span><span class="meta">6 years ago</span>
+        <div class="text">Challenge accepted. (Idk if I can do it, but this is a good challenge)</div>
+      </div>
+      <div class="comment">
+        <span class="author">@yebitz2373</span><span class="meta">6 years ago</span>
+        <div class="text">We don't know that much is pi</div>
+      </div>
+      <div class="comment">
+        <span class="author">@mralberosie3987</span><span class="meta">6 years ago</span>
+        <div class="text">Blue Sketch same</div>
+      </div>
+      <div class="comment">
+        <span class="author">@FoxyBoxery</span><span class="meta">6 years ago</span>
+        <div class="text">Interesting...</div>
+      </div>
+      <div class="comment">
+        <span class="author">@jabawokidingdong1360</span><span class="meta">6 years ago</span>
+        <div class="text">Instead of programming it, have 1000 people lined up and ready to continue on where the previous player left off. It's the old fashioned way of doing things, using the greatest resource the world has ever seen: people&hellip; In what other scenario beyond war can an infinite number of people agree to do any one thing?</div>
+      </div>
+      <div class="comment">
+        <span class="author">@yoknapatawpha948</span><span class="meta">6 years ago</span>
+        <div class="text">The closest I've found is 100,000 digits.</div>
+      </div>
+      <div class="comment">
+        <span class="author">@spennickproductions</span><span class="meta">6 years ago</span>
+        <div class="text">Now we have quantum computers that can.</div>
+      </div>
+      <div class="comment">
+        <span class="author">@steampunkastronaut7081</span><span class="meta">5 years ago</span>
+        <div class="text">@jabawokidingdong1360 What a waste of resources and time.</div>
+      </div>
+      <div class="comment">
+        <span class="author">@thecommonman763</span><span class="meta">4 years ago</span>
+        <div class="text">Adding this so that I can access the link if someone puts it.</div>
+      </div>
+    </div>
+  </details>
+
+  <!-- Claude Code Prompts -->
+  <details class="collapsible-section">
+    <summary>How This Was Built &mdash; Claude Code Prompts</summary>
+    <div class="section-body">
+      <p style="margin-bottom: 15px; color: #6a6a7e; font-size: 0.95rem;">
+        The actual conversation with <strong style="color:#a09080;">Claude Code</strong> while building this site, across 3 sessions:
+      </p>
+
+      <details class="chat-session">
+        <summary>Session 1 &mdash; Initial Build (abandoned, retried in Session 2)</summary>
+        <div class="chat-label user-label">You</div>
+        <div class="chat-prompt">Can you take the text document in this folder and use it as the instructions for building a website? Use the two jpg screenshots as context as well. The prompt will give you the details of how to use them.</div>
+        <div class="chat-label claude-label">Claude</div>
+        <div class="chat-response">Let me start by exploring the folder to find the text document and JPG files.</div>
+        <div class="chat-label user-label">You</div>
+        <div class="chat-prompt">Ignore the image files in the directory and instead use the screenshots I'm dragging and dropping right now into your context, and then redo the prompt.</div>
+        <div class="chat-label claude-label">Claude</div>
+        <div class="chat-response">I'm ready! Go ahead and drop the screenshots into the chat and I'll use those along with the text document to build the website.</div>
+        <div class="chat-label user-label">You</div>
+        <div class="chat-prompt">@IMG_3695.jpg @"IMG_3696 1.jpg" use these images</div>
+        <div class="chat-response" style="color:#5a5a6e; font-style:italic;">[Request interrupted by user &mdash; retried in Session 2]</div>
+      </details>
+
+      <details class="chat-session">
+        <summary>Session 2 &mdash; Infinite Generation</summary>
+        <div class="chat-label user-label">You</div>
+        <div class="chat-prompt">Can you take the text document in this folder and use it as the instructions for building a website? Use the two jpg screenshots drag and dropped in as context as well.<br><br>@IMG_3695.jpg @"IMG_3696 1.jpg"</div>
+        <div class="chat-label claude-label">Claude</div>
+        <div class="chat-response">The screenshots show digits 0-9 mapped to notes on the A Harmonic Minor scale, and sheet music in 3/4 time with pi digits as the melody. I'll build a website that procedurally generates an infinite piano piece from pi's digits, with accompaniment.</div>
+        <div class="chat-label claude-label">Claude</div>
+        <div class="chat-response">The website is built! Maps digits 0-9 to notes on the A Harmonic Minor scale (A3 through C5). Plays in 3/4 time matching the sheet music. Live-generated audio using Web Audio API &mdash; not a recording. Arpeggiated accompaniment in the left hand.</div>
+        <div class="chat-label user-label">You</div>
+        <div class="chat-prompt">Can you redesign it so it can go on infinitely? Let me know if that's possible, in your opinion, first.</div>
+        <div class="chat-label claude-label">Claude</div>
+        <div class="chat-response">Yes, absolutely possible. Right now the site has 10,000 hardcoded digits and silently loops. To make it truly infinite, I can replace that with a streaming spigot algorithm that computes pi digits on the fly, one at a time, forever. It uses only basic arithmetic (no precomputed data), so it will run as long as the browser tab is open &mdash; hours, days, years.</div>
+        <div class="chat-label claude-label">Claude</div>
+        <div class="chat-response">Done. Replaced the hardcoded 10,000-digit string with a PiGenerator class using an unbounded spigot algorithm with BigInt arithmetic. No more wrapping &mdash; the generator stays ~100 digits ahead of playback so there's never a stall.</div>
+      </details>
+
+      <details class="chat-session">
+        <summary>Session 3 &mdash; Bug Fixes &amp; Polish</summary>
+        <div class="chat-label user-label">You</div>
+        <div class="chat-prompt">The program plays, 3, then 2 (3.2), and then repeats 0 over and over. It should at least start 3.14 and continue the digits of pi. Can you fix this?</div>
+        <div class="chat-label claude-label">Claude</div>
+        <div class="chat-response">The bug is in the PiGenerator constructor. <code>this.k</code> is initialized to <code>0n</code>, but in Gibbons' spigot algorithm it must start at <code>1n</code>. When k=0, the line <code>this.q *= this.k</code> sets q to zero on the first iteration, breaking all subsequent computation. Fixed.</div>
+        <div class="chat-label user-label">You</div>
+        <div class="chat-prompt">It goes 3.314 instead of 3.14. The other digits seem to be correct.</div>
+        <div class="chat-label claude-label">Claude</div>
+        <div class="chat-response">The display hardcodes "3." then loops from index 0 which is also 3, so it renders 3.3141... The loop now starts from index 1 when start === 0.</div>
+        <div class="chat-label user-label">You</div>
+        <div class="chat-prompt">Can you format the font-sizes to be a little easier to read? The font-sizes on the top are sort of okay, maybe a little too big, but the ones in the how to section are definitely too small.</div>
+        <div class="chat-label claude-label">Claude</div>
+        <div class="chat-response">Scaled down the top messages slightly and bumped up the info/credit sections. Subtitle 2rem <span class="arrow"></span>1.5rem, info body 0.95rem <span class="arrow"></span>1.15rem, heading 1.1rem <span class="arrow"></span>1.4rem.</div>
+        <div class="chat-label user-label">You</div>
+        <div class="chat-prompt">Can you also display the comment thread used? Also, can you use the chat messages from this and the last few Claude Code sessions and display what I prompted in a collapsable chat display, collapsable for each chat?</div>
+        <div class="chat-label claude-label">Claude</div>
+        <div class="chat-response">Added two collapsible sections: the YouTube comment thread that inspired this, and the Claude Code prompts used to build it across all 3 sessions.</div>
+        <div class="chat-label user-label">You</div>
+        <div class="chat-prompt">Can you also show your responses as well, not just mine? You don't have to show everything, just enough to show what you did roughly.</div>
+        <div class="chat-label claude-label">Claude</div>
+        <div class="chat-response">Updated the chat log to show both sides of the conversation &mdash; user prompts and Claude's key responses, trimmed for readability.</div>
+        <div class="chat-label user-label">You</div>
+        <div class="chat-prompt">Can you add the new chats, as well as this one, with the same directions I just gave? Also, can you add a section at the top saying "Today I found a beautiful performance of a song created using Pi&hellip;" Also include the prompt Piinfinity.txt in a section that displays the initial instructions for yourself.</div>
+        <div class="chat-label claude-label">Claude</div>
+        <div class="chat-response">Added the intro story paragraph, a collapsible section showing the original Piinfinity.txt prompt, and updated the chat log with these latest exchanges.</div>
+        <div class="chat-label user-label">You</div>
+        <div class="chat-prompt">Can you display a keyboard big enough so that the supplementary notes that accompany the notes from pi directly are displayed when they're played, in another color though? Have it complement the yellow used already. Update the chat log as well. Make me a reminder to create a slash command for updating the chats.</div>
+        <div class="chat-label claude-label">Claude</div>
+        <div class="chat-response">Extended the keyboard down to A2 to cover chord/accompaniment notes. Melody keys light up gold, accompaniment keys light up purple. Made the keyboard taller (180px). Updated the chat log and saved a reminder about creating a slash command for chat updates.</div>
+        <div class="chat-label user-label">You</div>
+        <div class="chat-prompt">I don't see the changes reflected in the site. Maybe I saved something the wrong way.</div>
+        <div class="chat-label claude-label">Claude</div>
+        <div class="chat-response">The file had reverted to an older state. Re-applied all the keyboard extension, chord highlighting, and CSS changes to the current file.</div>
+        <div class="chat-label user-label">You</div>
+        <div class="chat-prompt">The chord names aren't being highlighted the same purple as the notes. Can you fix this? Also, can you display what number past the decimal place the note corresponding to a digit of pi is used, and display some text describing what the number signifies?</div>
+        <div class="chat-label claude-label">Claude</div>
+        <div class="chat-response">Changed the chord name label color to match the purple key highlights. Added a digit position display showing which decimal place of &pi; is currently playing (e.g. "42nd decimal digit of &pi;").</div>
+        <div class="chat-label user-label">You</div>
+        <div class="chat-prompt">The number representing the decimal digit of pi only updates when a purple chord is played. It should update every time the active pi digit note is played, which is each step.</div>
+        <div class="chat-label claude-label">Claude</div>
+        <div class="chat-response">Moved the note display update out of the beat-0-only block so the melody note name, chord label, and decimal position all update on every single beat.</div>
+        <div class="chat-label user-label">You</div>
+        <div class="chat-prompt">Can you put the decimal number position and the number suffix at the top, the "decimal digit of &pi;" in the middle, and the note and chord next to each other at the bottom?</div>
+        <div class="chat-label claude-label">Claude</div>
+        <div class="chat-response">Restructured the note display into a vertical stack: large position number with suffix on top, "decimal digit of &pi;" description in the middle, and melody note + chord name side by side at the bottom.</div>
+        <div class="chat-label user-label">You</div>
+        <div class="chat-prompt">Very low BPMs don't continue after the note that's played when the slider shifts to a low BPM, somewhere between 0 and 10.</div>
+        <div class="chat-label claude-label">Claude</div>
+        <div class="chat-response">The scheduler's lookahead (0.15s) was too short for very slow tempos where beats are many seconds apart. Scaled the lookahead to always cover at least the next beat, so notes keep scheduling even at 1 BPM.</div>
+        <div class="chat-label user-label">You</div>
+        <div class="chat-prompt">Try to replace the emojis with non-emoji elements, except for the purple heart.</div>
+        <div class="chat-label claude-label">Claude</div>
+        <div class="chat-response">Replaced the Unicode play/pause symbols (&#9654;/&#9208;) with pure CSS shapes &mdash; a CSS triangle for play and CSS border bars for pause. They inherit the button's gold color automatically. The purple heart was the only other emoji and stays as-is.</div>
+        <div class="chat-label user-label">You</div>
+        <div class="chat-prompt">Replace the unicode arrows in the chat logs with the one you used for the play button. Update the chat logs like you have before too.</div>
+        <div class="chat-label claude-label">Claude</div>
+        <div class="chat-response">Replaced all &rarr; (right arrow) characters with a small CSS triangle matching the play button style and the site's gold color. Added an .arrow class for the inline triangles.</div>
+        <div class="chat-label user-label">You</div>
+        <div class="chat-prompt">Can you use PiInfinityPlus1.txt to add any extra features from the comments that weren't in the original source prompt instruction file? Also update the comment thread display on the site with the additional comments.</div>
+        <div class="chat-label claude-label">Claude</div>
+        <div class="chat-response">Added 16 new comments from the extended thread, including follow-ups asking Levi Baker if he ever did it, debates about music theory, a joke about pi not being "calculated furth," and someone suggesting 1000 people play in relay. No new actionable feature ideas in the comments beyond what's already implemented.</div>
+        <div class="chat-label user-label">You</div>
+        <div class="chat-prompt">All of the comments should be added to the display, not just the interesting ones.</div>
+        <div class="chat-label claude-label">Claude</div>
+        <div class="chat-response">Added the remaining 10 comments that were previously skipped: @LazElectronicMusic, @RizRockJizJock, @drftrkjhguvgggfd, @tiagoloprete, @PCmonke, @1dayofmusic748, @yebitz2373, @mralberosie3987, @FoxyBoxery, and @steampunkastronaut7081. All 30 comments from the thread are now displayed in chronological order.</div>
+      </details>
+    </div>
+  </details>
+
+  <p class="credit">
+    Built for Pi Day 2026 &mdash;
+    Original composition concept from the
+    <a href="https://youtu.be/wM-x3pUcdeo?si=7v_UV8i8YHLmE25a" target="_blank">Song from &pi;</a> video
+  </p>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════════════
+// Streaming Pi Digit Generator — Unbounded Spigot Algorithm
+// Uses BigInt arithmetic. No upper limit. Runs forever.
+// Based on Jeremy Gibbons' unbounded spigot for pi.
+// ══════════════════════════════════════════════════════════════
+class PiGenerator {
+  constructor() {
+    this.q = 1n;
+    this.r = 0n;
+    this.t = 1n;
+    this.k = 1n;
+    this.n = 3n;
+    this.l = 3n;
+    this.digits = [];
+  }
+
+  // Generate the next single digit of pi
+  _next() {
+    while (true) {
+      if (4n * this.q + this.r - this.t < this.n * this.t) {
+        // We can extract this digit
+        const d = Number(this.n);
+        const nr = 10n * (this.r - this.n * this.t);
+        this.n = 10n * (3n * this.q + this.r) / this.t - 10n * this.n;
+        this.q *= 10n;
+        this.r = nr;
+        return d;
+      } else {
+        // Need more precision — consume next term
+        const nr = (2n * this.q + this.r) * this.l;
+        const nn = (this.q * (7n * this.k + 2n) + this.r * this.l) / (this.t * this.l);
+        this.q *= this.k;
+        this.t *= this.l;
+        this.l += 2n;
+        this.k += 1n;
+        this.n = nn;
+        this.r = nr;
+      }
+    }
+  }
+
+  // Ensure at least `count` digits have been generated
+  ensure(count) {
+    while (this.digits.length < count) {
+      this.digits.push(this._next());
+    }
+  }
+
+  // Get the digit at a given index (0-based, skipping "3.")
+  // Index 0 = 3, index 1 = 1, index 2 = 4, index 3 = 1, ...
+  get(index) {
+    this.ensure(index + 101); // stay 100 digits ahead
+    return this.digits[index];
+  }
+}
+
+const piGen = new PiGenerator();
+piGen.ensure(200); // pre-compute first 200 digits so UI is instant
+
+// ── A Harmonic Minor scale: A B C D E F G# ──
+// Digit -> note mapping (matching the video's sheet music)
+const NOTE_MAP = {
+  0: { name: 'A3',  freq: 220.00 },
+  1: { name: 'B3',  freq: 246.94 },
+  2: { name: 'C4',  freq: 261.63 },
+  3: { name: 'D4',  freq: 293.66 },
+  4: { name: 'E4',  freq: 329.63 },
+  5: { name: 'F4',  freq: 349.23 },
+  6: { name: 'G#4', freq: 415.30 },
+  7: { name: 'A4',  freq: 440.00 },
+  8: { name: 'B4',  freq: 493.88 },
+  9: { name: 'C5',  freq: 523.25 },
+};
+
+// Chord progressions (scale degree triads in A harmonic minor)
+// noteNames: the keys to highlight on the keyboard when chord plays
+const CHORDS = {
+  Am:    { notes: [220.00, 261.63, 329.63], name: 'Am',     noteNames: ['A3', 'C4', 'E4'], bassName: 'A2' },
+  Bdim:  { notes: [123.47, 146.83, 174.61], name: 'Bdim',   noteNames: ['B2', 'D3', 'F3'], bassName: null },
+  Caug:  { notes: [130.81, 164.81, 207.65], name: 'C+',     noteNames: ['C3', 'E3', 'G#3'], bassName: null },
+  Dm:    { notes: [146.83, 174.61, 220.00], name: 'Dm',     noteNames: ['D3', 'F3', 'A3'], bassName: null },
+  E:     { notes: [164.81, 207.65, 246.94], name: 'E',      noteNames: ['E3', 'G#3', 'B3'], bassName: null },
+  F:     { notes: [174.61, 220.00, 261.63], name: 'F',      noteNames: ['F3', 'A3', 'C4'], bassName: null },
+  G_dim: { notes: [207.65, 246.94, 293.66], name: 'G#dim',  noteNames: ['G#3', 'B3', 'D4'], bassName: null },
+};
+
+// Map melody note (digit) to accompaniment chord
+function getChordForDigit(digit) {
+  const chordMap = {
+    0: CHORDS.Am,
+    1: CHORDS.E,
+    2: CHORDS.Am,
+    3: CHORDS.Dm,
+    4: CHORDS.Am,
+    5: CHORDS.Dm,
+    6: CHORDS.E,
+    7: CHORDS.Am,
+    8: CHORDS.E,
+    9: CHORDS.F,
+  };
+  return chordMap[digit];
+}
+
+// ── Audio Engine ──
+let audioCtx = null;
+let masterGain = null;
+let playing = false;
+let piIndex = 0;
+let digitCount = 0;
+let beatInMeasure = 0;
+let measureCount = 0;
+let tempo = 100;
+let volume = 0.6;
+let startTime = null;
+let schedulerTimer = null;
+let nextNoteTime = 0;
+let elapsedTimer = null;
+
+const NUM_BARS = 60;
+let visualizerBars = [];
+
+function initAudio() {
+  if (audioCtx) return;
+  audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  masterGain = audioCtx.createGain();
+  masterGain.gain.value = volume;
+
+  // Gentle reverb via convolver
+  const convolver = audioCtx.createConvolver();
+  const reverbLen = audioCtx.sampleRate * 2;
+  const impulse = audioCtx.createBuffer(2, reverbLen, audioCtx.sampleRate);
+  for (let ch = 0; ch < 2; ch++) {
+    const data = impulse.getChannelData(ch);
+    for (let i = 0; i < reverbLen; i++) {
+      data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / reverbLen, 2.5);
+    }
+  }
+  convolver.buffer = impulse;
+
+  const dryGain = audioCtx.createGain();
+  dryGain.gain.value = 0.7;
+  const wetGain = audioCtx.createGain();
+  wetGain.gain.value = 0.3;
+
+  masterGain.connect(dryGain);
+  masterGain.connect(convolver);
+  convolver.connect(wetGain);
+  dryGain.connect(audioCtx.destination);
+  wetGain.connect(audioCtx.destination);
+}
+
+// Synthesize a piano-like tone
+function playTone(freq, time, duration, vel = 0.5, isBass = false) {
+  if (!audioCtx) return;
+
+  const noteGain = audioCtx.createGain();
+  noteGain.connect(masterGain);
+
+  const partials = isBass
+    ? [{ type: 'triangle', detune: 0, gain: 0.6 }, { type: 'sine', detune: 1, gain: 0.4 }]
+    : [
+        { type: 'triangle', detune: 0, gain: 0.45 },
+        { type: 'sine', detune: 0, gain: 0.35 },
+        { type: 'sine', detune: -3, gain: 0.1 },
+        { type: 'sine', detune: 1200, gain: 0.06 },
+        { type: 'sine', detune: 1902, gain: 0.04 },
+      ];
+
+  partials.forEach(p => {
+    const osc = audioCtx.createOscillator();
+    const pGain = audioCtx.createGain();
+    osc.type = p.type;
+    osc.frequency.value = freq;
+    osc.detune.value = p.detune;
+    pGain.gain.value = p.gain * vel;
+    osc.connect(pGain);
+    pGain.connect(noteGain);
+    osc.start(time);
+    osc.stop(time + duration + 0.5);
+  });
+
+  // ADSR envelope
+  const attack = 0.01;
+  const decay = isBass ? 0.3 : 0.15;
+  const sustainLevel = isBass ? 0.4 : 0.3;
+  const release = isBass ? 0.8 : 0.4;
+
+  noteGain.gain.setValueAtTime(0, time);
+  noteGain.gain.linearRampToValueAtTime(vel, time + attack);
+  noteGain.gain.exponentialRampToValueAtTime(vel * sustainLevel, time + attack + decay);
+  noteGain.gain.setValueAtTime(vel * sustainLevel, time + duration);
+  noteGain.gain.exponentialRampToValueAtTime(0.001, time + duration + release);
+}
+
+// Lookahead scheduler
+function scheduler() {
+  // Scale lookahead with tempo — at very low BPMs, we need to look further ahead
+  // to ensure the next note gets scheduled before the timer interval drifts
+  const beatLen = 60 / tempo;
+  const lookAhead = Math.max(0.15, beatLen + 0.5);
+  // Also scale the timer interval so we don't spin too fast at low tempos
+  const scheduleInterval = Math.min(50, beatLen * 500);
+
+  while (nextNoteTime < audioCtx.currentTime + lookAhead) {
+    scheduleNote(nextNoteTime);
+    nextNoteTime += beatLen;
+  }
+
+  schedulerTimer = setTimeout(scheduler, scheduleInterval);
+}
+
+function scheduleNote(time) {
+  const digit = piGen.get(piIndex);
+  const note = NOTE_MAP[digit];
+  const beatDuration = 60 / tempo;
+
+  // Melody
+  playTone(note.freq, time, beatDuration * 0.85, 0.55);
+
+  // Collect chord note names to highlight on keyboard
+  let chordNoteNames = [];
+  let currentChordName = '';
+
+  // Accompaniment — 3/4 time
+  if (beatInMeasure === 0) {
+    const chord = getChordForDigit(digit);
+    playTone(chord.notes[0] / 2, time, beatDuration * 2.5, 0.3, true);
+    chordNoteNames = [...chord.noteNames];
+    if (chord.bassName) chordNoteNames.push(chord.bassName);
+    currentChordName = chord.name;
+  }
+
+  if (beatInMeasure === 1) {
+    const prev = piGen.get(Math.max(0, piIndex - 1));
+    const chord = getChordForDigit(prev);
+    playTone(chord.notes[1], time, beatDuration * 0.7, 0.18);
+    playTone(chord.notes[2], time, beatDuration * 0.7, 0.15);
+    chordNoteNames = [chord.noteNames[1], chord.noteNames[2]];
+    currentChordName = chord.name;
+  }
+
+  if (beatInMeasure === 2) {
+    const prev = piGen.get(Math.max(0, piIndex - 2));
+    const chord = getChordForDigit(prev);
+    playTone(chord.notes[1], time, beatDuration * 0.7, 0.15);
+    playTone(chord.notes[2], time, beatDuration * 0.7, 0.12);
+    chordNoteNames = [chord.noteNames[1], chord.noteNames[2]];
+    currentChordName = chord.name;
+  }
+
+  // Update note display every beat
+  const currentPosition = piIndex;
+  const currentNoteName = note.name;
+  const chordLabel = currentChordName;
+  setTimeout(() => {
+    updateNoteDisplay(currentNoteName, chordLabel, currentPosition);
+  }, Math.max(0, (time - audioCtx.currentTime) * 1000));
+
+  // Schedule UI update
+  const delay = Math.max(0, (time - audioCtx.currentTime) * 1000);
+  const currentChordNotes = chordNoteNames;
+  setTimeout(() => {
+    updatePiDisplay(piIndex);
+    highlightKey(digit, currentChordNotes);
+    updateStats();
+    animateVisualizer(digit);
+  }, delay);
+
+  piIndex++;
+  digitCount++;
+  beatInMeasure = (beatInMeasure + 1) % 3;
+  if (beatInMeasure === 0) measureCount++;
+}
+
+// ── UI ──
+function buildPianoKeys() {
+  const container = document.getElementById('pianoKeys');
+  const keys = [
+    // Lower octave (for accompaniment/chord notes)
+    { note: 'A2', white: true },
+    { note: 'A#2', white: false },
+    { note: 'B2', white: true },
+    { note: 'C3', white: true },
+    { note: 'C#3', white: false },
+    { note: 'D3', white: true },
+    { note: 'D#3', white: false },
+    { note: 'E3', white: true },
+    { note: 'F3', white: true },
+    { note: 'F#3', white: false },
+    { note: 'G3', white: true },
+    { note: 'G#3', white: false },
+    // Melody octave
+    { note: 'A3', white: true, digit: 0 },
+    { note: 'A#3', white: false },
+    { note: 'B3', white: true, digit: 1 },
+    { note: 'C4', white: true, digit: 2 },
+    { note: 'C#4', white: false },
+    { note: 'D4', white: true, digit: 3 },
+    { note: 'D#4', white: false },
+    { note: 'E4', white: true, digit: 4 },
+    { note: 'F4', white: true, digit: 5 },
+    { note: 'F#4', white: false },
+    { note: 'G4', white: true },
+    { note: 'G#4', white: false, digit: 6 },
+    { note: 'A4', white: true, digit: 7 },
+    { note: 'A#4', white: false },
+    { note: 'B4', white: true, digit: 8 },
+    { note: 'C5', white: true, digit: 9 },
+    { note: 'C#5', white: false },
+    { note: 'D5', white: true },
+  ];
+
+  keys.forEach(k => {
+    const el = document.createElement('div');
+    el.className = `key ${k.white ? 'white' : 'black'}`;
+    el.dataset.note = k.note;
+    if (k.digit !== undefined) {
+      el.dataset.digit = k.digit;
+      const lbl = document.createElement('span');
+      lbl.className = 'label';
+      lbl.textContent = k.digit;
+      el.appendChild(lbl);
+    }
+    container.appendChild(el);
+  });
+}
+
+function highlightKey(digit, chordNoteNames) {
+  document.querySelectorAll('.key.active').forEach(k => k.classList.remove('active'));
+  document.querySelectorAll('.key.chord-active').forEach(k => k.classList.remove('chord-active'));
+
+  // Highlight melody key (gold)
+  const key = document.querySelector(`.key[data-digit="${digit}"]`);
+  if (key) {
+    key.classList.add('active');
+    setTimeout(() => key.classList.remove('active'), (60 / tempo) * 800);
+  }
+
+  // Highlight chord/accompaniment keys (purple)
+  if (chordNoteNames) {
+    chordNoteNames.forEach(noteName => {
+      const chordKey = document.querySelector(`.key[data-note="${noteName}"]`);
+      if (chordKey && chordKey !== key) {
+        chordKey.classList.add('chord-active');
+        setTimeout(() => chordKey.classList.remove('chord-active'), (60 / tempo) * 800);
+      }
+    });
+  }
+}
+
+function updatePiDisplay(currentIndex) {
+  const display = document.getElementById('piDisplay');
+  const windowSize = 40;
+  const start = Math.max(0, currentIndex - 20);
+  const end = currentIndex + windowSize - 20;
+
+  // Make sure digits are generated ahead
+  piGen.ensure(end + 50);
+
+  let html = '';
+  if (start === 0) {
+    html += '<span class="decimal">3.</span>';
+  }
+
+  for (let i = start === 0 ? 1 : start; i < end; i++) {
+    let cls = 'digit';
+    if (i < currentIndex) cls += ' played';
+    else if (i === currentIndex) cls += ' current';
+    else cls += ' upcoming';
+    html += `<span class="${cls}">${piGen.digits[i]}</span>`;
+  }
+
+  display.innerHTML = html;
+}
+
+function getOrdinalSuffix(n) {
+  const s = ['th', 'st', 'nd', 'rd'];
+  const v = n % 100;
+  return s[(v - 20) % 10] || s[v] || s[0];
+}
+
+function updateNoteDisplay(noteName, chordName, position) {
+  // position is the pi digit index: 0 = "3" (integer part), 1+ = decimal digits
+  let posNumberHtml = '';
+  let posDescHtml = '';
+  if (position !== undefined) {
+    if (position === 0) {
+      posNumberHtml = `<span class="pos-number">3.</span>`;
+      posDescHtml = `<span class="pos-description">integer part of &pi;</span>`;
+    } else {
+      const suffix = getOrdinalSuffix(position);
+      posNumberHtml = `<span class="pos-number">${position}${suffix}</span>`;
+      posDescHtml = `<span class="pos-description">decimal digit of &pi;</span>`;
+    }
+  }
+  document.getElementById('noteDisplay').innerHTML = `
+    ${posNumberHtml}
+    ${posDescHtml}
+    <div class="note-chord-row">
+      <span class="melody-note">${noteName}</span>
+      <span class="chord-label">${chordName}</span>
+    </div>
+  `;
+}
+
+function updateStats() {
+  document.getElementById('digitCount').textContent = digitCount.toLocaleString();
+  document.getElementById('measureCount').textContent = measureCount.toLocaleString();
+}
+
+function updateElapsed() {
+  if (!startTime) return;
+  const secs = Math.floor((Date.now() - startTime) / 1000);
+  const mins = Math.floor(secs / 60);
+  const hrs = Math.floor(mins / 60);
+  const m = mins % 60;
+  const s = secs % 60;
+  if (hrs > 0) {
+    document.getElementById('elapsed').textContent =
+      `${hrs}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+  } else {
+    document.getElementById('elapsed').textContent =
+      `${m}:${s.toString().padStart(2,'0')}`;
+  }
+}
+
+function buildVisualizer() {
+  const container = document.getElementById('visualizer');
+  for (let i = 0; i < NUM_BARS; i++) {
+    const bar = document.createElement('div');
+    bar.className = 'bar';
+    bar.style.height = '2px';
+    container.appendChild(bar);
+    visualizerBars.push(bar);
+  }
+}
+
+function animateVisualizer(digit) {
+  for (let i = 0; i < visualizerBars.length - 1; i++) {
+    visualizerBars[i].style.height = visualizerBars[i + 1].style.height;
+    visualizerBars[i].style.opacity = visualizerBars[i + 1].style.opacity;
+  }
+  const height = 5 + digit * 5.5;
+  const lastBar = visualizerBars[visualizerBars.length - 1];
+  lastBar.style.height = height + 'px';
+  lastBar.style.opacity = 0.3 + digit * 0.07;
+}
+
+// ── Controls ──
+function togglePlay() {
+  if (playing) { stop(); } else { start(); }
+}
+
+function start() {
+  initAudio();
+  if (audioCtx.state === 'suspended') audioCtx.resume();
+
+  playing = true;
+  if (!startTime) startTime = Date.now();
+  nextNoteTime = audioCtx.currentTime + 0.1;
+
+  document.getElementById('playBtn').innerHTML = '<span class="btn-icon pause"></span> Pause';
+  document.getElementById('playBtn').classList.add('active');
+
+  scheduler();
+  elapsedTimer = setInterval(updateElapsed, 1000);
+}
+
+function stop() {
+  playing = false;
+  clearTimeout(schedulerTimer);
+  clearInterval(elapsedTimer);
+
+  document.getElementById('playBtn').innerHTML = '<span class="btn-icon play"></span> Play';
+  document.getElementById('playBtn').classList.remove('active');
+}
+
+function updateTempo(val) {
+  tempo = parseInt(val);
+  document.getElementById('tempoValue').textContent = tempo + ' BPM';
+}
+
+function updateVolume(val) {
+  volume = val / 100;
+  if (masterGain) masterGain.gain.value = volume;
+}
+
+// ── Init ──
+buildPianoKeys();
+buildVisualizer();
+updatePiDisplay(0);
+</script>
+</body>
+</html>
