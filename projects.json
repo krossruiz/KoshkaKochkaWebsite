@@ -183,7 +183,8 @@
       "WebXR"
     ],
     "lastModified": "2025-09-04",
-    "repo": "https://github.com/krossruiz/carljr"
+    "repo": "https://github.com/krossruiz/carljr",
+    "liveUrl": "https://vrclaudeinterface.vercel.app"
   },
   {
     "id": "VRThreejsPassthroughBoilerplate",
