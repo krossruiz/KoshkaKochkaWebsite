@@ -43,7 +43,8 @@
       "Claude API"
     ],
     "lastModified": "2026-02-06",
-    "repo": "https://github.com/krossruiz/MindExplorer2D"
+    "repo": "https://github.com/krossruiz/MindExplorer2D",
+    "liveUrl": "https://mindexplorer2d.vercel.app"
   },
   {
     "id": "MindMapExplorer",
@@ -198,7 +199,8 @@
       "Vite"
     ],
     "lastModified": "2025-04-19",
-    "repo": "https://github.com/krossruiz/VibeHelloWorldBouncingText"
+    "repo": "https://github.com/krossruiz/VibeHelloWorldBouncingText",
+    "liveUrl": "https://vibe-hello-world-bouncing-text.vercel.app"
   },
   {
     "id": "YouTubeBlogPlaylistViewer",
@@ -418,7 +420,8 @@
       "JavaScript"
     ],
     "lastModified": "2025-11-19",
-    "repo": "https://github.com/krossruiz/embeddingvis"
+    "repo": "https://github.com/krossruiz/embeddingvis",
+    "liveUrl": "https://embeddingvis.vercel.app"
   },
   {
     "id": "expoapps",
@@ -446,7 +449,8 @@
       "Google Gemini API"
     ],
     "lastModified": "2025-08-25",
-    "repo": "https://github.com/krossruiz/flash-lite-gallery"
+    "repo": "https://github.com/krossruiz/flash-lite-gallery",
+    "liveUrl": "https://flash-lite-gallery.vercel.app"
   },
   {
     "id": "gemma3ninferencetest",
@@ -740,7 +744,8 @@
       "Vercel Blob"
     ],
     "lastModified": "2025-12-08",
-    "repo": "https://github.com/krossruiz/PlaylistPlaylister"
+    "repo": "https://github.com/krossruiz/PlaylistPlaylister",
+    "liveUrl": "https://videoplaylistsharer.vercel.app"
   },
   {
     "id": "vidgen",

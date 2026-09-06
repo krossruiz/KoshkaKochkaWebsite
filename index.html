@@ -318,6 +318,10 @@ function buildActions(p, downloadSizes) {
   const buttons = [];
   const notes = [];
 
+  if (p.liveUrl) {
+    buttons.push(`<a class="btn btn-primary" href="${escapeHTML(p.liveUrl)}" target="_blank" rel="noopener">&#9658; Live Demo</a>`);
+  }
+
   if (p.runtime === "launch" && p.entry) {
     if (p.embedded) {
       const url = `projects/${encodeURIComponent(p.id)}/${p.entry}`;
@@ -353,7 +357,7 @@ function buildActions(p, downloadSizes) {
       buttons.push(`<a class="btn" href="downloads/${encodeURIComponent(p.id)}.zip" download>&#128190; Download (${downloadSizes[p.id]} MB)</a>`);
     } else if (p.skipDownload) {
       notes.push("Too large to package as a download - browse the folder locally instead.");
-    } else if (!p.runtime || p.runtime === "download") {
+    } else if ((!p.runtime || p.runtime === "download") && !p.liveUrl) {
       notes.push("No web download built yet - run build-downloads.ps1.");
     }
   }
