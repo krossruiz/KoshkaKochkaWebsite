@@ -1,0 +1,66 @@
+# Project Directory
+
+A website that catalogs the project folders in `programming projects/`, with a description, usage instructions, and (where possible) a way to actually run or download each one.
+
+This repo is deployed on Vercel and also meant to be run locally. The two modes behave differently — see below.
+
+## Hosted (Vercel) vs. local
+
+This site is pushed to its own private GitHub repo and deployed to Vercel from that repo (auto-deploys on every push to `main`). The **hosted copy only contains this directory's own files** — `index.html`, `projects.json`, etc — not the ~40 sibling project folders it catalogs, since those are large, mostly-unrelated codebases better kept as their own repos.
+
+- **Hosted**: every card shows its description and, if published, a **View on GitHub** link to that project's own repo (private — you'll need to be logged into GitHub with access). "Launch", "Run in Browser (Python)", and local zip downloads are hidden, since the actual project files aren't part of this deployment.
+- **Local** (running `serve.bat` from `programming projects/`): full functionality — Launch buttons open sibling folders directly, Python scripts actually execute in-browser via Pyodide, and zip downloads work.
+
+## Running it locally
+
+Browsers block `fetch()` on `file://` pages, so double-clicking `index.html` won't load the data. Instead:
+
+1. Double-click `serve.bat` (requires Python on PATH), or run manually from the **parent** folder (`programming projects/`, one level up from this one):
+   ```
+   python -m http.server 8000
+   ```
+2. Open http://localhost:8000/project-directory/ in your browser.
+
+The server is rooted one level up so the site can also serve the project folders themselves (for "Launch" and "Run in Browser").
+
+## What each project can do on the site
+
+Every card shows a description, usage notes, and one of:
+
+- **Launch** — for plain static HTML/JS apps (and the WebXR/Three.js demos, which run fine in a normal tab but only show real passthrough/mixed-reality on a WebXR headset browser). Opens the project directly in a new tab.
+- **Run in Browser (Python)** — for simple, dependency-light Python console scripts. Runs actual Python entirely client-side via [Pyodide](https://pyodide.org) (Python compiled to WebAssembly) — no install, no server. `input()` calls pop a browser prompt; matplotlib output renders as an image.
+- **Download .zip** — for everything else. Includes Chrome/VS Code extensions (with load-unpacked / install instructions already in "How to use"), and any project too complex to run in a browser (Unity, Android/Gradle, C++/JUCE, Next.js+DB apps, Ollama-dependent CLIs, large ML models, etc).
+- Some projects show neither: truly empty/placeholder folders, or projects flagged `skipDownload` because they contain multi-gigabyte model weights or ROMs that aren't practical to zip (e.g. `vidgen`, `gemma3ninferencetest` — the latter still has a working **Launch** button since its files are just served directly, not zipped).
+
+**Why not everything runs in-browser:** a website can only execute code the browser itself can run — static HTML/JS, or Python via a WebAssembly runtime (Pyodide, which only supports pure-Python and a curated set of scientific packages like numpy/matplotlib). Unity/Godot builds, Android APKs, native C/C++, and anything needing a real backend, GPU, or external service (Ollama, ffmpeg, a database) cannot run inside a browser tab — those get a download link instead.
+
+## Files
+
+- `index.html` — the site (search + category filter + per-project action buttons)
+- `python-runner.html` — generic Pyodide-based console/plot runner, opened as `python-runner.html?src=<path-to-.py>&mode=plain|matplotlib&title=<name>`
+- `projects.json` — the data: one entry per project folder (title, description, how to use, tech, category, and runtime info: `runtime` is `"launch"`, `"pyodide"`, `"extension"`, or omitted/`"download"`)
+- `admin.json` — **visibility control**. Under `"visibility"`, set a folder's id to `true` to show it or `false` to hide it from the site. Any id not listed defaults to visible. Reload the page after editing.
+- `build-downloads.ps1` — run this (PowerShell) whenever project folders change, to (re)build `downloads/<id>.zip` for every visible project. Excludes `node_modules`, `.git`, `venv`, build output dirs, etc, and skips anything still over ~150MB after that (writes nothing for it, and marks `skipDownload` projects as too-large in the description above). Writes `downloads-manifest.json` listing what got built, which the site reads to decide whether to show a Download button.
+- `serve.bat` — starts a local server (from the parent folder) so `fetch()`, Launch, and Run-in-Browser all work
+- `downloads/` — generated zip files (gitignored — not part of the repo or the Vercel deployment; regenerate anytime with `build-downloads.ps1`)
+- `.gitignore` — excludes `downloads/` and local build logs from the repo/deployment
+
+## Deploying changes
+
+Push to `main` and Vercel redeploys automatically:
+
+```
+git add -A
+git commit -m "Update catalog"
+git push
+```
+
+## Updating
+
+`projects.json` was generated by scanning each folder's README/package.json/source files, so descriptions may be imprecise for undocumented projects — edit freely. If you add a new project folder:
+
+1. Add a matching entry to `projects.json` (and optionally to `admin.json`).
+2. If it's a plain static HTML app, add `"runtime": "launch", "entry": "index.html"` (or whatever the entry file is).
+3. If it's a simple pure-Python script (stdlib, or numpy/matplotlib), add `"runtime": "pyodide", "pyFile": "script.py", "pyMode": "plain"` (or `"matplotlib"` if it calls `plt.show()`).
+4. If it's a Chrome or VS Code extension, add `"runtime": "extension", "extensionKind": "chrome"` (or `"vscode"`).
+5. Otherwise leave `runtime` out — it'll just get a Download button once you rerun `build-downloads.ps1`.

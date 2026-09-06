@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Python Runner</title>
+<script src="https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js"></script>
+<style>
+  :root {
+    --bg: #0f1115; --panel: #171a21; --panel-2: #1e222b; --border: #2a2f3a;
+    --text: #e7e9ee; --text-dim: #9aa3b2; --accent: #7dd3fc; --accent-2: #a78bfa;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; background: var(--bg); color: var(--text); }
+  header { padding: 20px 24px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
+  header h1 { font-size: 1.1rem; margin: 0; }
+  header a { color: var(--accent); text-decoration: none; font-size: 0.85rem; }
+  main { max-width: 900px; margin: 0 auto; padding: 20px 24px 64px; }
+  #status { color: var(--text-dim); font-size: 0.85rem; margin-bottom: 12px; }
+  #console {
+    background: #000; color: #d1fae5; font-family: "Cascadia Code", Consolas, monospace;
+    font-size: 0.85rem; padding: 16px; border-radius: 8px; min-height: 220px;
+    white-space: pre-wrap; word-break: break-word; border: 1px solid var(--border);
+  }
+  #imgOut { margin-top: 16px; text-align: center; }
+  #imgOut img { max-width: 100%; border-radius: 8px; border: 1px solid var(--border); }
+  .row { display: flex; gap: 8px; margin-top: 12px; }
+  button {
+    background: var(--panel-2); color: var(--text); border: 1px solid var(--border);
+    padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 0.85rem;
+  }
+  button:hover { border-color: var(--accent); }
+  button:disabled { opacity: 0.5; cursor: default; }
+  .note { color: var(--text-dim); font-size: 0.8rem; margin-top: 10px; }
+</style>
+</head>
+<body>
+<header>
+  <h1 id="title">Python Runner</h1>
+  <a href="index.html">&larr; Back to Project Directory</a>
+</header>
+<main>
+  <div id="status">Loading Pyodide runtime…</div>
+  <div id="console"></div>
+  <div id="imgOut"></div>
+  <div class="row">
+    <button id="runBtn" disabled>Run again</button>
+  </div>
+  <p class="note">Running fully in your browser via <a href="https://pyodide.org" target="_blank" style="color:var(--accent-2)">Pyodide</a> (Python compiled to WebAssembly) - no server, no install. This program calling <code>input()</code> will prompt you with a browser dialog.</p>
+</main>
+
+<script>
+const params = new URLSearchParams(location.search);
+const src = params.get("src");
+const mode = params.get("mode") || "plain";
+const title = params.get("title") || "Python Runner";
+document.getElementById("title").textContent = title;
+document.title = title + " - Python Runner";
+
+const consoleEl = document.getElementById("console");
+const statusEl = document.getElementById("status");
+const imgOut = document.getElementById("imgOut");
+const runBtn = document.getElementById("runBtn");
+
+function appendLine(text) {
+  consoleEl.textContent += text + "\n";
+  consoleEl.scrollTop = consoleEl.scrollHeight;
+}
+
+let pyodide;
+
+async function setup() {
+  if (!src) {
+    statusEl.textContent = "No script specified (missing ?src= query param).";
+    return;
+  }
+  statusEl.textContent = "Loading Pyodide runtime…";
+  pyodide = await loadPyodide({
+    stdout: (msg) => appendLine(msg),
+    stderr: (msg) => appendLine(msg),
+  });
+
+  pyodide.globals.set("_js_input", (promptText) => {
+    const val = window.prompt(promptText || "Input:");
+    appendLine((promptText || "") + (val ?? ""));
+    return val ?? "";
+  });
+  await pyodide.runPythonAsync(`
+import builtins
+def _input(prompt=""):
+    return _js_input(prompt)
+builtins.input = _input
+`);
+
+  if (mode === "matplotlib") {
+    statusEl.textContent = "Loading numpy + matplotlib (this can take a few seconds)…";
+    await pyodide.loadPackage(["numpy", "matplotlib"]);
+    await pyodide.runPythonAsync(`
+import matplotlib
+matplotlib.use("AGG")
+import matplotlib.pyplot as plt
+import io, base64, js as _js
+
+_orig_savefig = plt.savefig
+
+def _snapshot_current_figure():
+    buf = io.BytesIO()
+    _orig_savefig(buf, format="png", bbox_inches="tight")
+    buf.seek(0)
+    _js.window._pyodideLastFigure = base64.b64encode(buf.read()).decode()
+
+def _capture_savefig(*a, **kw):
+    result = _orig_savefig(*a, **kw)
+    try:
+        _snapshot_current_figure()
+    except Exception:
+        pass
+    return result
+
+def _capture_show(*a, **kw):
+    _snapshot_current_figure()
+
+plt.show = _capture_show
+plt.savefig = _capture_savefig
+`);
+  }
+
+  statusEl.textContent = "Fetching " + src + " …";
+  let code;
+  try {
+    const res = await fetch(src);
+    if (!res.ok) throw new Error(res.status);
+    code = await res.text();
+  } catch (e) {
+    statusEl.textContent = "Could not fetch " + src + ". Are you running this via a local server (see README.md), not file://?";
+    return;
+  }
+
+  runBtn.disabled = false;
+  runBtn.onclick = () => run(code);
+  statusEl.textContent = "Ready.";
+  run(code);
+}
+
+async function run(code) {
+  consoleEl.textContent = "";
+  imgOut.innerHTML = "";
+  window._pyodideLastFigure = null;
+  statusEl.textContent = "Running…";
+  try {
+    await pyodide.runPythonAsync(code);
+    if (mode === "matplotlib" && window._pyodideLastFigure) {
+      imgOut.innerHTML = `<img src="data:image/png;base64,${window._pyodideLastFigure}" alt="matplotlib output">`;
+    }
+    statusEl.textContent = "Finished.";
+  } catch (e) {
+    appendLine(String(e));
+    statusEl.textContent = "Error - see console output above.";
+  }
+}
+
+setup();
+</script>
+</body>
+</html>

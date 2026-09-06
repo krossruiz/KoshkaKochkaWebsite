@@ -1,0 +1,762 @@
+[
+  {
+    "id": "Chrome Extensions",
+    "runtime": "extension",
+    "extensionKind": "chrome",
+    "title": "Chrome Extensions",
+    "category": "browser-extension",
+    "description": "A collection of separate Chrome extension projects (YouTube negative-filter variants, an AI link copy/paste tool, a downloaded chrome-extensions-samples reference repo, and a PH negative filter).",
+    "howToUse": "Open each subfolder individually; most build with 'npm install && npm run build' then load the resulting 'build' folder unpacked via chrome://extensions.",
+    "tech": [
+      "Chrome Extension",
+      "JavaScript"
+    ],
+    "lastModified": "2025-11-30",
+    "repo": "https://github.com/krossruiz/Chrome-Extensions"
+  },
+  {
+    "id": "HelloWorldChromeExtension",
+    "runtime": "extension",
+    "extensionKind": "chrome",
+    "title": "Hello World Chrome Extension",
+    "category": "browser-extension",
+    "description": "A minimal 'Hello World' style Chrome extension (manifest v3) with a popup, used as a base-level extension template.",
+    "howToUse": "Load unpacked via chrome://extensions, selecting this folder.",
+    "tech": [
+      "Chrome Extension",
+      "JavaScript",
+      "Manifest V3"
+    ],
+    "lastModified": "2025-04-20",
+    "repo": "https://github.com/krossruiz/HelloWorldChromeExtension"
+  },
+  {
+    "id": "MindExplorer2D",
+    "title": "Mind Explorer 2D",
+    "category": "web-app",
+    "description": "A web app for uploading, visualizing, and analyzing mind maps (.mm files) with D3.js rendering, node grouping, and Claude AI-powered chat analysis of selected content.",
+    "howToUse": "cd server && npm install, add a .env with an API key, then run the server and open the client in a browser.",
+    "tech": [
+      "JavaScript",
+      "D3.js",
+      "Node.js",
+      "Claude API"
+    ],
+    "lastModified": "2026-02-06",
+    "repo": "https://github.com/krossruiz/MindExplorer2D"
+  },
+  {
+    "id": "MindMapExplorer",
+    "title": "Mind Map Explorer",
+    "category": "other",
+    "description": "Empty folder with no files; likely an earlier/abandoned scaffold related to MindExplorer2D.",
+    "howToUse": "N/A - folder is empty.",
+    "tech": [],
+    "lastModified": "2026-02-06"
+  },
+  {
+    "id": "Python",
+    "title": "Python",
+    "category": "other",
+    "description": "Effectively empty scratch folder containing only a stray text file (helloInput.txt) and swap files; no real project content.",
+    "howToUse": "N/A - no runnable project here.",
+    "tech": [
+      "Python"
+    ],
+    "lastModified": "2025-09-03"
+  },
+  {
+    "id": "StoriesExpo",
+    "title": "Stories Expo",
+    "category": "other",
+    "description": "Placeholder folder containing only an empty generation-instructions.txt file; no implemented project.",
+    "howToUse": "N/A - folder is essentially empty/placeholder.",
+    "tech": [],
+    "lastModified": "2025-08-18"
+  },
+  {
+    "id": "Unity",
+    "title": "Unity",
+    "category": "game-dev",
+    "description": "Empty folder, presumably intended to hold Unity game projects.",
+    "howToUse": "N/A - folder is empty.",
+    "tech": [
+      "Unity"
+    ],
+    "lastModified": "2025-06-21"
+  },
+  {
+    "id": "VRClaudeInterface",
+    "title": "VR Claude Interface",
+    "category": "vr-ar",
+    "description": "A VR-focused interface project pairing a Python custom server (custom_server.py) with a web-based site-source, intended to connect Claude AI to a VR/webxr front end.",
+    "howToUse": "Run 'python run.py' (or custom_server.py) to start the local server, then open the served site-source in a browser/VR headset.",
+    "tech": [
+      "Python",
+      "VR",
+      "WebXR"
+    ],
+    "lastModified": "2025-09-04",
+    "repo": "https://github.com/krossruiz/carljr"
+  },
+  {
+    "id": "VRThreejsPassthroughBoilerplate",
+    "runtime": "launch",
+    "entry": "index.html",
+    "launchNote": "Loads fine in a regular desktop browser tab; passthrough/mixed-reality features only activate on a WebXR-capable headset browser.",
+    "title": "VR Three.js Passthrough Boilerplate",
+    "category": "vr-ar",
+    "description": "A boilerplate for building WebXR passthrough (mixed reality) experiences with Three.js, including a pipe-organ demo and Three.js addon modules.",
+    "howToUse": "npm install, then run a local server (per instructions.txt) and open index.html in a WebXR-capable browser/headset.",
+    "tech": [
+      "Three.js",
+      "WebXR",
+      "JavaScript"
+    ],
+    "lastModified": "2025-11-22",
+    "repo": "https://github.com/krossruiz/VRThreejsPassthroughBoilerplate"
+  },
+  {
+    "id": "VRThreejsPassthroughTextAndVideoTexture",
+    "runtime": "launch",
+    "entry": "index.html",
+    "launchNote": "Loads fine in a regular desktop browser tab; passthrough/mixed-reality features only activate on a WebXR-capable headset browser.",
+    "title": "VR Three.js Passthrough - Text & Video Texture",
+    "category": "vr-ar",
+    "description": "A WebXR passthrough demo built on Three.js showcasing text and video textures rendered in mixed reality.",
+    "howToUse": "npm install, then serve and open index.html in a WebXR-capable browser/headset (see instructions.txt).",
+    "tech": [
+      "Three.js",
+      "WebXR",
+      "JavaScript"
+    ],
+    "lastModified": "2025-09-14",
+    "repo": "https://github.com/krossruiz/VRThreejsPassthroughTextAndVideoTexture"
+  },
+  {
+    "id": "VRThreejsPassthroughYouTubeDisplay",
+    "title": "VR Three.js Passthrough - YouTube Display",
+    "category": "vr-ar",
+    "description": "A WebXR passthrough project that displays YouTube content in VR, combining a Puppeteer-driven YouTube scraper/headless server with Three.js rendering.",
+    "howToUse": "Start the YouTubeHeadlessScraperServer, then run the VRThreejsPassthroughPuppeteerYouTube app (npm install + serve) and open in a WebXR browser.",
+    "tech": [
+      "Three.js",
+      "WebXR",
+      "Puppeteer",
+      "Node.js"
+    ],
+    "lastModified": "2025-09-15",
+    "repo": "https://github.com/krossruiz/VRThreejsPassthroughYouTubeDisplay"
+  },
+  {
+    "id": "VRThreejsPassthroughYouTubePlaylistViewer",
+    "runtime": "launch",
+    "entry": "index.html",
+    "launchNote": "Loads fine in a regular desktop browser tab; passthrough/mixed-reality features only activate on a WebXR-capable headset browser.",
+    "title": "VR Three.js Passthrough - YouTube Playlist Viewer",
+    "category": "vr-ar",
+    "description": "A WebXR passthrough app for viewing YouTube playlists in mixed reality, built on the same Three.js boilerplate as the other passthrough projects.",
+    "howToUse": "npm install, then serve and open index.html in a WebXR-capable browser/headset.",
+    "tech": [
+      "Three.js",
+      "WebXR",
+      "JavaScript"
+    ],
+    "lastModified": "2025-11-29",
+    "repo": "https://github.com/krossruiz/VRThreejsPassthroughYouTubePlaylistViewer"
+  },
+  {
+    "id": "VRThreejsPassthrough_PIPE_ORGAN",
+    "runtime": "launch",
+    "entry": "index.html",
+    "launchNote": "Loads fine in a regular desktop browser tab; passthrough/mixed-reality features only activate on a WebXR-capable headset browser.",
+    "title": "VR Three.js Passthrough - Pipe Organ",
+    "category": "vr-ar",
+    "description": "A WebXR passthrough experience simulating/visualizing a pipe organ in mixed reality using Three.js.",
+    "howToUse": "npm install, then serve and open index.html in a WebXR-capable browser/headset.",
+    "tech": [
+      "Three.js",
+      "WebXR",
+      "JavaScript"
+    ],
+    "lastModified": "2025-11-22",
+    "repo": "https://github.com/krossruiz/VRThreejsPassthrough_PIPE_ORGAN"
+  },
+  {
+    "id": "VibeHelloWorldBouncingText",
+    "title": "Vibe Hello World Bouncing Text",
+    "category": "web-app",
+    "description": "A React + TypeScript + Vite starter project demonstrating bouncing text animation, scaffolded from the standard Vite React-TS template.",
+    "howToUse": "npm install && npm run dev to start the dev server; npm run build for production build.",
+    "tech": [
+      "React",
+      "TypeScript",
+      "Vite"
+    ],
+    "lastModified": "2025-04-19",
+    "repo": "https://github.com/krossruiz/VibeHelloWorldBouncingText"
+  },
+  {
+    "id": "YouTubeBlogPlaylistViewer",
+    "runtime": "launch",
+    "entry": "index.html",
+    "title": "YouTube Blog & Playlist Viewer",
+    "category": "web-app",
+    "description": "A single-page web app combining a resizable YouTube video player with an editable blog/post panel, supporting custom <yt-link>/<post-link> elements with hover previews and localStorage persistence.",
+    "howToUse": "Open index.html directly in a browser (no build step required).",
+    "tech": [
+      "JavaScript",
+      "HTML/CSS"
+    ],
+    "lastModified": "2025-09-04",
+    "repo": "https://github.com/krossruiz/YouTubeBlogPlaylistViewer"
+  },
+  {
+    "id": "YouTubeTranscriptExtractor",
+    "runtime": "extension",
+    "extensionKind": "chrome",
+    "title": "YouTube Transcript Extractor",
+    "category": "browser-extension",
+    "description": "A Chrome extension (Manifest V3) that extracts the transcript from a YouTube video page via a content script and popup.",
+    "howToUse": "Load unpacked via chrome://extensions, selecting this folder; then open a YouTube video and use the popup.",
+    "tech": [
+      "Chrome Extension",
+      "JavaScript",
+      "Manifest V3"
+    ],
+    "lastModified": "2025-04-21",
+    "repo": "https://github.com/krossruiz/YouTubeTranscriptExtractor"
+  },
+  {
+    "id": "addProgramToPath",
+    "title": "Add Program To Path",
+    "category": "other",
+    "description": "Empty folder with no files; likely intended for a utility script to add a program to the system PATH.",
+    "howToUse": "N/A - folder is empty.",
+    "tech": [],
+    "lastModified": "2025-08-03"
+  },
+  {
+    "id": "all-MiniLM-L6-v2_finetuner",
+    "title": "All-MiniLM-L6-v2 Finetuner",
+    "category": "ai-ml",
+    "description": "A Python tool for fine-tuning the all-MiniLM-L6-v2 sentence-transformer embedding model, with a Tkinter GUI, real-time embedding visualizer, and plots comparing sentence embeddings before/after tuning.",
+    "howToUse": "pip install -r requirements.txt, then run 'python main.py' (GUI) or 'python finetuner.py' / 'python realtime_visualizer.py' for specific tools.",
+    "tech": [
+      "Python",
+      "PyTorch",
+      "sentence-transformers",
+      "scikit-learn",
+      "Tkinter"
+    ],
+    "lastModified": "2025-11-21",
+    "repo": "https://github.com/krossruiz/all-MiniLM-L6-v2_finetuner"
+  },
+  {
+    "id": "art-tools",
+    "runtime": "launch",
+    "entry": "pixel-inspector.html",
+    "title": "Art Tools",
+    "category": "web-app",
+    "description": "A browser-based pixel inspector tool built with Three.js for examining images/pixels.",
+    "howToUse": "Open pixel-inspector.html directly in a browser (uses Three.js via CDN import map).",
+    "tech": [
+      "Three.js",
+      "HTML/JavaScript"
+    ],
+    "lastModified": "2026-03-27",
+    "repo": "https://github.com/krossruiz/photo-stats-viewer"
+  },
+  {
+    "id": "aslForMichael",
+    "title": "ASL Speak (for Michael)",
+    "category": "ai-ml",
+    "description": "An Android app (Java) that captures webcam frames, classifies ASL fingerspelling with an on-device quantized TFLite CNN, and speaks the result via text-to-speech; optimized to run on an old Samsung Galaxy Note 2.",
+    "howToUse": "Open the 'app' folder as a Gradle Android project in Android Studio (build.gradle at root) and run/build the APK; train/quantize the model separately via training/train_asl_model.py.",
+    "tech": [
+      "Java",
+      "Android",
+      "TensorFlow Lite",
+      "Gradle"
+    ],
+    "lastModified": "2025-09-04",
+    "repo": "https://github.com/krossruiz/aslForMichael"
+  },
+  {
+    "id": "audioscratcher",
+    "title": "Audio Scratcher",
+    "category": "other",
+    "description": "A JUCE-based (C++) desktop audio application that records live audio into a rolling buffer and lets a MIDI DJ controller's jog wheel scratch/scrub through the recent recording in real time, mixed with live input.",
+    "howToUse": "Build with CMake (CMakeLists.txt) using a JUCE-compatible toolchain, then run the resulting app; connect an audio interface and MIDI DJ controller.",
+    "tech": [
+      "C++",
+      "JUCE",
+      "CMake",
+      "MIDI"
+    ],
+    "lastModified": "2025-08-24",
+    "repo": "https://github.com/krossruiz/audioscratcher"
+  },
+  {
+    "id": "c-projects",
+    "title": "C Projects",
+    "category": "other",
+    "description": "A small C learning/experimentation project (hello.c) exploring struct memory layout and buffer overflow-style corruption concepts.",
+    "howToUse": "Compile with a C compiler (e.g. gcc hello.c -o hello) and run the resulting executable.",
+    "tech": [
+      "C"
+    ],
+    "lastModified": "2026-01-25",
+    "repo": "https://github.com/krossruiz/c-projects"
+  },
+  {
+    "id": "claude",
+    "title": "Claude",
+    "category": "other",
+    "description": "Empty folder with no files.",
+    "howToUse": "N/A - folder is empty.",
+    "tech": [],
+    "lastModified": "2026-01-23"
+  },
+  {
+    "id": "claude-tests",
+    "title": "Claude Tests",
+    "category": "other",
+    "description": "A folder holding experimental Claude-related sub-projects: a 3D chatbot demo and a leadership/Amazon wishlist project.",
+    "howToUse": "Explore each subfolder individually for its own setup instructions.",
+    "tech": [
+      "JavaScript"
+    ],
+    "lastModified": "2026-02-04",
+    "repo": "https://github.com/krossruiz/claude-tests"
+  },
+  {
+    "id": "claudeStorySplitter",
+    "title": "Claude Story Splitter",
+    "category": "python-tool",
+    "description": "A CLI tool that splits a video (e.g. iPhone .mov/HEVC clips) into fixed-length sections using FFmpeg, with an optional exact re-encode mode.",
+    "howToUse": "Requires Python 3 and FFmpeg on PATH; run 'python split_video.py <video> [--interval TIME] [--exact] [--output-dir DIR]'.",
+    "tech": [
+      "Python",
+      "FFmpeg",
+      "CLI"
+    ],
+    "lastModified": "2025-07-24",
+    "repo": "https://github.com/krossruiz/claudeStorySplitter"
+  },
+  {
+    "id": "claudeTestRemote",
+    "runtime": "launch",
+    "entry": "index.html",
+    "title": "Claude Test Remote",
+    "category": "web-app",
+    "description": "A simple static 'Hello World Blog' single HTML page test project, likely used to test remote Claude Code workflows.",
+    "howToUse": "Open index.html directly in a browser.",
+    "tech": [
+      "HTML/CSS"
+    ],
+    "lastModified": "2026-01-23",
+    "repo": "https://github.com/krossruiz/claudeTestRemote"
+  },
+  {
+    "id": "discordsmsrcssynchronizer",
+    "title": "Discord SMS RCS Synchronizer",
+    "category": "other",
+    "description": "Empty folder with no files; presumably planned for a tool that syncs SMS/RCS messages with Discord.",
+    "howToUse": "N/A - folder is empty.",
+    "tech": [],
+    "lastModified": "2025-08-18"
+  },
+  {
+    "id": "drone_graph_vis",
+    "runtime": "pyodide",
+    "pyFile": "drone_plot.py",
+    "pyMode": "matplotlib",
+    "title": "Drone Graph Visualizer",
+    "category": "python-tool",
+    "description": "A Python script (matplotlib/numpy) that computes and plots drone acceleration/speed physics (e.g. time to reach a target speed under given g-force acceleration).",
+    "howToUse": "Run 'python drone_plot.py' (requires matplotlib and numpy installed) to generate the plot.",
+    "tech": [
+      "Python",
+      "Matplotlib",
+      "NumPy"
+    ],
+    "lastModified": "2025-11-22",
+    "repo": "https://github.com/krossruiz/drone_graph_vis"
+  },
+  {
+    "id": "educare",
+    "title": "Educare",
+    "category": "python-tool",
+    "description": "A set of Python utilities for document processing: recursively copying files between directories, recursively finding and rotating PDFs, and a registration-acknowledgment reader/GUI/web-UI for annotating scanned registration documents.",
+    "howToUse": "Run the individual scripts directly, e.g. 'python recursive-copy-files-from-input-directory-to-output-directory.py' or 'python educare-registration-gui.py' / 'educare-registration-webui.py'.",
+    "tech": [
+      "Python"
+    ],
+    "lastModified": "2025-10-09",
+    "repo": "https://github.com/krossruiz/educare"
+  },
+  {
+    "id": "embeddingvis",
+    "title": "Embedding Visualizer",
+    "category": "ai-ml",
+    "description": "A web app that visualizes text embeddings in 3D using Three.js, computing embeddings client-side with Transformers.js and reducing dimensionality with t-SNE.",
+    "howToUse": "npm install && npm run dev (Vite) to start a local dev server, or npm run build for production.",
+    "tech": [
+      "Three.js",
+      "Transformers.js",
+      "t-SNE",
+      "Vite",
+      "JavaScript"
+    ],
+    "lastModified": "2025-11-19",
+    "repo": "https://github.com/krossruiz/embeddingvis"
+  },
+  {
+    "id": "expoapps",
+    "title": "Expo Apps",
+    "category": "web-app",
+    "description": "Contains 'goodsandwich', a React Native/Expo app (with an Electron folder too) - an app project bootstrapped with Expo tooling.",
+    "howToUse": "cd expoapps/goodsandwich, npm install, then 'npx expo start' to run in Expo Go/simulator, or use the electron folder for a desktop build.",
+    "tech": [
+      "React Native",
+      "Expo",
+      "Electron"
+    ],
+    "lastModified": "2025-08-24",
+    "repo": "https://github.com/krossruiz/expoapps"
+  },
+  {
+    "id": "flash-lite-gallery",
+    "title": "Flash Lite Gallery",
+    "category": "web-app",
+    "description": "A Node.js/Express web app that lets users upload images and generates/gallery-displays content using Google's Gemini ('@google/genai', Flash Lite model) API.",
+    "howToUse": "npm install, add a .env with a Google GenAI API key, then 'npm start' (runs server.js) and open the app in a browser.",
+    "tech": [
+      "Node.js",
+      "Express",
+      "Google Gemini API"
+    ],
+    "lastModified": "2025-08-25",
+    "repo": "https://github.com/krossruiz/flash-lite-gallery"
+  },
+  {
+    "id": "gemma3ninferencetest",
+    "runtime": "launch",
+    "entry": "index.html",
+    "skipDownload": true,
+    "title": "Gemma 3n Inference Test",
+    "category": "ai-ml",
+    "description": "A browser-based test harness for running Google's Gemma 3n on-device LLM (via MediaPipe's LlmInference tasks-genai) directly in JavaScript with local .task model files.",
+    "howToUse": "Serve the folder locally and open index.html in a browser (loads the .task model files and MediaPipe tasks-genai from CDN).",
+    "tech": [
+      "JavaScript",
+      "MediaPipe",
+      "Gemma",
+      "On-device LLM"
+    ],
+    "lastModified": "2025-06-19",
+    "repo": "https://github.com/krossruiz/gemma3ninferencetest"
+  },
+  {
+    "id": "godot",
+    "title": "Godot",
+    "category": "game-dev",
+    "description": "Not an actual Godot project - just a folder with a Python script (main.py) and a log.txt; no Godot project files present.",
+    "howToUse": "Run 'python main.py'; there is no Godot .godot project here despite the folder name.",
+    "tech": [
+      "Python"
+    ],
+    "lastModified": "2025-07-19"
+  },
+  {
+    "id": "hawkingvoicetts",
+    "title": "Hawking Voice TTS",
+    "category": "ai-ml",
+    "description": "A terminal chat app that talks to a local Ollama LLM and speaks its replies aloud in a Stephen Hawking-style DECtalk voice (via eSpeak-NG) or realistic neural voices (via Piper TTS), with optional live translation using a second Ollama model.",
+    "howToUse": "Install Ollama, eSpeak-NG, and Python deps (pip install -e . or pip install hawkingvoicetts), pull an Ollama model, then run the CLI entry point to chat.",
+    "tech": [
+      "Python",
+      "Ollama",
+      "eSpeak-NG",
+      "Piper TTS",
+      "CLI"
+    ],
+    "lastModified": "2025-09-03",
+    "repo": "https://github.com/krossruiz/hawkingvoicetts"
+  },
+  {
+    "id": "mind",
+    "title": "Mind",
+    "category": "other",
+    "description": "A folder containing only a dated notes subfolder ('2-26-26 notes'); no code project.",
+    "howToUse": "N/A - contains notes only, not a runnable project.",
+    "tech": [],
+    "lastModified": "2026-02-06"
+  },
+  {
+    "id": "numberDifferenceVisualizer",
+    "runtime": "launch",
+    "entry": "index.html",
+    "title": "Number Difference Visualizer",
+    "category": "web-app",
+    "description": "A single-page web tool that visualizes numeric differences/calculations, using math.js for computation.",
+    "howToUse": "Open index.html directly in a browser.",
+    "tech": [
+      "JavaScript",
+      "math.js",
+      "HTML/CSS"
+    ],
+    "lastModified": "2025-12-07",
+    "repo": "https://github.com/krossruiz/numberDifferenceVisualizer"
+  },
+  {
+    "id": "ollamalanguageconverter",
+    "title": "Ollama Language Converter",
+    "category": "other",
+    "description": "Empty folder with no files; presumably an earlier attempt related to the similarly-named ollamamodeltranslator project.",
+    "howToUse": "N/A - folder is empty.",
+    "tech": [],
+    "lastModified": "2025-07-29"
+  },
+  {
+    "id": "ollamamodeltranslator",
+    "title": "Ollama Model Translator",
+    "category": "ai-ml",
+    "description": "A Python CLI tool that translates chat output from local Ollama models into a user's preferred language, using a config file mapping models to their native languages and a translator model.",
+    "howToUse": "Edit config.json to set your language and model mappings, ensure Ollama is running, then 'python ollama_translate.py'.",
+    "tech": [
+      "Python",
+      "Ollama"
+    ],
+    "lastModified": "2025-08-26",
+    "repo": "https://github.com/krossruiz/ollamamodeltranslator"
+  },
+  {
+    "id": "p6js",
+    "title": "P6JS (p5.js Sketches)",
+    "category": "web-app",
+    "description": "Two subfolders named 'electricField' and 'unit circle shooter' suggesting planned p5.js sketches, but both are currently empty - no code has been written yet.",
+    "howToUse": "N/A - subfolders are empty.",
+    "tech": [
+      "JavaScript",
+      "p5.js"
+    ],
+    "lastModified": "2025-05-25"
+  },
+  {
+    "id": "personal_site",
+    "runtime": "launch",
+    "entry": "index.html",
+    "title": "Personal Site",
+    "category": "web-app",
+    "description": "A personal portfolio/homepage website with an about section, a projects listing page, a drawings gallery, and custom fonts/GIFs.",
+    "howToUse": "Open index.html directly in a browser, or serve the folder with any static file server.",
+    "tech": [
+      "HTML/CSS",
+      "JavaScript"
+    ],
+    "lastModified": "2025-08-30",
+    "repo": "https://github.com/krossruiz/personal_site"
+  },
+  {
+    "id": "piInfinite",
+    "runtime": "launch",
+    "entry": "index.html",
+    "title": "\u03c0 Infinite (The Infinite Piano of Pi)",
+    "category": "web-app",
+    "description": "A creative single-page web app/art piece that turns the digits of pi into an interactive musical piano experience, styled as a GitHub Pages site (_config.yml present).",
+    "howToUse": "Open index.html directly in a browser, or serve via GitHub Pages (Jekyll config included).",
+    "tech": [
+      "HTML/CSS",
+      "JavaScript"
+    ],
+    "lastModified": "2026-03-15",
+    "repo": "https://github.com/krossruiz/piInfiniteMusicGenerator-Song-from-Studio-Version-posted-by-aSongScout-on-YouTube-"
+  },
+  {
+    "id": "randomCharacterOutput",
+    "runtime": "pyodide",
+    "pyFile": "main.py",
+    "pyMode": "plain",
+    "title": "Random Character Output",
+    "category": "python-tool",
+    "description": "A small Python script that generates random strings of letters at configurable short/medium/long lengths.",
+    "howToUse": "Run 'python main.py' or 'python rCharStr.py'.",
+    "tech": [
+      "Python"
+    ],
+    "lastModified": "2025-08-01",
+    "repo": "https://github.com/krossruiz/randomCharacterOutput"
+  },
+  {
+    "id": "remoteVSCodeAgentCommunicator",
+    "runtime": "extension",
+    "extensionKind": "vscode",
+    "title": "Remote VSCode Agent Communicator",
+    "category": "other",
+    "description": "A VSCode extension that exposes an API/server allowing remote devices to communicate with a running VSCode instance (e.g. to start a remote agent server).",
+    "howToUse": "Open in VSCode, npm install, F5 to run the extension in a dev host, or install the packaged remote-vscode-agent-0.0.1.vsix.",
+    "tech": [
+      "TypeScript",
+      "VSCode Extension",
+      "Node.js"
+    ],
+    "lastModified": "2026-01-10",
+    "repo": "https://github.com/krossruiz/remoteVSCodeAgentCommunicator"
+  },
+  {
+    "id": "resume-site",
+    "runtime": "launch",
+    "entry": "resume.html",
+    "title": "Resume Site",
+    "category": "web-app",
+    "description": "A single-page styled HTML resume/CV site, including an embedded video clip and a bundled executable.",
+    "howToUse": "Open resume.html directly in a browser.",
+    "tech": [
+      "HTML/CSS"
+    ],
+    "lastModified": "2025-06-05",
+    "repo": "https://github.com/krossruiz/resume-site"
+  },
+  {
+    "id": "sitoaqui",
+    "runtime": "launch",
+    "entry": "index.html",
+    "title": "Sito Aqui",
+    "category": "web-app",
+    "description": "A web project with an index.html and resources folder; README appears to be corrupted/garbled so exact purpose is unclear beyond it being a simple site.",
+    "howToUse": "Open index.html directly in a browser.",
+    "tech": [
+      "HTML/CSS"
+    ],
+    "lastModified": "2026-03-22",
+    "repo": "https://github.com/krossruiz/sitoaqui"
+  },
+  {
+    "id": "test",
+    "title": "Test",
+    "category": "other",
+    "description": "Empty folder with no files, likely a scratch/test directory.",
+    "howToUse": "N/A - folder is empty.",
+    "tech": [],
+    "lastModified": "2025-08-25"
+  },
+  {
+    "id": "test-webpage",
+    "runtime": "launch",
+    "entry": "index.html",
+    "title": "Test Webpage",
+    "category": "web-app",
+    "description": "A minimal 'Hello World' static HTML test page.",
+    "howToUse": "Open index.html directly in a browser.",
+    "tech": [
+      "HTML/CSS"
+    ],
+    "lastModified": "2026-01-11"
+  },
+  {
+    "id": "testProjectForRemoteVSCodeAgentCommunicator",
+    "runtime": "launch",
+    "entry": "index.html",
+    "title": "Test Project for Remote VSCode Agent Communicator",
+    "category": "web-app",
+    "description": "A joke/test static HTML page (retro Comic Sans, GeoCities-style styling) used to test the Remote VSCode Agent Communicator extension.",
+    "howToUse": "Open index.html directly in a browser.",
+    "tech": [
+      "HTML/CSS"
+    ],
+    "lastModified": "2026-01-10"
+  },
+  {
+    "id": "tests",
+    "title": "Tests",
+    "category": "other",
+    "description": "Empty folder with no files, likely a scratch/test directory.",
+    "howToUse": "N/A - folder is empty.",
+    "tech": [],
+    "lastModified": "2026-01-23"
+  },
+  {
+    "id": "tiffanys-patent-annotater",
+    "title": "Tiffany's Patent Annotater",
+    "category": "other",
+    "description": "An essentially empty project folder containing only a .git directory; no source files present yet.",
+    "howToUse": "N/A - no code present beyond git metadata.",
+    "tech": [],
+    "lastModified": "2026-03-27"
+  },
+  {
+    "id": "tools",
+    "title": "Tools",
+    "category": "cli-tool",
+    "description": "Contains 'autoit3--keyboardtyper', an AutoIt3 script (hello-world.au3) for automated keyboard typing.",
+    "howToUse": "Open hello-world.au3 with AutoIt3 (via the included AutoIt3.exe.lnk) to run/compile the script.",
+    "tech": [
+      "AutoIt"
+    ],
+    "lastModified": "2025-05-12",
+    "repo": "https://github.com/krossruiz/tools"
+  },
+  {
+    "id": "universal-emulator",
+    "title": "Universal Emulator",
+    "category": "game-dev",
+    "description": "A game emulator project bundling a GBA ROM (Legend of Zelda: A Link to the Past & Four Swords), an 'emu' component, and a 'genie_lite' component, likely for building/testing a cross-console emulator.",
+    "howToUse": "Explore the 'emu' and 'genie_lite' subfolders for their own build instructions; the .gba file is a ROM used for testing.",
+    "tech": [
+      "Emulator"
+    ],
+    "lastModified": "2025-08-27",
+    "repo": "https://github.com/krossruiz/universal-emulator"
+  },
+  {
+    "id": "videoplaylistsharer",
+    "title": "Video Playlist Sharer",
+    "category": "web-app",
+    "description": "A Next.js web app for creating and sharing video playlists, using Vercel Blob storage and Vercel Postgres for persistence.",
+    "howToUse": "npm install, set up .env.local with Vercel Blob/Postgres credentials, then 'npm run dev' to start locally or 'npm run build && npm start' for production.",
+    "tech": [
+      "Next.js",
+      "React",
+      "Vercel Postgres",
+      "Vercel Blob"
+    ],
+    "lastModified": "2025-12-08",
+    "repo": "https://github.com/krossruiz/PlaylistPlaylister"
+  },
+  {
+    "id": "vidgen",
+    "skipDownload": true,
+    "title": "Vidgen (Wan2.1)",
+    "category": "ai-ml",
+    "description": "A video-generation project wrapping the Wan2.1 text/image-to-video AI model.",
+    "howToUse": "Follow INSTALL.md inside the Wan2.1 folder for environment setup, then use the provided Makefile/scripts to run video generation.",
+    "tech": [
+      "Python",
+      "AI video generation"
+    ],
+    "lastModified": "2026-03-20"
+  },
+  {
+    "id": "xr",
+    "title": "XR",
+    "category": "vr-ar",
+    "description": "Empty folder, presumably intended for a future XR/VR project.",
+    "howToUse": "N/A - folder is empty.",
+    "tech": [
+      "VR",
+      "AR"
+    ],
+    "lastModified": "2025-09-04"
+  },
+  {
+    "id": "youtubePlaylistUpdatedFeed",
+    "title": "YouTube Playlist Updated Feed",
+    "category": "other",
+    "description": "Empty folder with no files; presumably planned for a tool that tracks updates to YouTube playlists.",
+    "howToUse": "N/A - folder is empty.",
+    "tech": [],
+    "lastModified": "2025-09-04"
+  }
+]

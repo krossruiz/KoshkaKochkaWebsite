@@ -1,0 +1,7 @@
+downloads/
+build-log.txt
+build-err.txt
+serve-log.txt
+node_modules/
+.DS_Store
+Thumbs.db

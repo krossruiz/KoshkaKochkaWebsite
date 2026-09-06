@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Project Directory</title>
+<style>
+  :root {
+    --bg: #0f1115;
+    --panel: #171a21;
+    --panel-2: #1e222b;
+    --border: #2a2f3a;
+    --text: #e7e9ee;
+    --text-dim: #9aa3b2;
+    --accent: #7dd3fc;
+    --accent-2: #a78bfa;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+  }
+  header {
+    padding: 32px 24px 16px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  header h1 { margin: 0 0 4px; font-size: 1.8rem; }
+  header p { margin: 0; color: var(--text-dim); }
+  .controls {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 24px 16px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .controls input[type="search"] {
+    flex: 1;
+    min-width: 200px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--panel);
+    color: var(--text);
+    font-size: 0.95rem;
+  }
+  .controls select {
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--panel);
+    color: var(--text);
+    font-size: 0.95rem;
+  }
+  .count { color: var(--text-dim); font-size: 0.85rem; padding: 0 24px 8px; max-width: 1100px; margin: 0 auto; }
+  main {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 8px 24px 64px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+  }
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .card h2 {
+    margin: 0;
+    font-size: 1.05rem;
+  }
+  .badge {
+    display: inline-block;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    background: var(--panel-2);
+    color: var(--accent);
+    border: 1px solid var(--border);
+    padding: 2px 8px;
+    border-radius: 999px;
+    width: fit-content;
+  }
+  .desc { color: var(--text-dim); font-size: 0.88rem; line-height: 1.4; margin: 0; }
+  .usage {
+    background: var(--panel-2);
+    border-left: 3px solid var(--accent-2);
+    padding: 8px 10px;
+    border-radius: 6px;
+    font-size: 0.82rem;
+    color: var(--text);
+  }
+  .usage strong { color: var(--accent-2); display: block; margin-bottom: 2px; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.04em; }
+  .tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .actions { display: flex; flex-wrap: wrap; gap: 8px; }
+  .btn {
+    display: inline-block; text-decoration: none; font-size: 0.82rem;
+    padding: 7px 12px; border-radius: 6px; border: 1px solid var(--border);
+    background: var(--panel-2); color: var(--text);
+  }
+  .btn:hover { border-color: var(--accent); }
+  .btn-primary { background: var(--accent); color: #0f1115; border-color: var(--accent); font-weight: 600; }
+  .btn-primary:hover { opacity: 0.9; }
+  .action-note { font-size: 0.78rem; color: var(--text-dim); margin: 0; font-style: italic; }
+  .tag { font-size: 0.72rem; background: #10141c; border: 1px solid var(--border); color: var(--text-dim); padding: 2px 8px; border-radius: 6px; }
+  .meta { font-size: 0.72rem; color: var(--text-dim); margin-top: auto; display: flex; justify-content: space-between; }
+  .empty-state { color: var(--text-dim); padding: 40px 24px; text-align: center; max-width: 1100px; margin: 0 auto; }
+  .warn {
+    max-width: 1100px; margin: 0 auto; padding: 0 24px 16px;
+    color: #fbbf24; font-size: 0.85rem;
+  }
+  .hosted-notice {
+    max-width: 1100px; margin: 0 auto 16px; padding: 10px 16px;
+    background: var(--panel-2); border: 1px solid var(--border); border-left: 3px solid var(--accent-2);
+    border-radius: 6px; font-size: 0.85rem; color: var(--text-dim);
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>Project Directory</h1>
+  <p>A catalog of local project folders, what they do, and how to run them.</p>
+</header>
+
+<div class="controls">
+  <input type="search" id="search" placeholder="Search projects…">
+  <select id="category"><option value="">All categories</option></select>
+</div>
+<div class="count" id="count"></div>
+<div id="hostedNotice"></div>
+<div id="warn"></div>
+
+<main id="grid"></main>
+<div class="empty-state" id="emptyState" style="display:none;">No projects match your filters.</div>
+
+<script>
+const CATEGORY_LABELS = {
+  "web-app": "Web App",
+  "browser-extension": "Browser Extension",
+  "vr-ar": "VR / AR",
+  "game-dev": "Game Dev",
+  "python-tool": "Python Tool",
+  "cli-tool": "CLI Tool",
+  "ai-ml": "AI / ML",
+  "other": "Other"
+};
+
+async function loadJSON(path) {
+  const res = await fetch(path, { cache: "no-store" });
+  if (!res.ok) throw new Error("Failed to load " + path);
+  return res.json();
+}
+
+function escapeHTML(str) {
+  const div = document.createElement("div");
+  div.textContent = str ?? "";
+  return div.innerHTML;
+}
+
+const IS_LOCAL = ["localhost", "127.0.0.1", "::1", ""].includes(location.hostname);
+
+if (!IS_LOCAL) {
+  document.addEventListener("DOMContentLoaded", () => {
+    const el = document.getElementById("hostedNotice");
+    if (el) el.innerHTML = `<div class="hosted-notice">You're viewing the hosted copy of this catalog. "Launch", "Run in Browser", and local downloads only work when this site runs on your own machine (see the repo's README) - use "View on GitHub" on any card to get the code.</div>`;
+  });
+}
+
+function buildActions(p, downloadSizes) {
+  const buttons = [];
+  const notes = [];
+  const folderUrl = `../${encodeURIComponent(p.id)}/`;
+
+  if (IS_LOCAL) {
+    if (p.runtime === "launch" && p.entry) {
+      buttons.push(`<a class="btn btn-primary" href="${folderUrl}${p.entry}" target="_blank" rel="noopener">Launch &#8599;</a>`);
+      if (p.launchNote) notes.push(p.launchNote);
+    } else if (p.runtime === "pyodide" && p.pyFile) {
+      const runnerUrl = `python-runner.html?src=${encodeURIComponent(folderUrl + p.pyFile)}&mode=${encodeURIComponent(p.pyMode || "plain")}&title=${encodeURIComponent(p.title || p.id)}`;
+      buttons.push(`<a class="btn btn-primary" href="${runnerUrl}" target="_blank" rel="noopener">Run in Browser (Python)</a>`);
+    } else if (p.runtime === "extension") {
+      notes.push(p.extensionKind === "vscode"
+        ? "VS Code extension - install the .vsix or run via F5 in a dev host after downloading."
+        : "Chrome extension - download, then load unpacked via chrome://extensions.");
+    }
+
+    const hasZip = downloadSizes && Object.prototype.hasOwnProperty.call(downloadSizes, p.id);
+    if (hasZip) {
+      buttons.push(`<a class="btn" href="downloads/${encodeURIComponent(p.id)}.zip" download>Download .zip (${downloadSizes[p.id]} MB)</a>`);
+    } else if (p.skipDownload) {
+      notes.push("Too large to package as a download - browse the folder locally instead.");
+    } else if (!p.runtime || p.runtime === "download") {
+      notes.push("No web download built yet - run build-downloads.ps1.");
+    }
+  } else {
+    // Hosted deployment: sibling project folders aren't part of this deploy,
+    // so Launch/Run-in-Browser/local-zip actions aren't available here.
+    if (p.runtime === "extension") {
+      notes.push(p.extensionKind === "vscode"
+        ? "VS Code extension - clone the repo, then install the .vsix or run via F5 in a dev host."
+        : "Chrome extension - clone the repo, then load unpacked via chrome://extensions.");
+    } else if (p.runtime === "launch") {
+      notes.push("Runs as a static page - clone the repo and open it locally, or run this catalog site locally for a live Launch button.");
+    } else if (p.runtime === "pyodide") {
+      notes.push("Runs in-browser via Pyodide when this catalog is served locally - clone the repo to run it yourself.");
+    }
+  }
+
+  if (p.repo) {
+    buttons.push(`<a class="btn" href="${escapeHTML(p.repo)}" target="_blank" rel="noopener">View on GitHub &#8599;</a>`);
+  } else if (!IS_LOCAL) {
+    notes.push("Not yet published to GitHub.");
+  }
+
+  return { buttons, notes };
+}
+
+function render(projects, downloadSizes) {
+  const grid = document.getElementById("grid");
+  const emptyState = document.getElementById("emptyState");
+  grid.innerHTML = "";
+
+  if (projects.length === 0) {
+    emptyState.style.display = "block";
+    return;
+  }
+  emptyState.style.display = "none";
+
+  for (const p of projects) {
+    const { buttons, notes } = buildActions(p, downloadSizes);
+    const card = document.createElement("div");
+    card.className = "card";
+    card.innerHTML = `
+      <span class="badge">${escapeHTML(CATEGORY_LABELS[p.category] || p.category || "Other")}</span>
+      <h2>${escapeHTML(p.title || p.id)}</h2>
+      <p class="desc">${escapeHTML(p.description || "No description available.")}</p>
+      ${p.howToUse ? `<div class="usage"><strong>How to use</strong>${escapeHTML(p.howToUse)}</div>` : ""}
+      <div class="tags">${(p.tech || []).map(t => `<span class="tag">${escapeHTML(t)}</span>`).join("")}</div>
+      ${buttons.length ? `<div class="actions">${buttons.join("")}</div>` : ""}
+      ${notes.length ? `<p class="action-note">${notes.map(escapeHTML).join(" ")}</p>` : ""}
+      <div class="meta">
+        <span>${escapeHTML(p.id)}</span>
+        <span>${escapeHTML(p.lastModified || "")}</span>
+      </div>
+    `;
+    grid.appendChild(card);
+  }
+}
+
+(async function init() {
+  let projects = [];
+  let admin = { visibility: {} };
+  const warnEl = document.getElementById("warn");
+
+  try {
+    projects = await loadJSON("projects.json");
+  } catch (e) {
+    warnEl.innerHTML = `<div class="warn">Could not load projects.json. If you opened this file directly (file://), start a local server instead — see README.md.</div>`;
+    return;
+  }
+
+  try {
+    admin = await loadJSON("admin.json");
+  } catch (e) {
+    // admin.json missing or unreadable: default to showing everything
+  }
+
+  let downloadSizes = {};
+  try {
+    downloadSizes = await loadJSON("downloads-manifest.json");
+  } catch (e) {
+    // no zips built yet (run build-downloads.ps1)
+  }
+
+  const visibility = admin.visibility || {};
+  const visibleProjects = projects.filter(p => visibility[p.id] !== false);
+
+  const categorySelect = document.getElementById("category");
+  const seenCategories = [...new Set(visibleProjects.map(p => p.category))].sort();
+  for (const cat of seenCategories) {
+    const opt = document.createElement("option");
+    opt.value = cat;
+    opt.textContent = CATEGORY_LABELS[cat] || cat;
+    categorySelect.appendChild(opt);
+  }
+
+  const searchInput = document.getElementById("search");
+  const countEl = document.getElementById("count");
+
+  function applyFilters() {
+    const q = searchInput.value.trim().toLowerCase();
+    const cat = categorySelect.value;
+    const filtered = visibleProjects.filter(p => {
+      const matchesCat = !cat || p.category === cat;
+      const haystack = [p.title, p.id, p.description, p.howToUse, ...(p.tech || [])].join(" ").toLowerCase();
+      const matchesQ = !q || haystack.includes(q);
+      return matchesCat && matchesQ;
+    });
+    countEl.textContent = `Showing ${filtered.length} of ${visibleProjects.length} visible projects (${projects.length - visibleProjects.length} hidden via admin.json)`;
+    render(filtered, downloadSizes);
+  }
+
+  searchInput.addEventListener("input", applyFilters);
+  categorySelect.addEventListener("change", applyFilters);
+  applyFilters();
+})();
+</script>
+</body>
+</html>
