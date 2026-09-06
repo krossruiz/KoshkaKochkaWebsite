@@ -3,144 +3,279 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Project Directory</title>
+<title>~*~ THE PROJECT DIRECTORY ~*~</title>
 <style>
-  :root {
-    --bg: #0f1115;
-    --panel: #171a21;
-    --panel-2: #1e222b;
-    --border: #2a2f3a;
-    --text: #e7e9ee;
-    --text-dim: #9aa3b2;
-    --accent: #7dd3fc;
-    --accent-2: #a78bfa;
-  }
   * { box-sizing: border-box; }
+  html { background: #008080; }
   body {
     margin: 0;
-    font-family: -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
-    background: var(--bg);
-    color: var(--text);
+    font-family: "Times New Roman", Times, serif;
+    background: #008080;
+    background-image:
+      radial-gradient(circle at 6px 6px, rgba(255,255,255,0.06) 1.5px, transparent 1.6px);
+    background-size: 24px 24px;
+    color: #000000;
+    font-size: 16px;
   }
-  header {
-    padding: 32px 24px 16px;
-    max-width: 1100px;
-    margin: 0 auto;
+  a { color: #0000EE; }
+  a:visited { color: #551A8B; }
+  a:active { color: #FF0000; }
+
+  .page {
+    max-width: 900px;
+    margin: 18px auto 40px;
+    background: #C0C0C0;
+    border: 4px outset #ffffff;
+    padding: 10px;
+    box-shadow: 6px 6px 0 rgba(0,0,0,0.35);
   }
-  header h1 { margin: 0 0 4px; font-size: 1.8rem; }
-  header p { margin: 0; color: var(--text-dim); }
-  .controls {
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 0 24px 16px;
+
+  .titlebar {
+    background: linear-gradient(90deg, #000080, #1084d0 50%, #000080);
+    color: #fff;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bold;
+    font-size: 0.85rem;
+    padding: 4px 8px;
     display: flex;
-    gap: 12px;
-    flex-wrap: wrap;
+    justify-content: space-between;
     align-items: center;
+    margin-bottom: 10px;
+    letter-spacing: 0.02em;
   }
-  .controls input[type="search"] {
-    flex: 1;
-    min-width: 200px;
-    padding: 10px 14px;
-    border-radius: 8px;
-    border: 1px solid var(--border);
-    background: var(--panel);
-    color: var(--text);
+  .titlebar .dots span {
+    display: inline-block; width: 10px; height: 10px; margin-left: 4px;
+    background: #C0C0C0; border: 1px outset #fff; text-align: center; line-height: 8px; font-size: 9px; color: #000;
+  }
+
+  header.banner {
+    text-align: center;
+    background: #000000 url("data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==");
+    padding: 14px 10px 10px;
+    border: 3px inset #808080;
+    margin-bottom: 8px;
+  }
+  header.banner h1 {
+    font-family: "Comic Sans MS", "Comic Sans", cursive;
+    font-size: 2.4rem;
+    margin: 0;
+    letter-spacing: 2px;
+    background: linear-gradient(90deg, #ff0000, #ff9900, #ffee00, #33ff00, #00ccff, #cc00ff, #ff0066);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow: 2px 2px 0 rgba(255,255,255,0.15);
+    animation: hue 6s linear infinite;
+  }
+  @keyframes hue { 0% { filter: hue-rotate(0deg); } 100% { filter: hue-rotate(360deg); } }
+  header.banner .subtitle {
+    font-family: "Comic Sans MS", cursive;
+    color: #ffff00;
+    font-size: 0.95rem;
+    margin-top: 2px;
+  }
+  .blink { animation: blinker 1s step-start infinite; }
+  @keyframes blinker { 50% { opacity: 0; } }
+
+  marquee.welcome {
+    display: block;
+    background: #000080;
+    color: #00ff00;
+    font-family: "Courier New", monospace;
+    font-weight: bold;
+    padding: 5px 0;
+    border: 2px inset #808080;
+    margin: 8px 0;
     font-size: 0.95rem;
   }
-  .controls select {
-    padding: 10px 14px;
-    border-radius: 8px;
-    border: 1px solid var(--border);
-    background: var(--panel);
-    color: var(--text);
-    font-size: 0.95rem;
+
+  .rainbow-hr {
+    height: 5px;
+    border: none;
+    margin: 8px 0;
+    background: repeating-linear-gradient(90deg,
+      #ff0000 0 10px, #ff9900 10px 20px, #ffee00 20px 30px,
+      #33ff00 30px 40px, #00ccff 40px 50px, #cc00ff 50px 60px, #ff0066 60px 70px);
   }
-  .count { color: var(--text-dim); font-size: 0.85rem; padding: 0 24px 8px; max-width: 1100px; margin: 0 auto; }
-  main {
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 8px 24px 64px;
+
+  .badges-row {
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    flex-wrap: wrap; margin: 8px 0; font-family: Arial, sans-serif;
+  }
+  .retro-badge {
+    display: inline-block; font-size: 0.68rem; font-weight: bold;
+    padding: 4px 8px; border: 2px outset #fff; background: #000; color: #0f0;
+    font-family: "Courier New", monospace;
+  }
+  .retro-badge.orange { background: #ff6a00; color: #fff; border-color: #ffcc99; }
+  .retro-badge.pink { background: #ff00aa; color: #fff; }
+  .retro-badge.under-construction {
+    background: repeating-linear-gradient(45deg, #ffff00, #ffff00 10px, #000 10px, #000 20px);
+    color: #000; text-shadow: 1px 1px 0 #fff;
+    padding: 5px 10px;
+  }
+
+  .controls {
+    display: flex; gap: 10px; flex-wrap: wrap; align-items: center;
+    background: #C0C0C0; border: 2px inset #fff; padding: 8px; margin: 10px 0;
+    font-family: Arial, sans-serif; font-size: 0.85rem;
+  }
+  .controls label { font-weight: bold; }
+  .controls input[type="search"], .controls select {
+    font-family: "Times New Roman", serif; font-size: 0.95rem;
+    padding: 4px 6px; border: 2px inset #808080; background: #fff; color: #000;
+  }
+  .controls input[type="search"] { flex: 1; min-width: 160px; }
+
+  .count {
+    font-family: "Courier New", monospace; font-size: 0.78rem; color: #000080;
+    background: #fff; border: 2px inset #808080; padding: 4px 8px; margin-bottom: 10px;
+  }
+
+  .hosted-notice, .warn {
+    font-family: Arial, sans-serif; font-size: 0.82rem; padding: 8px 10px;
+    border: 2px dashed #ff0000; background: #ffffcc; color: #000; margin-bottom: 10px;
+  }
+
+  main#grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 16px;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 12px;
+    padding: 4px 0 14px;
   }
+
   .card {
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 18px;
+    background: #C0C0C0;
+    border: 3px outset #ffffff;
+    padding: 10px;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 8px;
+  }
+  .card-title-bar {
+    background: linear-gradient(90deg, #000080, #1084d0);
+    color: #fff; font-family: Arial, sans-serif; font-weight: bold; font-size: 0.78rem;
+    padding: 3px 6px; margin: -10px -10px 4px;
   }
   .card h2 {
-    margin: 0;
-    font-size: 1.05rem;
+    margin: 0; font-size: 1.05rem; font-family: "Comic Sans MS", cursive;
+    color: #000080;
   }
   .badge {
-    display: inline-block;
-    font-size: 0.7rem;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    background: var(--panel-2);
-    color: var(--accent);
-    border: 1px solid var(--border);
-    padding: 2px 8px;
-    border-radius: 999px;
-    width: fit-content;
+    display: inline-block; font-size: 0.65rem; font-weight: bold; font-family: Arial, sans-serif;
+    text-transform: uppercase; letter-spacing: 0.03em;
+    background: #ffff00; color: #000; border: 1px solid #000; padding: 2px 6px; width: fit-content;
   }
-  .desc { color: var(--text-dim); font-size: 0.88rem; line-height: 1.4; margin: 0; }
+  .desc {
+    background: #fff; border: 2px inset #808080; padding: 6px 8px;
+    font-size: 0.85rem; line-height: 1.4; margin: 0; color: #000;
+  }
   .usage {
-    background: var(--panel-2);
-    border-left: 3px solid var(--accent-2);
-    padding: 8px 10px;
-    border-radius: 6px;
-    font-size: 0.82rem;
-    color: var(--text);
+    background: #ffffcc; border: 2px groove #808080; padding: 6px 8px; font-size: 0.8rem; color: #000;
   }
-  .usage strong { color: var(--accent-2); display: block; margin-bottom: 2px; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.04em; }
-  .tags { display: flex; flex-wrap: wrap; gap: 6px; }
-  .actions { display: flex; flex-wrap: wrap; gap: 8px; }
+  .usage strong {
+    color: #cc0000; display: block; margin-bottom: 2px; font-size: 0.7rem;
+    text-transform: uppercase; font-family: Arial, sans-serif;
+  }
+  .tags { display: flex; flex-wrap: wrap; gap: 5px; }
+  .tag {
+    font-size: 0.68rem; font-family: "Courier New", monospace;
+    background: #000080; color: #00ffff; padding: 2px 6px; border: 1px outset #6699ff;
+  }
+  .actions { display: flex; flex-wrap: wrap; gap: 6px; }
   .btn {
-    display: inline-block; text-decoration: none; font-size: 0.82rem;
-    padding: 7px 12px; border-radius: 6px; border: 1px solid var(--border);
-    background: var(--panel-2); color: var(--text);
+    display: inline-block; text-decoration: none; font-size: 0.78rem; font-family: Arial, sans-serif; font-weight: bold;
+    padding: 5px 10px; border: 2px outset #ffffff; background: #C0C0C0; color: #000;
   }
-  .btn:hover { border-color: var(--accent); }
-  .btn-primary { background: var(--accent); color: #0f1115; border-color: var(--accent); font-weight: 600; }
-  .btn-primary:hover { opacity: 0.9; }
-  .action-note { font-size: 0.78rem; color: var(--text-dim); margin: 0; font-style: italic; }
-  .tag { font-size: 0.72rem; background: #10141c; border: 1px solid var(--border); color: var(--text-dim); padding: 2px 8px; border-radius: 6px; }
-  .meta { font-size: 0.72rem; color: var(--text-dim); margin-top: auto; display: flex; justify-content: space-between; }
-  .empty-state { color: var(--text-dim); padding: 40px 24px; text-align: center; max-width: 1100px; margin: 0 auto; }
-  .warn {
-    max-width: 1100px; margin: 0 auto; padding: 0 24px 16px;
-    color: #fbbf24; font-size: 0.85rem;
+  .btn:visited { color: #000; }
+  .btn:hover { background: #d8d8d8; }
+  .btn:active { border-style: inset; }
+  .btn-primary { background: #00ff00; border-color: #ccffcc; color: #003300; }
+  .btn-primary:visited { color: #003300; }
+  .action-note {
+    font-size: 0.74rem; color: #660000; margin: 0; font-style: italic; font-family: Arial, sans-serif;
   }
-  .hosted-notice {
-    max-width: 1100px; margin: 0 auto 16px; padding: 10px 16px;
-    background: var(--panel-2); border: 1px solid var(--border); border-left: 3px solid var(--accent-2);
-    border-radius: 6px; font-size: 0.85rem; color: var(--text-dim);
+  .meta {
+    font-size: 0.68rem; color: #444; font-family: "Courier New", monospace;
+    margin-top: auto; display: flex; justify-content: space-between;
+    border-top: 1px dashed #808080; padding-top: 4px;
   }
+
+  .empty-state {
+    color: #000; padding: 30px; text-align: center; font-family: "Comic Sans MS", cursive;
+    background: #fff; border: 2px inset #808080;
+  }
+
+  footer.pagefoot {
+    margin-top: 14px; border: 3px inset #808080; background: #000;
+    padding: 10px; text-align: center; font-family: Arial, sans-serif;
+  }
+  .hitcounter {
+    display: inline-flex; gap: 2px; background: #000; padding: 4px; border: 2px inset #444; margin: 6px 0;
+  }
+  .hitcounter span {
+    font-family: "Courier New", monospace; font-weight: bold; font-size: 1.1rem;
+    background: #000; color: #00ff00; padding: 1px 4px; border: 1px solid #003300;
+  }
+  footer.pagefoot .foot-label { color: #fff; font-size: 0.72rem; }
+  footer.pagefoot .webring { color: #ffff00; font-size: 0.72rem; margin-top: 8px; }
+  footer.pagefoot .webring a { color: #00ffff; margin: 0 4px; }
+  .sparkle { display: inline-block; animation: spin 2.5s linear infinite; }
+  @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 </style>
 </head>
 <body>
-<header>
-  <h1>Project Directory</h1>
-  <p>A catalog of local project folders, what they do, and how to run them.</p>
-</header>
+<div class="page">
+  <div class="titlebar">
+    <span>project-directory.exe - [KoshkaKochkaWebsite]</span>
+    <span class="dots"><span>_</span><span>&#9633;</span><span>X</span></span>
+  </div>
 
-<div class="controls">
-  <input type="search" id="search" placeholder="Search projects…">
-  <select id="category"><option value="">All categories</option></select>
+  <header class="banner">
+    <h1>&#9734; THE PROJECT DIRECTORY &#9734;</h1>
+    <div class="subtitle"><span class="blink">*</span> a catalog of local project folders <span class="blink">*</span></div>
+  </header>
+
+  <marquee class="welcome" behavior="scroll" scrollamount="4">
+    &#128075; WELCOME TO MY HOMEPAGE &#128075; &nbsp;&nbsp;&nbsp; THANKS FOR STOPPING BY &nbsp;&nbsp;&nbsp; SIGN THE GUESTBOOK &nbsp;&nbsp;&nbsp; BEST VIEWED IN NETSCAPE NAVIGATOR &nbsp;&nbsp;&nbsp; RESIZE YOUR WINDOW TO 800x600 FOR BEST RESULTS &nbsp;&nbsp;&nbsp;
+  </marquee>
+
+  <hr class="rainbow-hr">
+
+  <div class="badges-row">
+    <span class="retro-badge under-construction">&#128679; UNDER CONSTRUCTION &#128679;</span>
+    <span class="retro-badge">100% NETSCAPE COMPATIBLE</span>
+    <span class="retro-badge orange">HOT SITE!</span>
+    <span class="retro-badge pink"><span class="sparkle">&#10022;</span> NEW! <span class="sparkle">&#10022;</span></span>
+  </div>
+
+  <hr class="rainbow-hr">
+
+  <div class="controls">
+    <label for="search">FIND:</label>
+    <input type="search" id="search" placeholder="type to search...">
+    <label for="category">SHOW:</label>
+    <select id="category"><option value="">All categories</option></select>
+  </div>
+  <div class="count" id="count"></div>
+  <div id="hostedNotice"></div>
+  <div id="warn"></div>
+
+  <main id="grid"></main>
+  <div class="empty-state" id="emptyState" style="display:none;">&#128546; No projects match your filters. &#128546;</div>
+
+  <hr class="rainbow-hr">
+
+  <footer class="pagefoot">
+    <div class="foot-label">YOU ARE VISITOR NUMBER</div>
+    <div class="hitcounter" id="hitcounter"></div>
+    <div class="webring">
+      &#9670; <a href="#">PREV</a> | <a href="https://github.com/krossruiz" target="_blank" rel="noopener">GITHUB WEBRING</a> | <a href="#">NEXT</a> &#9670;
+      <br>
+      Best viewed in <strong>Netscape Navigator</strong> at 800&times;600 &middot; Made with a &#128293; guestbook and a dream
+    </div>
+  </footer>
 </div>
-<div class="count" id="count"></div>
-<div id="hostedNotice"></div>
-<div id="warn"></div>
-
-<main id="grid"></main>
-<div class="empty-state" id="emptyState" style="display:none;">No projects match your filters.</div>
 
 <script>
 const CATEGORY_LABELS = {
@@ -171,7 +306,7 @@ const IS_LOCAL = ["localhost", "127.0.0.1", "::1", ""].includes(location.hostnam
 if (!IS_LOCAL) {
   document.addEventListener("DOMContentLoaded", () => {
     const el = document.getElementById("hostedNotice");
-    if (el) el.innerHTML = `<div class="hosted-notice">You're viewing the hosted copy of this catalog. Most projects' Launch/Run-in-Browser buttons work right here (their files are embedded in this deployment); a few large ones are local-only - use "View on GitHub" on any card to get the code.</div>`;
+    if (el) el.innerHTML = `<div class="hosted-notice">&#9758; You're viewing the hosted copy of this catalog. Most projects' Launch/Run-in-Browser buttons work right here (their files are embedded in this deployment); a few large ones are local-only - use "View on GitHub" on any card to get the code. &#9756;</div>`;
   });
 }
 
@@ -186,11 +321,11 @@ function buildActions(p, downloadSizes) {
   if (p.runtime === "launch" && p.entry) {
     if (p.embedded) {
       const url = `projects/${encodeURIComponent(p.id)}/${p.entry}`;
-      buttons.push(`<a class="btn btn-primary" href="${url}" target="_blank" rel="noopener">Launch &#8599;</a>`);
+      buttons.push(`<a class="btn btn-primary" href="${url}" target="_blank" rel="noopener">&#9658; Launch</a>`);
       if (p.launchNote) notes.push(p.launchNote);
     } else if (IS_LOCAL) {
       const url = `../${encodeURIComponent(p.id)}/${p.entry}`;
-      buttons.push(`<a class="btn btn-primary" href="${url}" target="_blank" rel="noopener">Launch &#8599;</a>`);
+      buttons.push(`<a class="btn btn-primary" href="${url}" target="_blank" rel="noopener">&#9658; Launch</a>`);
       notes.push("Too large to embed in the hosted site - this button only works when running the catalog locally.");
       if (p.launchNote) notes.push(p.launchNote);
     } else {
@@ -199,10 +334,10 @@ function buildActions(p, downloadSizes) {
   } else if (p.runtime === "pyodide" && p.pyFile) {
     if (p.embedded) {
       const runnerUrl = `python-runner.html?src=${encodeURIComponent(`projects/${p.id}/${p.pyFile}`)}&mode=${encodeURIComponent(p.pyMode || "plain")}&title=${encodeURIComponent(p.title || p.id)}`;
-      buttons.push(`<a class="btn btn-primary" href="${runnerUrl}" target="_blank" rel="noopener">Run in Browser (Python)</a>`);
+      buttons.push(`<a class="btn btn-primary" href="${runnerUrl}" target="_blank" rel="noopener">&#9658; Run in Browser</a>`);
     } else if (IS_LOCAL) {
       const runnerUrl = `python-runner.html?src=${encodeURIComponent(`../${p.id}/${p.pyFile}`)}&mode=${encodeURIComponent(p.pyMode || "plain")}&title=${encodeURIComponent(p.title || p.id)}`;
-      buttons.push(`<a class="btn btn-primary" href="${runnerUrl}" target="_blank" rel="noopener">Run in Browser (Python)</a>`);
+      buttons.push(`<a class="btn btn-primary" href="${runnerUrl}" target="_blank" rel="noopener">&#9658; Run in Browser</a>`);
     } else {
       notes.push("Runs in-browser via Pyodide when this catalog is served locally - clone the repo to run it yourself.");
     }
@@ -215,7 +350,7 @@ function buildActions(p, downloadSizes) {
   if (IS_LOCAL) {
     const hasZip = downloadSizes && Object.prototype.hasOwnProperty.call(downloadSizes, p.id);
     if (hasZip) {
-      buttons.push(`<a class="btn" href="downloads/${encodeURIComponent(p.id)}.zip" download>Download .zip (${downloadSizes[p.id]} MB)</a>`);
+      buttons.push(`<a class="btn" href="downloads/${encodeURIComponent(p.id)}.zip" download>&#128190; Download (${downloadSizes[p.id]} MB)</a>`);
     } else if (p.skipDownload) {
       notes.push("Too large to package as a download - browse the folder locally instead.");
     } else if (!p.runtime || p.runtime === "download") {
@@ -224,7 +359,7 @@ function buildActions(p, downloadSizes) {
   }
 
   if (p.repo) {
-    buttons.push(`<a class="btn" href="${escapeHTML(p.repo)}" target="_blank" rel="noopener">View on GitHub &#8599;</a>`);
+    buttons.push(`<a class="btn" href="${escapeHTML(p.repo)}" target="_blank" rel="noopener">View on GitHub</a>`);
   } else if (!IS_LOCAL) {
     notes.push("Not yet published to GitHub.");
   }
@@ -248,6 +383,7 @@ function render(projects, downloadSizes) {
     const card = document.createElement("div");
     card.className = "card";
     card.innerHTML = `
+      <div class="card-title-bar">${escapeHTML(p.title || p.id)}.html</div>
       <span class="badge">${escapeHTML(CATEGORY_LABELS[p.category] || p.category || "Other")}</span>
       <h2>${escapeHTML(p.title || p.id)}</h2>
       <p class="desc">${escapeHTML(p.description || "No description available.")}</p>
@@ -264,10 +400,26 @@ function render(projects, downloadSizes) {
   }
 }
 
+function renderHitCounter() {
+  const el = document.getElementById("hitcounter");
+  if (!el) return;
+  let count;
+  try {
+    count = parseInt(localStorage.getItem("pd_hit_count") || "13370", 10) + 1;
+    localStorage.setItem("pd_hit_count", String(count));
+  } catch (e) {
+    count = 13371;
+  }
+  const digits = String(count).padStart(6, "0").split("");
+  el.innerHTML = digits.map(d => `<span>${d}</span>`).join("");
+}
+
 (async function init() {
   let projects = [];
   let admin = { visibility: {} };
   const warnEl = document.getElementById("warn");
+
+  renderHitCounter();
 
   try {
     projects = await loadJSON("projects.json");
@@ -313,7 +465,7 @@ function render(projects, downloadSizes) {
       const matchesQ = !q || haystack.includes(q);
       return matchesCat && matchesQ;
     });
-    countEl.textContent = `Showing ${filtered.length} of ${visibleProjects.length} visible projects (${projects.length - visibleProjects.length} hidden via admin.json)`;
+    countEl.textContent = `>>> SHOWING ${filtered.length} OF ${visibleProjects.length} VISIBLE PROJECTS (${projects.length - visibleProjects.length} HIDDEN VIA admin.json) <<<`;
     render(filtered, downloadSizes);
   }
 
