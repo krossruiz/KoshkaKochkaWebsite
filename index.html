@@ -3,258 +3,174 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>~*~ THE PROJECT DIRECTORY ~*~</title>
+<title>Project Directory</title>
 <style>
+  :root {
+    --color-background: #0b0b0b;
+    --color-surface: #111111;
+    --color-border: #222222;
+    --color-text: #e5e5e5;
+    --color-muted: #9ca3af;
+    --color-accent: #aa0000;
+  }
   * { box-sizing: border-box; }
-  html { background: #008080; }
-  body {
-    margin: 0;
-    font-family: "Times New Roman", Times, serif;
-    background: #008080;
-    background-image:
-      radial-gradient(circle at 6px 6px, rgba(255,255,255,0.06) 1.5px, transparent 1.6px);
-    background-size: 24px 24px;
-    color: #000000;
-    font-size: 16px;
+  @font-face {
+    font-family: "Acidic";
+    src: url("projects/personal_site/fonts/acidic/Acidic.TTF");
   }
-  a { color: #0000EE; }
-  a:visited { color: #551A8B; }
-  a:active { color: #FF0000; }
+  html, body {
+    margin: 0; padding: 0;
+    background-color: var(--color-background);
+    color: var(--color-text);
+    line-height: 1.6;
+    font-family: -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+  }
+  a { color: var(--color-accent); }
+  a:visited { color: var(--color-accent); }
 
-  .page {
-    max-width: 900px;
-    margin: 18px auto 40px;
-    background: #C0C0C0;
-    border: 4px outset #ffffff;
-    padding: 10px;
-    box-shadow: 6px 6px 0 rgba(0,0,0,0.35);
+  .navbar {
+    height: 96px;
+    background-image: url("projects/personal_site/pushGifBW.gif");
+    background-size: 300px 200px;
+    border-bottom: 1px solid var(--color-border);
   }
-
-  .titlebar {
-    background: linear-gradient(90deg, #000080, #1084d0 50%, #000080);
-    color: #fff;
-    font-family: Arial, Helvetica, sans-serif;
-    font-weight: bold;
-    font-size: 0.85rem;
-    padding: 4px 8px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 10px;
-    letter-spacing: 0.02em;
-  }
-  .titlebar .dots span {
-    display: inline-block; width: 10px; height: 10px; margin-left: 4px;
-    background: #C0C0C0; border: 1px outset #fff; text-align: center; line-height: 8px; font-size: 9px; color: #000;
+  .nav-content {
+    max-width: 1100px; height: 100%; margin: 0 auto;
+    display: flex; align-items: center; justify-content: center;
+    padding: 0 16px; font-family: "Acidic", cursive; font-size: 1.6rem;
   }
 
-  header.banner {
-    text-align: center;
-    background: #000000 url("data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==");
-    padding: 14px 10px 10px;
-    border: 3px inset #808080;
-    margin-bottom: 8px;
-  }
+  header.banner { text-align: center; padding: 28px 16px 8px; }
   header.banner h1 {
-    font-family: "Comic Sans MS", "Comic Sans", cursive;
-    font-size: 2.4rem;
-    margin: 0;
-    letter-spacing: 2px;
-    background: linear-gradient(90deg, #ff0000, #ff9900, #ffee00, #33ff00, #00ccff, #cc00ff, #ff0066);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    text-shadow: 2px 2px 0 rgba(255,255,255,0.15);
-    animation: hue 6s linear infinite;
+    font-family: "Acidic", cursive;
+    font-size: 2.2rem; margin: 0 0 8px; letter-spacing: 1px; color: var(--color-text);
   }
-  @keyframes hue { 0% { filter: hue-rotate(0deg); } 100% { filter: hue-rotate(360deg); } }
-  header.banner .subtitle {
-    font-family: "Comic Sans MS", cursive;
-    color: #ffff00;
-    font-size: 0.95rem;
-    margin-top: 2px;
-  }
-  .blink { animation: blinker 1s step-start infinite; }
-  @keyframes blinker { 50% { opacity: 0; } }
+  header.banner .subtitle { color: var(--color-muted); font-size: 0.95rem; margin: 0; }
 
-  marquee.welcome {
-    display: block;
-    background: #000080;
-    color: #00ff00;
-    font-family: "Courier New", monospace;
-    font-weight: bold;
-    padding: 5px 0;
-    border: 2px inset #808080;
-    margin: 8px 0;
-    font-size: 0.95rem;
-  }
-
-  .rainbow-hr {
-    height: 5px;
-    border: none;
-    margin: 8px 0;
-    background: repeating-linear-gradient(90deg,
-      #ff0000 0 10px, #ff9900 10px 20px, #ffee00 20px 30px,
-      #33ff00 30px 40px, #00ccff 40px 50px, #cc00ff 50px 60px, #ff0066 60px 70px);
-  }
-
-  .badges-row {
-    display: flex; align-items: center; justify-content: center; gap: 10px;
-    flex-wrap: wrap; margin: 8px 0; font-family: Arial, sans-serif;
-  }
-  .retro-badge {
-    display: inline-block; font-size: 0.68rem; font-weight: bold;
-    padding: 4px 8px; border: 2px outset #fff; background: #000; color: #0f0;
-    font-family: "Courier New", monospace;
-  }
-  .retro-badge.orange { background: #ff6a00; color: #fff; border-color: #ffcc99; }
-  .retro-badge.pink { background: #ff00aa; color: #fff; }
-  .retro-badge.under-construction {
-    background: repeating-linear-gradient(45deg, #ffff00, #ffff00 10px, #000 10px, #000 20px);
-    color: #000; text-shadow: 1px 1px 0 #fff;
-    padding: 5px 10px;
-  }
+  hr.separator { border: none; border-top: 1px solid var(--color-border); margin: 24px auto; max-width: 1100px; }
 
   .controls {
-    display: flex; gap: 10px; flex-wrap: wrap; align-items: center;
-    background: #C0C0C0; border: 2px inset #fff; padding: 8px; margin: 10px 0;
-    font-family: Arial, sans-serif; font-size: 0.85rem;
+    max-width: 1100px; margin: 0 auto; padding: 0 16px 16px;
+    display: flex; gap: 12px; flex-wrap: wrap; align-items: center;
   }
-  .controls label { font-weight: bold; }
+  .controls label { font-weight: 600; color: var(--color-muted); font-size: 0.85rem; }
   .controls input[type="search"], .controls select {
-    font-family: "Times New Roman", serif; font-size: 0.95rem;
-    padding: 4px 6px; border: 2px inset #808080; background: #fff; color: #000;
+    font-family: inherit; font-size: 0.95rem;
+    padding: 8px 10px; border: 1px solid var(--color-border);
+    background: var(--color-surface); color: var(--color-text); border-radius: 4px;
   }
   .controls input[type="search"] { flex: 1; min-width: 160px; }
 
   .count {
-    font-family: "Courier New", monospace; font-size: 0.78rem; color: #000080;
-    background: #fff; border: 2px inset #808080; padding: 4px 8px; margin-bottom: 10px;
+    max-width: 1100px; margin: 0 auto; padding: 0 16px 12px;
+    font-size: 0.8rem; color: var(--color-muted);
   }
 
+  #hostedNotice, #warn {
+    max-width: 1100px; margin: 0 auto; padding: 0 16px;
+  }
   .hosted-notice, .warn {
-    font-family: Arial, sans-serif; font-size: 0.82rem; padding: 8px 10px;
-    border: 2px dashed #ff0000; background: #ffffcc; color: #000; margin-bottom: 10px;
+    font-size: 0.85rem; color: var(--color-muted); margin: 0 0 16px;
+    border: 1px solid var(--color-border); border-left: 3px solid var(--color-accent);
+    background: var(--color-surface); padding: 10px 14px; border-radius: 4px;
   }
 
   main#grid {
+    max-width: 1100px; margin: 0 auto; padding: 4px 16px 14px;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: 12px;
-    padding: 4px 0 14px;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
   }
 
   .card {
-    background: #C0C0C0;
-    border: 3px outset #ffffff;
-    padding: 10px;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    padding: 18px;
     display: flex;
     flex-direction: column;
-    gap: 8px;
-  }
-  .card-title-bar {
-    background: linear-gradient(90deg, #000080, #1084d0);
-    color: #fff; font-family: Arial, sans-serif; font-weight: bold; font-size: 0.78rem;
-    padding: 3px 6px; margin: -10px -10px 4px;
+    gap: 10px;
   }
   .card h2 {
-    margin: 0; font-size: 1.05rem; font-family: "Comic Sans MS", cursive;
-    color: #000080;
+    margin: 0; font-size: 1.1rem; font-family: "Acidic", cursive;
+    color: var(--color-text); letter-spacing: 0.5px;
   }
   .badge {
-    display: inline-block; font-size: 0.65rem; font-weight: bold; font-family: Arial, sans-serif;
-    text-transform: uppercase; letter-spacing: 0.03em;
-    background: #ffff00; color: #000; border: 1px solid #000; padding: 2px 6px; width: fit-content;
+    display: inline-block; font-size: 0.68rem; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.04em;
+    background: transparent; color: var(--color-accent);
+    border: 1px solid var(--color-accent); padding: 2px 8px; border-radius: 999px; width: fit-content;
   }
-  .desc {
-    background: #fff; border: 2px inset #808080; padding: 6px 8px;
-    font-size: 0.85rem; line-height: 1.4; margin: 0; color: #000;
-  }
+  .desc { color: var(--color-muted); font-size: 0.88rem; line-height: 1.5; margin: 0; }
   .usage {
-    background: #ffffcc; border: 2px groove #808080; padding: 6px 8px; font-size: 0.8rem; color: #000;
+    background: #0d0d0d; border-left: 3px solid var(--color-accent);
+    padding: 8px 10px; border-radius: 4px; font-size: 0.82rem; color: var(--color-text);
   }
   .usage strong {
-    color: #cc0000; display: block; margin-bottom: 2px; font-size: 0.7rem;
-    text-transform: uppercase; font-family: Arial, sans-serif;
+    color: var(--color-accent); display: block; margin-bottom: 2px; font-size: 0.7rem;
+    text-transform: uppercase; letter-spacing: 0.04em;
   }
-  .tags { display: flex; flex-wrap: wrap; gap: 5px; }
+  .tags { display: flex; flex-wrap: wrap; gap: 6px; }
   .tag {
-    font-size: 0.68rem; font-family: "Courier New", monospace;
-    background: #000080; color: #00ffff; padding: 2px 6px; border: 1px outset #6699ff;
+    font-size: 0.72rem; background: var(--color-background); border: 1px solid var(--color-border);
+    color: var(--color-muted); padding: 2px 8px; border-radius: 6px;
   }
-  .actions { display: flex; flex-wrap: wrap; gap: 6px; }
+  .actions { display: flex; flex-wrap: wrap; gap: 8px; }
   .btn {
-    display: inline-block; text-decoration: none; font-size: 0.78rem; font-family: Arial, sans-serif; font-weight: bold;
-    padding: 5px 10px; border: 2px outset #ffffff; background: #C0C0C0; color: #000;
+    display: inline-block; text-decoration: none; font-size: 0.82rem; font-weight: 600;
+    padding: 7px 12px; border-radius: 6px; border: 1px solid var(--color-border);
+    background: var(--color-background); color: var(--color-text);
   }
-  .btn:visited { color: #000; }
-  .btn:hover { background: #d8d8d8; }
-  .btn:active { border-style: inset; }
-  .btn-primary { background: #00ff00; border-color: #ccffcc; color: #003300; }
-  .btn-primary:visited { color: #003300; }
-  .action-note {
-    font-size: 0.74rem; color: #660000; margin: 0; font-style: italic; font-family: Arial, sans-serif;
-  }
+  .btn:visited { color: var(--color-text); }
+  .btn:hover { border-color: var(--color-accent); color: var(--color-accent); }
+  .btn:active { transform: translateY(1px); }
+  .btn-primary { background: var(--color-accent); color: #fff; border-color: var(--color-accent); }
+  .btn-primary:visited { color: #fff; }
+  .btn-primary:hover { opacity: 0.85; color: #fff; }
+  .action-note { font-size: 0.78rem; color: var(--color-muted); margin: 0; font-style: italic; }
   .meta {
-    font-size: 0.68rem; color: #444; font-family: "Courier New", monospace;
+    font-size: 0.72rem; color: var(--color-muted);
     margin-top: auto; display: flex; justify-content: space-between;
-    border-top: 1px dashed #808080; padding-top: 4px;
+    border-top: 1px solid var(--color-border); padding-top: 8px;
   }
 
   .empty-state {
-    color: #000; padding: 30px; text-align: center; font-family: "Comic Sans MS", cursive;
-    background: #fff; border: 2px inset #808080;
+    max-width: 1100px; margin: 0 auto; color: var(--color-muted); padding: 40px 16px; text-align: center;
   }
 
   footer.pagefoot {
-    margin-top: 14px; border: 3px inset #808080; background: #000;
-    padding: 10px; text-align: center; font-family: Arial, sans-serif;
+    max-width: 1100px; margin: 20px auto 40px; padding: 0 16px;
+    text-align: center; color: var(--color-muted); font-size: 0.85rem;
   }
   .hitcounter {
-    display: inline-flex; gap: 2px; background: #000; padding: 4px; border: 2px inset #444; margin: 6px 0;
+    display: inline-flex; gap: 2px; background: var(--color-surface);
+    padding: 6px; border: 1px solid var(--color-border); border-radius: 4px; margin: 8px 0;
   }
   .hitcounter span {
     font-family: "Courier New", monospace; font-weight: bold; font-size: 1.1rem;
-    background: #000; color: #00ff00; padding: 1px 4px; border: 1px solid #003300;
+    background: #000; color: var(--color-accent); padding: 1px 5px; border-radius: 2px;
   }
-  footer.pagefoot .foot-label { color: #fff; font-size: 0.72rem; }
-  footer.pagefoot .webring { color: #ffff00; font-size: 0.72rem; margin-top: 8px; }
-  footer.pagefoot .webring a { color: #00ffff; margin: 0 4px; }
-  .sparkle { display: inline-block; animation: spin 2.5s linear infinite; }
-  @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+  footer.pagefoot .foot-label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.05em; }
+  footer.pagefoot .webring { font-size: 0.78rem; margin-top: 10px; }
+  footer.pagefoot .webring a { color: var(--color-accent); margin: 0 4px; text-decoration: underline; }
 </style>
 </head>
 <body>
-<div class="page">
-  <div class="titlebar">
-    <span>project-directory.exe - [KoshkaKochkaWebsite]</span>
-    <span class="dots"><span>_</span><span>&#9633;</span><span>X</span></span>
-  </div>
+  <nav class="navbar">
+    <div class="nav-content">Project Directory</div>
+  </nav>
 
   <header class="banner">
-    <h1>&#9734; THE PROJECT DIRECTORY &#9734;</h1>
-    <div class="subtitle"><span class="blink">*</span> a catalog of local project folders <span class="blink">*</span></div>
+    <h1>Project Directory</h1>
+    <p class="subtitle">a catalog of local project folders, what they do, and how to run them</p>
   </header>
 
-  <marquee class="welcome" behavior="scroll" scrollamount="4">
-    &#128075; WELCOME TO MY HOMEPAGE &#128075; &nbsp;&nbsp;&nbsp; THANKS FOR STOPPING BY &nbsp;&nbsp;&nbsp; SIGN THE GUESTBOOK &nbsp;&nbsp;&nbsp; BEST VIEWED IN NETSCAPE NAVIGATOR &nbsp;&nbsp;&nbsp; RESIZE YOUR WINDOW TO 800x600 FOR BEST RESULTS &nbsp;&nbsp;&nbsp;
-  </marquee>
-
-  <hr class="rainbow-hr">
-
-  <div class="badges-row">
-    <span class="retro-badge under-construction">&#128679; UNDER CONSTRUCTION &#128679;</span>
-    <span class="retro-badge">100% NETSCAPE COMPATIBLE</span>
-    <span class="retro-badge orange">HOT SITE!</span>
-    <span class="retro-badge pink"><span class="sparkle">&#10022;</span> NEW! <span class="sparkle">&#10022;</span></span>
-  </div>
-
-  <hr class="rainbow-hr">
+  <hr class="separator">
 
   <div class="controls">
-    <label for="search">FIND:</label>
+    <label for="search">Find:</label>
     <input type="search" id="search" placeholder="type to search...">
-    <label for="category">SHOW:</label>
+    <label for="category">Show:</label>
     <select id="category"><option value="">All categories</option></select>
   </div>
   <div class="count" id="count"></div>
@@ -262,20 +178,17 @@
   <div id="warn"></div>
 
   <main id="grid"></main>
-  <div class="empty-state" id="emptyState" style="display:none;">&#128546; No projects match your filters. &#128546;</div>
+  <div class="empty-state" id="emptyState" style="display:none;">No projects match your filters.</div>
 
-  <hr class="rainbow-hr">
+  <hr class="separator">
 
   <footer class="pagefoot">
-    <div class="foot-label">YOU ARE VISITOR NUMBER</div>
+    <div class="foot-label">You are visitor number</div>
     <div class="hitcounter" id="hitcounter"></div>
     <div class="webring">
-      &#9670; <a href="#">PREV</a> | <a href="https://github.com/krossruiz" target="_blank" rel="noopener">GITHUB WEBRING</a> | <a href="#">NEXT</a> &#9670;
-      <br>
-      Best viewed in <strong>Netscape Navigator</strong> at 800&times;600 &middot; Made with a &#128293; guestbook and a dream
+      <a href="https://github.com/krossruiz" target="_blank" rel="noopener">GitHub</a>
     </div>
   </footer>
-</div>
 
 <script>
 const CATEGORY_LABELS = {
@@ -306,7 +219,7 @@ const IS_LOCAL = ["localhost", "127.0.0.1", "::1", ""].includes(location.hostnam
 if (!IS_LOCAL) {
   document.addEventListener("DOMContentLoaded", () => {
     const el = document.getElementById("hostedNotice");
-    if (el) el.innerHTML = `<div class="hosted-notice">&#9758; You're viewing the hosted copy of this catalog. Most projects' Launch/Run-in-Browser buttons work right here (their files are embedded in this deployment); a few large ones are local-only - use "View on GitHub" on any card to get the code. &#9756;</div>`;
+    if (el) el.innerHTML = `<div class="hosted-notice">You're viewing the hosted copy of this catalog. Most projects' Launch/Run-in-Browser buttons work right here (their files are embedded in this deployment); a few large ones are local-only - use "View on GitHub" on any card to get the code.</div>`;
   });
 }
 
@@ -387,7 +300,6 @@ function render(projects, downloadSizes) {
     const card = document.createElement("div");
     card.className = "card";
     card.innerHTML = `
-      <div class="card-title-bar">${escapeHTML(p.title || p.id)}.html</div>
       <span class="badge">${escapeHTML(CATEGORY_LABELS[p.category] || p.category || "Other")}</span>
       <h2>${escapeHTML(p.title || p.id)}</h2>
       <p class="desc">${escapeHTML(p.description || "No description available.")}</p>
@@ -469,7 +381,7 @@ function renderHitCounter() {
       const matchesQ = !q || haystack.includes(q);
       return matchesCat && matchesQ;
     });
-    countEl.textContent = `>>> SHOWING ${filtered.length} OF ${visibleProjects.length} VISIBLE PROJECTS (${projects.length - visibleProjects.length} HIDDEN VIA admin.json) <<<`;
+    countEl.textContent = `Showing ${filtered.length} of ${visibleProjects.length} visible projects (${projects.length - visibleProjects.length} hidden via admin.json)`;
     render(filtered, downloadSizes);
   }
 

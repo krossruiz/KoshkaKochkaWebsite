@@ -6,65 +6,63 @@
 <title>Python Runner</title>
 <script src="https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js"></script>
 <style>
+  :root {
+    --color-background: #0b0b0b;
+    --color-surface: #111111;
+    --color-border: #222222;
+    --color-text: #e5e5e5;
+    --color-muted: #9ca3af;
+    --color-accent: #aa0000;
+  }
   * { box-sizing: border-box; }
-  html { background: #008080; }
-  body {
-    margin: 0; font-family: "Times New Roman", Times, serif; color: #000;
-    background: #008080;
-    background-image: radial-gradient(circle at 6px 6px, rgba(255,255,255,0.06) 1.5px, transparent 1.6px);
-    background-size: 24px 24px;
+  @font-face {
+    font-family: "Acidic";
+    src: url("projects/personal_site/fonts/acidic/Acidic.TTF");
   }
-  a { color: #0000EE; } a:visited { color: #551A8B; } a:active { color: #FF0000; }
-  .page {
-    max-width: 900px; margin: 18px auto 40px; background: #C0C0C0;
-    border: 4px outset #ffffff; padding: 10px; box-shadow: 6px 6px 0 rgba(0,0,0,0.35);
+  html, body {
+    margin: 0; padding: 0; background-color: var(--color-background); color: var(--color-text);
+    font-family: -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
   }
-  .titlebar {
-    background: linear-gradient(90deg, #000080, #1084d0 50%, #000080); color: #fff;
-    font-family: Arial, Helvetica, sans-serif; font-weight: bold; font-size: 0.85rem;
-    padding: 4px 8px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;
-  }
+  a { color: var(--color-accent); }
+  .page { max-width: 900px; margin: 0 auto; padding: 20px 16px 60px; }
   header {
-    padding: 10px; border: 2px inset #808080; background: #fff;
     display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;
-    margin-bottom: 10px;
+    border-bottom: 1px solid var(--color-border); padding-bottom: 16px; margin-bottom: 20px;
   }
-  header h1 { font-size: 1.15rem; margin: 0; font-family: "Comic Sans MS", cursive; color: #000080; }
-  header a { color: #0000EE; text-decoration: none; font-size: 0.85rem; font-family: Arial, sans-serif; font-weight: bold; }
+  header h1 { font-size: 1.3rem; margin: 0; font-family: "Acidic", cursive; color: var(--color-text); }
+  header a { color: var(--color-accent); text-decoration: none; font-size: 0.85rem; font-weight: 600; }
   main { padding: 0; }
   #status {
-    font-family: "Courier New", monospace; font-size: 0.85rem; color: #000080;
-    background: #fff; border: 2px inset #808080; padding: 5px 8px; margin-bottom: 10px;
+    font-family: "Courier New", monospace; font-size: 0.85rem; color: var(--color-muted);
+    background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 4px;
+    padding: 8px 10px; margin-bottom: 12px;
   }
   #console {
-    background: #000; color: #00ff00; font-family: "Courier New", Consolas, monospace;
-    font-size: 0.85rem; padding: 14px; min-height: 220px; border: 3px inset #808080;
+    background: #000; color: #d1fae5; font-family: "Cascadia Code", Consolas, monospace;
+    font-size: 0.85rem; padding: 16px; min-height: 220px; border-radius: 8px;
+    border: 1px solid var(--color-border);
     white-space: pre-wrap; word-break: break-word;
   }
-  #imgOut { margin-top: 14px; text-align: center; }
-  #imgOut img { max-width: 100%; border: 3px outset #ffffff; background: #fff; padding: 4px; }
+  #imgOut { margin-top: 16px; text-align: center; }
+  #imgOut img { max-width: 100%; border-radius: 8px; border: 1px solid var(--color-border); }
   .row { display: flex; gap: 8px; margin-top: 12px; }
   button {
-    background: #C0C0C0; color: #000; border: 2px outset #ffffff;
-    padding: 7px 16px; cursor: pointer; font-size: 0.85rem; font-family: Arial, sans-serif; font-weight: bold;
+    background: var(--color-surface); color: var(--color-text); border: 1px solid var(--color-border);
+    padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 0.85rem; font-weight: 600;
   }
-  button:hover { background: #d8d8d8; }
-  button:active { border-style: inset; }
+  button:hover { border-color: var(--color-accent); color: var(--color-accent); }
   button:disabled { opacity: 0.5; cursor: default; }
   .note {
-    color: #660000; font-size: 0.8rem; margin-top: 10px; font-family: Arial, sans-serif;
-    background: #ffffcc; border: 2px dashed #ff0000; padding: 6px 8px;
+    color: var(--color-muted); font-size: 0.8rem; margin-top: 12px;
+    border-left: 3px solid var(--color-accent); background: var(--color-surface);
+    border-radius: 4px; padding: 8px 10px;
   }
 </style>
 </head>
 <body>
 <div class="page">
-  <div class="titlebar">
-    <span>python-runner.exe</span>
-    <span>&#9633;</span>
-  </div>
   <header>
-    <h1 id="title">&#9658; Python Runner</h1>
+    <h1 id="title">Python Runner</h1>
     <a href="index.html">&larr; Back to Project Directory</a>
   </header>
   <main>
@@ -72,7 +70,7 @@
     <div id="console"></div>
     <div id="imgOut"></div>
     <div class="row">
-      <button id="runBtn" disabled>&#9658; Run again</button>
+      <button id="runBtn" disabled>Run again</button>
     </div>
     <p class="note">Running fully in your browser via <a href="https://pyodide.org" target="_blank">Pyodide</a> (Python compiled to WebAssembly) - no server, no install. This program calling <code>input()</code> will prompt you with a browser dialog.</p>
   </main>
