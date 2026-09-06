@@ -2,7 +2,7 @@
 
 **What this is:** a website that catalogs every project folder in `programming projects/` — one card per project, each with a description, usage instructions, tech tags, and (where possible) a way to actually run or download it: a **Launch** button for static web apps, **Run in Browser (Python)** for simple Python scripts (via Pyodide/WebAssembly, no install needed), or a **Download .zip** / **View on GitHub** link for everything else. `admin.json` controls which projects are visible, and `projects.json` holds all the catalog data.
 
-- **Live site:** https://project-directory-eight.vercel.app (Vercel URL unchanged by the rename; update this line if you assign a new domain)
+- **Live site:** https://koshkakochka.vercel.app
 - **GitHub repo (private):** https://github.com/krossruiz/KoshkaKochkaWebsite
 
 This repo is deployed on Vercel and also meant to be run locally. The two modes behave differently — see below.
