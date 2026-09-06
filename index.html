@@ -409,10 +409,10 @@ function renderHitCounter() {
   if (!el) return;
   let count;
   try {
-    count = parseInt(localStorage.getItem("pd_hit_count") || "13370", 10) + 1;
-    localStorage.setItem("pd_hit_count", String(count));
+    count = parseInt(localStorage.getItem("pd_hit_count_v2") || "0", 10) + 1;
+    localStorage.setItem("pd_hit_count_v2", String(count));
   } catch (e) {
-    count = 13371;
+    count = 1;
   }
   const digits = String(count).padStart(6, "0").split("");
   el.innerHTML = digits.map(d => `<span>${d}</span>`).join("");
