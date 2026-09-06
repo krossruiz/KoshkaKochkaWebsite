@@ -128,7 +128,8 @@
     ],
     "lastModified": "2026-02-06",
     "repo": "https://github.com/krossruiz/MindExplorer2D",
-    "liveUrl": "https://mindexplorer2d.vercel.app"
+    "liveUrl": "https://mindexplorer2d.vercel.app",
+    "gif": "MindExplorer2D.gif"
   },
   {
     "id": "MindMapExplorer",
@@ -200,7 +201,8 @@
     ],
     "lastModified": "2025-11-22",
     "repo": "https://github.com/krossruiz/VRThreejsPassthroughBoilerplate",
-    "embedded": true
+    "embedded": true,
+    "gif": "VRThreejsPassthroughBoilerplate.gif"
   },
   {
     "id": "VRThreejsPassthroughTextAndVideoTexture",
@@ -251,7 +253,8 @@
     ],
     "lastModified": "2025-11-29",
     "repo": "https://github.com/krossruiz/VRThreejsPassthroughYouTubePlaylistViewer",
-    "embedded": true
+    "embedded": true,
+    "gif": "VRThreejsPassthroughYouTubePlaylistViewer.gif"
   },
   {
     "id": "VRThreejsPassthrough_PIPE_ORGAN",
@@ -284,7 +287,8 @@
     ],
     "lastModified": "2025-04-19",
     "repo": "https://github.com/krossruiz/VibeHelloWorldBouncingText",
-    "liveUrl": "https://vibe-hello-world-bouncing-text.vercel.app"
+    "liveUrl": "https://vibe-hello-world-bouncing-text.vercel.app",
+    "gif": "VibeHelloWorldBouncingText.gif"
   },
   {
     "id": "YouTubeBlogPlaylistViewer",
@@ -300,7 +304,8 @@
     ],
     "lastModified": "2025-09-04",
     "repo": "https://github.com/krossruiz/YouTubeBlogPlaylistViewer",
-    "embedded": true
+    "embedded": true,
+    "gif": "YouTubeBlogPlaylistViewer.gif"
   },
   {
     "id": "YouTubeTranscriptExtractor",
@@ -357,7 +362,8 @@
     ],
     "lastModified": "2026-03-27",
     "repo": "https://github.com/krossruiz/photo-stats-viewer",
-    "embedded": true
+    "embedded": true,
+    "gif": "art-tools.gif"
   },
   {
     "id": "aslForMichael",
@@ -449,7 +455,8 @@
     ],
     "lastModified": "2026-01-23",
     "repo": "https://github.com/krossruiz/claudeTestRemote",
-    "embedded": true
+    "embedded": true,
+    "gif": "claudeTestRemote.gif"
   },
   {
     "id": "discordsmsrcssynchronizer",
@@ -476,7 +483,8 @@
     ],
     "lastModified": "2025-11-22",
     "repo": "https://github.com/krossruiz/drone_graph_vis",
-    "embedded": true
+    "embedded": true,
+    "gif": "drone_graph_vis.gif"
   },
   {
     "id": "educare",
@@ -505,7 +513,8 @@
     ],
     "lastModified": "2025-11-19",
     "repo": "https://github.com/krossruiz/embeddingvis",
-    "liveUrl": "https://embeddingvis.vercel.app"
+    "liveUrl": "https://embeddingvis.vercel.app",
+    "gif": "embeddingvis.gif"
   },
   {
     "id": "expoapps",
@@ -534,7 +543,8 @@
     ],
     "lastModified": "2025-08-25",
     "repo": "https://github.com/krossruiz/flash-lite-gallery",
-    "liveUrl": "https://flash-lite-gallery.vercel.app"
+    "liveUrl": "https://flash-lite-gallery.vercel.app",
+    "gif": "flash-lite-gallery.gif"
   },
   {
     "id": "gemma3ninferencetest",
@@ -606,7 +616,8 @@
     ],
     "lastModified": "2025-12-07",
     "repo": "https://github.com/krossruiz/numberDifferenceVisualizer",
-    "embedded": true
+    "embedded": true,
+    "gif": "numberDifferenceVisualizer.gif"
   },
   {
     "id": "ollamalanguageconverter",
@@ -656,7 +667,8 @@
     ],
     "lastModified": "2025-08-30",
     "repo": "https://github.com/krossruiz/personal_site",
-    "embedded": true
+    "embedded": true,
+    "gif": "personal_site.gif"
   },
   {
     "id": "piInfinite",
@@ -672,7 +684,8 @@
     ],
     "lastModified": "2026-03-15",
     "repo": "https://github.com/krossruiz/piInfiniteMusicGenerator-Song-from-Studio-Version-posted-by-aSongScout-on-YouTube-",
-    "embedded": true
+    "embedded": true,
+    "gif": "piInfinite.gif"
   },
   {
     "id": "randomCharacterOutput",
@@ -719,7 +732,8 @@
     ],
     "lastModified": "2025-06-05",
     "repo": "https://github.com/krossruiz/resume-site",
-    "embedded": true
+    "embedded": true,
+    "gif": "resume-site.gif"
   },
   {
     "id": "sitoaqui",
