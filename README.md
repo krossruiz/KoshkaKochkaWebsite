@@ -1,9 +1,9 @@
-# Project Directory
+# KoshkaKochkaWebsite (Project Directory)
 
 **What this is:** a website that catalogs every project folder in `programming projects/` — one card per project, each with a description, usage instructions, tech tags, and (where possible) a way to actually run or download it: a **Launch** button for static web apps, **Run in Browser (Python)** for simple Python scripts (via Pyodide/WebAssembly, no install needed), or a **Download .zip** / **View on GitHub** link for everything else. `admin.json` controls which projects are visible, and `projects.json` holds all the catalog data.
 
-- **Live site:** https://project-directory-eight.vercel.app
-- **GitHub repo (private):** https://github.com/krossruiz/project-directory
+- **Live site:** https://project-directory-eight.vercel.app (Vercel URL unchanged by the rename; update this line if you assign a new domain)
+- **GitHub repo (private):** https://github.com/krossruiz/KoshkaKochkaWebsite
 
 This repo is deployed on Vercel and also meant to be run locally. The two modes behave differently — see below.
 
@@ -22,7 +22,7 @@ Browsers block `fetch()` on `file://` pages, so double-clicking `index.html` won
    ```
    python -m http.server 8000
    ```
-2. Open http://localhost:8000/project-directory/ in your browser.
+2. Open http://localhost:8000/KoshkaKochkaWebsite/ in your browser.
 
 The server is rooted one level up so the site can also serve the project folders themselves (for "Launch" and "Run in Browser").
 
