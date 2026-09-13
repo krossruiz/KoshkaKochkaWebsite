@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Every Folder Becomes a Repo</title>
+<style>
+  :root {
+    --color-background: #0b0b0b;
+    --color-surface: #141414;
+    --color-border: #262626;
+    --color-text: #e5e5e5;
+    --color-muted: #9ca3af;
+    --color-accent: #aa0000;
+    --cat-project: #4caf6f;
+    --cat-collection: #d98b2b;
+    --cat-resource: #6b7280;
+  }
+  * { box-sizing: border-box; }
+  html { background: var(--color-background); }
+  body {
+    margin: 0; padding-block: 56px; padding-inline: 20px;
+    background: var(--color-background); color: var(--color-text);
+    font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.65;
+  }
+  a { color: #ff8a8a; }
+  .wrap { max-width: 700px; margin: 0 auto; }
+  nav.back { margin-bottom: 28px; }
+  nav.back a { color: var(--color-muted); text-decoration: none; font-size: 0.9rem; }
+  nav.back a:hover { color: var(--color-text); }
+  .kicker { text-transform: uppercase; letter-spacing: 0.08em; font-size: 0.75rem; color: var(--color-accent); font-weight: 700; margin-bottom: 10px; }
+  h1 { font-size: 2rem; line-height: 1.2; margin: 0 0 10px; text-wrap: balance; }
+  .meta { color: var(--color-muted); font-size: 0.9rem; margin-bottom: 36px; }
+  h2 { font-size: 1.25rem; margin: 40px 0 12px; border-top: 1px solid var(--color-border); padding-top: 24px; }
+  p { max-width: 66ch; }
+  code, pre { font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace; }
+  code { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 4px; padding: 0.1em 0.4em; font-size: 0.9em; }
+  pre {
+    background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 8px;
+    padding: 14px 16px; overflow-x: auto; font-size: 0.87rem;
+  }
+  pre code { background: none; border: none; padding: 0; }
+  .cats { display: flex; gap: 10px; flex-wrap: wrap; margin: 14px 0 6px; }
+  .cat { display: flex; align-items: center; gap: 8px; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 8px; padding: 10px 14px; flex: 1 1 180px; }
+  .dot { width: 10px; height: 10px; border-radius: 50%; flex: none; }
+  .cat .name { font-weight: 700; font-size: 0.92rem; }
+  .cat .desc { color: var(--color-muted); font-size: 0.82rem; }
+  .callout { background: var(--color-surface); border-left: 3px solid var(--color-accent); border-radius: 0 8px 8px 0; padding: 14px 18px; margin: 20px 0; }
+  .callout p { margin: 0; }
+  footer.postfoot { margin-top: 48px; padding-top: 20px; border-top: 1px solid var(--color-border); color: var(--color-muted); font-size: 0.85rem; }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <nav class="back"><a href="../index.html">&larr; Koshka Kochka</a></nav>
+    <div class="kicker">Behind the site</div>
+    <h1>Every folder becomes a repo, automatically</h1>
+    <div class="meta">How the system that publishes this project directory to GitHub actually decides what's a project.</div>
+
+    <p>This site is generated from one messy folder of ~70 things I've built, tinkered with, or cloned to poke at. Nobody hand-curates a GitHub repo per project here — a sync engine walks the folder, decides what's actually a project, publishes it publicly, and mirrors it into this site. This post is the "how it works" for that engine.</p>
+
+    <h2>Three kinds of folder</h2>
+    <p>Every top-level folder gets sorted into exactly one of three categories. This distinction is the whole trick — most sync tools only know "publish" or "ignore," which breaks the moment a folder is a <em>container</em> for a project rather than a project itself.</p>
+    <div class="cats">
+      <div class="cat"><span class="dot" style="background:var(--cat-project)"></span><div><div class="name">project</div><div class="desc">Has its own source/build markers — gets its own public repo.</div></div></div>
+      <div class="cat"><span class="dot" style="background:var(--cat-collection)"></span><div><div class="name">collection</div><div class="desc">Holds one or more nested projects but isn't one itself — each nested project is published under its own name.</div></div></div>
+      <div class="cat"><span class="dot" style="background:var(--cat-resource)"></span><div><div class="name">resource</div><div class="desc">Assets, data, or a clone of someone else's repo — never published.</div></div></div>
+    </div>
+
+    <div class="callout">
+      <p><strong>Worked example:</strong> a <code>games/</code> folder containing one game, <code>flappy-dude/</code>, is a <strong>collection</strong> — <code>flappy-dude</code> is the <strong>project</strong> and gets its own repo, while <code>games/</code> itself is never published. A <code>vidgen/</code> folder containing a cloned copy of someone else's open-source video model stays a <strong>resource</strong> even though the clone has plenty of code in it, because the classifier checks who the git remote actually belongs to.</p>
+    </div>
+
+    <h2>Running it</h2>
+    <p>The engine is a single script, no service required:</p>
+    <pre><code>python github_sync.py          # classify + publish once
+python github_sync.py --watch  # do that forever, checking every 5 minutes</code></pre>
+    <p>Classifications land in <code>admin.json</code>'s <code>classification</code> map. Once a folder is classified — by the engine or by you — that decision is permanent; the engine never silently reclassifies something a human already decided.</p>
+
+    <h2>Watching it happen</h2>
+    <p>Two small apps sit on top of the same engine for when you don't want to read terminal output: a Windows desktop monitor and a phone app (built with Expo), both showing every folder's category, its VCS, and whether it's synced — tap or double-click a row to move a folder between project, collection, and resource by hand.</p>
+    <pre><code>pip install -r sync-api/requirements.txt
+python sync-api/api_server.py     # small local API the two apps talk to
+python desktop-app/monitor.py     # Windows GUI</code></pre>
+    <p>For the phone app, point <code>API_BASE</code> in <code>expoapps/SyncMonitor/App.js</code> at your machine's LAN IP, then <code>npx expo start</code> from that folder.</p>
+
+    <h2>Version control beyond Git</h2>
+    <p>The engine also recognizes Mercurial, Subversion, and Perforce workspaces — it reports them in both monitor apps so you can see they exist, but it won't silently convert and publish them. Moving code from one of those into a public Git repo is a one-way, structural decision, and that's a call worth making on purpose rather than automatically.</p>
+
+    <footer class="postfoot">Written by Claude, describing the system it built for this site.</footer>
+  </div>
+</body>
+</html>
