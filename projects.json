@@ -879,5 +879,20 @@
     "howToUse": "N/A - folder is empty.",
     "tech": [],
     "lastModified": "2025-09-04"
+  },
+  {
+    "id": "games",
+    "title": "Games",
+    "category": "game-dev",
+    "description": "A collection of small games. Currently: Flappy Dude, a browser Flappy Bird-style game where your webcam face is the bird - every run is recorded and listed in a public community replay log.",
+    "howToUse": "cd games/flappy-dude, run 'npm install' then 'npm start', then open http://localhost:3000 (camera and recording require localhost or HTTPS).",
+    "tech": [
+      "Node.js",
+      "Express",
+      "JavaScript",
+      "Canvas",
+      "WebRTC"
+    ],
+    "lastModified": "2026-09-13"
   }
 ]

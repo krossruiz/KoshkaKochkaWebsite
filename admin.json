@@ -62,6 +62,8 @@
     "videoplaylistsharer": true,
     "vidgen": true,
     "xr": false,
-    "youtubePlaylistUpdatedFeed": false
+    "youtubePlaylistUpdatedFeed": false,
+    "games": false,
+    "sync-api": true
   }
 }

@@ -1,0 +1,7 @@
+2026-09-13 05:20:15  Watching 'C:\Users\KROSS\Desktop\programming projects' for changes. Publishing into KoshkaKochkaWebsite on save (8s debounce).
+2026-09-13 05:20:15  Folders marked visible:false in admin.json are skipped.
+2026-09-13 05:21:01  Skipping 'games' (not published under projects\, not auto-adding)
+2026-09-13 05:33:04  Watcher stopped.
+2026-09-13 05:33:14  Watching 'C:\Users\KROSS\Desktop\programming projects' for changes. Publishing into KoshkaKochkaWebsite on save (8s debounce).
+2026-09-13 05:33:14  Folders marked visible:false in admin.json are skipped.
+2026-09-13 05:33:49  Synced 'games' -> projects\games
